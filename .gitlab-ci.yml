@@ -1,11 +1,12 @@
 stages:
     - build
     - test
+    
 build:
-stage: build
-script:
-    - mvn compile
+    stage: build
+    script:
+        - mvn compile
 test:
-stage: test
-script:
-    - mvn test
+    stage: test
+    script:
+        - mvn test
