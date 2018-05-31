@@ -9,4 +9,4 @@ build:
 test:
     stage: test
     script:
-        - ./gradlew test
+        - mvn test
