@@ -32,23 +32,16 @@ android:
 script:
 - "./gradlew build check"
 - "./gradlew test"
-before_deploy:
-- cd app/build/outputs/apk/release
-- jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${TRAVIS_BUILD_DIR}/keystore.jks
-  -storepass $STORE_PASS -keypass $KEY_PASS app-release-unsigned.apk key0
-- jarsigner -verify app-release-unsigned.apk
-- "${ANDROID_HOME}/build-tools/${ANDROID_BUILD_TOOLS}/zipalign -v 4 app-release-unsigned.apk
-  PinItAndroid.apk"
-- cd -
-- scripts/tag.sh
 deploy:
   provider: releases
-  on:
-    branch: master
-  api_key:
-  - secure: DgcCj3HLA5N3zTxtbyOZyKuX6X+D3wTA7SJgf1PcrkV5uydZ/lemyuseZeW3vNaplwMueI2IhWlQwbRDFGtLoeG63BMsi9d9P9hGqrX0jc8asbjXxpskQd8uE/y7wFW9V2ROGqYX4G83uswUKhsmJDcnUtvhFS44Ie+ljxMwhEevQQ4hhRkfi2OGm36ri1SOC9fMSguKW9DO3Q8sUW9uUy8ms40qCPXoJTynqGdhTs0haQ+l+SbCNCm15p2ZR5yp36CbpNIvQgOno5AI4ekNf0HYzrn8X9zzA7sh2vPhmPYZEwnQktRrobqYRi7hAiZQsPZOhTAVBmzBJFlTW049a/L/f4foitHHY+nHgqIRf/6MAtk1vgIkimsdZfuVlD9VlRclyx/oIe5LyyLQpqQhEdhu8K2puu5HWWkqiQ1HSifZ1i/kzsNXvF3KHgsW4Onq7b/kki15rlen6WxB3dNYETFG16Kj7q85clXnFbCqtCEZDxCmcnwO+XRaE2JT8EEGrMe8xk5TJyniEIR3ombsndl7nUav2esPLq4PDJlgUjBSBLkLg9qptIRifuQXl4YgRU0TT80F9ATg5HDtmO0wiBRr8KAxrNcXfajNB0XMMLp4HtYVUEPOqfFVy6ILwrehpIptZAOGXfZnsRdMA6yG5XrIjPv6Ej0sjH2YnuNLSXg=
+  api_key: $GITHUB_KEY
+  file_glob: true
   file: app/build/outputs/apk/release/PinItAndroid.apk
   overwrite: true
   skip_cleanup: true
+  on:
+    repo: Pin-It/PinItMobileApp
+    branch: master
+    tags: true
 before_install:
 - openssl enc -aes-256-cbc -d -in keystore.jks.enc -out keystore.jks -base64 -K $TRAVIS_KEY -iv $TRAVIS_IV
