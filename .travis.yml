@@ -1,35 +1,35 @@
 language: android
 
 env:
-  global:
-    - ANDROID_TARGET=android-24
-    - ANDROID_ABI=armeabi-v7a
-
+ global:
+ - ANDROID_API=27
+ - EMULATOR_API=24
+ - ANDROID_BUILD_TOOLS=27.0.3
+ - ADB_INSTALL_TIMEOUT=10 # minutes
+ 
 android:
-  components:
-    - tools
-    - platform-tools
-    - tools
-    - build-tools-27.0.3
-    
-    - android-27
+ components:
+ - tools
+ - platform-tools
+ - build-tools-$ANDROID_BUILD_TOOLS
+ - android-$ANDROID_API
+ - android-$EMULATOR_API_LEVEL
+ - extra-google-m2repository
+ - extra-android-m2repository # for design library
+ - addon-google_apis-google-27 # google play services
+ - sys-img-armeabi-v7a-addon-google_apis-google-$ANDROID_API_LEVEL
+ - sys-img-armeabi-v7a-addon-google_apis-google-$EMULATOR_API_LEVEL
 
-    - extra-google-google_play_services
-    - extra-google-m2repository
-    - extra-android-m2repository
-    - addon-google_apis-google-27
-    
-    - sys-img-armeabi-v7a-android-24
-
-env:
-  global:
-    - ADB_INSTALL_TIMEOUT=8
+ licenses:
+ - android-sdk-preview-license-.+
+ - android-sdk-license-.+
+ - google-gdk-license-.+
 
 before_script:
-  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
-  - emulator -avd test -no-skin -no-audio -no-window -engine classic &
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
+- echo no | android create avd --force -n test -t "$EMULATOR_API" --abi armeabi-v7a
+- emulator -avd test -no-skin -no-audio -no-window &
+- android-wait-for-emulator
+- adb shell input keyevent 82 &
 
 script:
   - android list target
