@@ -1,4 +1,4 @@
-package com.example.haileyfong.pinitmobileapp;
+package com.pinit.pinitmobileapp;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
@@ -14,7 +14,6 @@ import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;

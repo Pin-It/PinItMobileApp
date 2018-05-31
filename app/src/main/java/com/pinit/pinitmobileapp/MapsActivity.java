@@ -1,6 +1,7 @@
 package com.pinit.pinitmobileapp;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -76,6 +77,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 } else {
                     pincolor = R.drawable.pinseis;
                 }
+//
+
+
             }
         });
     }
