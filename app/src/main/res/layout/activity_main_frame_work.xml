@@ -1,20 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MapsActivity">
+    tools:context=".MapsActivity" >
 
-    <ImageButton
-        android:layout_width="wrap_content"
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        class="com.google.android.gms.maps.SupportMapFragment" />
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="left|bottom"
-        android:src="@drawable/pinuno"
-        android:padding="10dp"
-        android:layout_marginTop="20dp"
-        android:paddingLeft="10dp"/>
+        android:id="@+id/footer"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/background_light"
+        style="@android:style/ButtonBar">
 
-</fragment>
+
+        <ImageButton
+            android:id="@+id/pinunoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pinuno"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            />
+
+        <ImageButton
+            android:id="@+id/pindosButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pindos"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            />
+
+        <ImageButton
+            android:id="@+id/pintresButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pintres"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            />
+
+        <ImageButton
+            android:id="@+id/pincuatroButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pincuatro"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            />
+
+        <ImageButton
+            android:id="@+id/pincincoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pincinco"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            />
+
+        <ImageButton
+            android:id="@+id/pinseisButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pinseis"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            />
+
+
+
+    </LinearLayout>
+</RelativeLayout>
+
+
+<!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:map="http://schemas.android.com/apk/res-auto"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:id="@+id/map"-->
+    <!--android:name="com.google.android.gms.maps.SupportMapFragment"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--tools:context=".MapsActivity">-->
+
+<!--</fragment>-->

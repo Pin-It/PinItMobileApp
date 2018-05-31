@@ -13,4 +13,6 @@
     <string name="read_only"> Read_Only</string>
     <string name="login">Login</string>
 
+    <string name="button_text3">Pick Pocket</string>
+
 </resources>

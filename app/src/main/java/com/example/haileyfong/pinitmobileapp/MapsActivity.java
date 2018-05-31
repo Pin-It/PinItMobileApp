@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -28,6 +30,10 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private GoogleMap mMap;
     private List<LatLng> lstLatLng = new ArrayList<LatLng>();
 
+    public List<ImageButton> imgButtonList = new ArrayList<>();
+
+    int pincolor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,8 +44,41 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        imgButtonList.add((ImageButton)findViewById(R.id.pinunoButton));
+        imgButtonList.add((ImageButton)findViewById(R.id.pindosButton));
+        imgButtonList.add((ImageButton)findViewById(R.id.pintresButton));
+        imgButtonList.add((ImageButton)findViewById(R.id.pincuatroButton));
+        imgButtonList.add((ImageButton)findViewById(R.id.pincincoButton));
+        imgButtonList.add((ImageButton)findViewById(R.id.pinseisButton));
+
+
+        for(int i = 0; i < imgButtonList.size(); i++) {
+            addListenerButton(i);
+        }
     }
 
+    public void addListenerButton(int num) {
+        final ImageButton imgButton = imgButtonList.get(num);
+
+        imgButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (imgButton.equals((ImageButton)findViewById(R.id.pinunoButton))) {
+                    pincolor = R.drawable.pinuno;
+                } else if (imgButton.equals((ImageButton)findViewById(R.id.pindosButton))) {
+                    pincolor = R.drawable.pindos;
+                } else if (imgButton.equals((ImageButton)findViewById(R.id.pintresButton))) {
+                    pincolor = R.drawable.pintres;
+                } else if (imgButton.equals((ImageButton)findViewById(R.id.pincuatroButton))) {
+                    pincolor = R.drawable.pincuatro;
+                } else if (imgButton.equals((ImageButton)findViewById(R.id.pincincoButton))) {
+                    pincolor = R.drawable.pincinco;
+                } else {
+                    pincolor = R.drawable.pinseis;
+                }
+            }
+        });
+    }
 
     /**
      * Manipulates the map once available.
@@ -62,7 +101,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             @Override
             public void onMapClick(LatLng point) {
                 lstLatLng.add(point);
-                googleMap.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.circle)));
+                googleMap.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(pincolor)));
             }
         });
     }
