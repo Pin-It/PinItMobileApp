@@ -51,5 +51,4 @@ deploy:
   overwrite: true
   skip_cleanup: true
 before_install:
-- openssl aes-256-cbc -K $encrypted_2d772184c600_key -iv $encrypted_2d772184c600_iv
-  -in keystore.jks.enc -out keystore.jks -d
+- openssl aes-256-cbc -K $TRAVIS_KEY -iv $TRAVIS_IV -in keystore.jks.enc -out keystore.jks -d
