@@ -35,7 +35,7 @@ script:
 before_deploy:
 - cd app/build/outputs/apk/release
 - jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${TRAVIS_BUILD_DIR}/keystore.jks
-  -storepass $storepass -keypass $keypass app-release-unsigned.apk key0
+  -storepass $STORE_PASS -keypass $KEY_PASS app-release-unsigned.apk key0
 - jarsigner -verify app-release-unsigned.apk
 - "${ANDROID_HOME}/build-tools/${ANDROID_BUILD_TOOLS}/zipalign -v 4 app-release-unsigned.apk
   PinItAndroid.apk"
