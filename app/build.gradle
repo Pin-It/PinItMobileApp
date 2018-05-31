@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.example.haileyfong.pinitmobileapp"
+        applicationId "com.pinit.pinitmobileapp"
         minSdkVersion 26
         targetSdkVersion 27
         versionCode 1

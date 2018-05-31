@@ -1,4 +1,4 @@
-package com.example.haileyfong.pinitmobileapp;
+package com.pinit.pinitmobileapp;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
