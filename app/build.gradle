@@ -11,7 +11,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
-        release
+        release {}
     }
     buildTypes {
         release {
@@ -24,7 +24,7 @@ android {
 
     if (isRunningOnTravis) {
         // configure keystore
-        signingConfigs.release.storeFile = file("keystore.jks")
+        signingConfigs.release.storeFile = file("../keystore.jks")
         signingConfigs.release.storePassword = System.getenv("STORE_PASS")
         signingConfigs.release.keyAlias = System.getenv("KEY_ALIAS")
         signingConfigs.release.keyPassword = System.getenv("KEY_PASS")
