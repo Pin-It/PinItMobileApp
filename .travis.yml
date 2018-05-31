@@ -1,32 +1,62 @@
 language: android
+jdk: oraclejdk8
+
+env:
+  global:
+    - secure: ZsnNnLR7kdefyOyRL1IV40Bgv0JnJbHBkl4NYYFFK+WaTQCXXsTE7Wf1gBFmXIvq5+ibn1ndKgfJ2VR7IRoQiFNg0sdVIZGKcH/6sO3BYFjoDmdJNLruX7hoci22sxEdNUjUBQwoZkneEfWIg8ZmZ4VbgakybmH3Yqi7EgxIu1rQrrbKl4fcF+yfxAtG5xm73NtBVCi/VArnS5eSk8jp5uaT7wNBhuknZQk8Q4XI24fxUcBtnsDKdzlOXJTO934eTO8g4NQ4iodahEIJSDamzyBlidR2hAxl/xJBux4fcleib6HmjCX8t82IwT6n33F8CoTXFDWCbj45a6CyW+6j5Vsbm+PJjMDBmo1mPqt5utefGbpkQUaCm4uYtgLwm4qFhIWvD1GRaLBCiKmfQif3iTtrnGwztJ1vp1efshtCRHIC43HmZcuSRuTDwqY7MtdkqZFBACcSZOZ/gLj0HAeu/c/PR73OeDWDmWJ/f4ePpilmITVMGmyfzT6hCYfvBr5ZZQN1i5NCehv532blZE+yJ2blqHXqea5Yw5nICxRuePrcfsLbCL7yq+sLa5xp61xK81oXqWid2/MamrojDmyQg8vtA44g+sP2BurooiYb5A0r0MrON3vmPmjhIuMNcbyVoj3XXL1J7+1MjKLpMWU3L/GXf4pSRE2w+4thMNY6W70=
+    - secure: FVkmN0QMm9h6ezAlYBL1NddehGV2lA/mFgSNhbfz7C0HDLaj3FIgl5Ecbzw90w0Lb3L05QOX8LlNZTSj7PRU8Juu2pY/pNe5Py6AuKWfRsF7H1yakBkE2sPR6HUi2qlUdC5mLPMXgwtyXMUSlOCN9eEX1OG25hvkntMRUiBBlT9kTu6ZP+OqBINDaVwex1J1Qs3Y/92gAOOXSowL/fc02aVO9BAQeY/MvSOErOyzPWeimwvKOA8hv1FLNw9k+h73LLPqvfvHoxFASkptqTH0Cb+WPmcE1wZICxMTqTeQqP/nD3tng4KVxPzhEEYDgV8Z4DfhTzBfTQFGRW3I3WZKi7O3p5QFu2yLUYwAv3+W8JT5oKmtENEm9TaQgWeQs1MsRHWDUwixY06pg6HlINO2Jy8a8mfVrZJFRAGjRXNF4pbcGqbbf6vHoe9b6z7wZ3GYeC+kNHYE2EyNSdSkMKTuW9chMcNTGS+oq/WDRb0bLANMOcUxRvseh8hVpRlO5LsuG90v3n4bxZZgE+W5lLHNoyKBa1kVWCm2pmKjHuwebEd13Lb8FIzIUL6NfzUe3FLB3oLKPiCk2HLTEL/pcUWw20/YlK6G+p/xqvhMihhjGfAzrk6drSBqKXWxIea/7clY4EIHegeFgVoPRbC2Vf5zov8oFBvcrF3/bmJEOPEfvVI=
+    - secure: izPn0sY7SzFXI8nWs546x4rrWtjSSTVv4Z9Nj2UfVMk5OEcOoxQvy2EM3C4IlMHEXra+TY9pmQgWRokJjcpLo5wkvGxsEmIjIqV7kAUMDg0iFi+L8oeaX7L36U+GDqVlbFowMi6PCBC+mUSmLajPtaUc9lp8ximXFQemH0ua2VqIQ9u6aSu7hod4bmEeBYk30J3BTi1thPho1kmaUp3ceuwlQ1KRviNepSg5MgfNI/woo6Ko1kXXOpL15Wlg2CAo7Jef6VT977Wog+sSug6qWTzrDQVwADkovoYncojHKHcohheXdCzj73bA7AppvZlCFjOdfXiKT74/7nSxK4se+zpcSgUOuczE+ipzhbsFFmS1BjrTh4UzifUfPJOYVdFNkyYqtLze3GsCPZN6tkz+z8y+yQ2p0xy09674nuJtlxGxhTigf6NdLvZoFK31woMFtICb8VpunnlgNeJzLDhrcIaKx3rfVtWlZtiKq/3dHm4YRgKhSgWVHDT7/Hv1wuGyUiyF35dNzqa5fGcYsSquKTs7pvO/q3Hq+D8OdeEOy/MYy/DbppMBd14j8yi9TwTinVumIywaQUOfMQRHyWni4FsDOKu7vWodkTz794pSnnIU0INuCfYkNPMEpAJnhnrdj4ogcS2blxvCd7KBfr81wQg3L54udRZpNjHhbvr1tQI=
+    
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+  - $HOME/.gradle/caches/
+  - $HOME/.gradle/wrapper/
+  - $HOME/.android/build-cache
 
 android:
   components:
     - tools
     - platform-tools
     - tools
+    
     - build-tools-27.0.3
     
     - android-27
-    - android-24
-
+    
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
+    - extra-android-support
     - addon-google_apis-google-27
     
-    - sys-img-armeabi-v7a-android-24
-
-env:
-  global:
-    - ADB_INSTALL_TIMEOUT=8
-
-before_script:
-  - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a 
-  - emulator -avd test -no-skin -no-audio -no-window -engine classic &
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
+  licenses:
+    - 'android-sdk-preview-.+'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
 
 script:
-  - android list target
-  - ./gradlew connectedAndroidTest
+  - ./gradlew build check
+  - ./gradlew test
+  
+before_deploy:
+  - openssl aes-256-cbc -K $encrypted_2d772184c600_key -iv $encrypted_2d772184c600_iv -in keystore.jks.enc -out keystore.jks -d
+  - cd app/build/outputs/apk/release
+  - jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${TRAVIS_BUILD_DIR}/keystore.jks -storepass $storepass -keypass $keypass app-release-unsigned.apk key0
+  - jarsigner -verify app-release-unsigned.apk
+  - "${ANDROID_HOME}/build-tools/${ANDROID_BUILD_TOOLS}/zipalign -v 4 app-release-unsigned.apk PinItAndroid.apk"
+  - cd -
+  - scripts/tag.sh
+  
+deploy:
+provider: releases
+  on:
+    branch: master
+  api_key:
+    - secure: DgcCj3HLA5N3zTxtbyOZyKuX6X+D3wTA7SJgf1PcrkV5uydZ/lemyuseZeW3vNaplwMueI2IhWlQwbRDFGtLoeG63BMsi9d9P9hGqrX0jc8asbjXxpskQd8uE/y7wFW9V2ROGqYX4G83uswUKhsmJDcnUtvhFS44Ie+ljxMwhEevQQ4hhRkfi2OGm36ri1SOC9fMSguKW9DO3Q8sUW9uUy8ms40qCPXoJTynqGdhTs0haQ+l+SbCNCm15p2ZR5yp36CbpNIvQgOno5AI4ekNf0HYzrn8X9zzA7sh2vPhmPYZEwnQktRrobqYRi7hAiZQsPZOhTAVBmzBJFlTW049a/L/f4foitHHY+nHgqIRf/6MAtk1vgIkimsdZfuVlD9VlRclyx/oIe5LyyLQpqQhEdhu8K2puu5HWWkqiQ1HSifZ1i/kzsNXvF3KHgsW4Onq7b/kki15rlen6WxB3dNYETFG16Kj7q85clXnFbCqtCEZDxCmcnwO+XRaE2JT8EEGrMe8xk5TJyniEIR3ombsndl7nUav2esPLq4PDJlgUjBSBLkLg9qptIRifuQXl4YgRU0TT80F9ATg5HDtmO0wiBRr8KAxrNcXfajNB0XMMLp4HtYVUEPOqfFVy6ILwrehpIptZAOGXfZnsRdMA6yG5XrIjPv6Ej0sjH2YnuNLSXg=
+  file: "app/build/outputs/apk/release/PinItAndroid.apk"
+  overwrite: true
+  skip_cleanup: true
