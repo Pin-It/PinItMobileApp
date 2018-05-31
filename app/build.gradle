@@ -2,6 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = 'PinItAndroid.apk'
+        }
+    }
+
     defaultConfig {
         applicationId "com.pinit.pinitmobileapp"
         minSdkVersion 24
