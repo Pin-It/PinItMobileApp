@@ -45,7 +45,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     RequestQueue requestQueue = null;
 
-    int pincolor;
+    int pincolor = -1;
     Pin.Type pinType;
 
     private List<Pin> allPins = new ArrayList<>();
@@ -127,6 +127,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
+                if (pincolor == -1) return;
                 lstLatLng.add(point);
                 Pin pin = new Pin(pinType, point.latitude, point.longitude);
                 PinItAPI.uploadNewPin(requestQueue, pin);
