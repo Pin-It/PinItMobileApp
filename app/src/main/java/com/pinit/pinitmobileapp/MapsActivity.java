@@ -2,11 +2,13 @@ package com.pinit.pinitmobileapp;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -22,6 +24,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
@@ -34,11 +37,17 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean mPermissionDenied = false;
     private GoogleMap mMap;
+    private List<Marker> markerList;
     private List<LatLng> lstLatLng = new ArrayList<LatLng>();
 
     public List<ImageButton> imgButtonList = new ArrayList<>();
-
     int pincolor;
+
+    public MapsActivity() {
+        if (markerList == null) {
+            markerList = new ArrayList<Marker>();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +55,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         setContentView(R.layout.activity_main_frame_work);
 
 
+        LoadPreferences();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -60,6 +70,31 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         for(int i = 0; i < imgButtonList.size(); i++) {
             addListenerButton(i);
+        }
+    }
+
+    private void SavePreferences() {
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putInt("listSize", markerList.size());
+        for (int i = 0 ; i < markerList.size(); i++) {
+            editor.putFloat("lat" + i, (float) markerList.get(i).getPosition().latitude);
+            editor.putFloat("long" + i, (float) markerList.get(i).getPosition().longitude);
+        }
+
+        editor.commit();
+    }
+
+    private void LoadPreferences() {
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+
+        int size = sharedPreferences.getInt("listSize", 0);
+        for (int i = 0; i < size; i++) {
+            double lat = (double) sharedPreferences.getFloat("lat" + i, 0);
+            double longit = (double) sharedPreferences.getFloat("long" + i, 0);
+
+            markerList.add(mMap.addMarker(new MarkerOptions().position(new LatLng(lat, longit))));
         }
     }
 
@@ -82,10 +117,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 } else {
                     pincolor = R.drawable.pinseis;
                 }
-//                Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
-//                startActivity(intent);
-//                finish();
-
             }
         });
     }
@@ -111,9 +142,23 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             @Override
             public void onMapClick(LatLng point) {
                 lstLatLng.add(point);
-                googleMap.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(pincolor)).title("Other").snippet("Dangerous to cross Exhibition Road"));
+                MarkerOptions markerOptions = new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(pincolor));
+                markerList.add(googleMap.addMarker(markerOptions));
             }
         });
+
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                SavePreferences();
+                Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
+                startActivity(intent);
+                finish();
+
+                return true;
+            }
+        });
+
     }
 
     public void onMapSearch(View view) {
