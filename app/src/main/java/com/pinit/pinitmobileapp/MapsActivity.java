@@ -37,25 +37,17 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean mPermissionDenied = false;
     private GoogleMap mMap;
-    private List<Marker> markerList;
     private List<LatLng> lstLatLng = new ArrayList<LatLng>();
 
     public List<ImageButton> imgButtonList = new ArrayList<>();
     int pincolor;
 
-    public MapsActivity() {
-        if (markerList == null) {
-            markerList = new ArrayList<Marker>();
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_frame_work);
 
-
-        LoadPreferences();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -73,30 +65,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         }
     }
 
-    private void SavePreferences() {
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        editor.putInt("listSize", markerList.size());
-        for (int i = 0 ; i < markerList.size(); i++) {
-            editor.putFloat("lat" + i, (float) markerList.get(i).getPosition().latitude);
-            editor.putFloat("long" + i, (float) markerList.get(i).getPosition().longitude);
-        }
-
-        editor.commit();
-    }
-
-    private void LoadPreferences() {
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-
-        int size = sharedPreferences.getInt("listSize", 0);
-        for (int i = 0; i < size; i++) {
-            double lat = (double) sharedPreferences.getFloat("lat" + i, 0);
-            double longit = (double) sharedPreferences.getFloat("long" + i, 0);
-
-            markerList.add(mMap.addMarker(new MarkerOptions().position(new LatLng(lat, longit))));
-        }
-    }
 
     public void addListenerButton(int num) {
         final ImageButton imgButton = imgButtonList.get(num);
@@ -143,14 +111,13 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             public void onMapClick(LatLng point) {
                 lstLatLng.add(point);
                 MarkerOptions markerOptions = new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(pincolor));
-                markerList.add(googleMap.addMarker(markerOptions));
+                googleMap.addMarker(markerOptions);
             }
         });
 
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                SavePreferences();
                 Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
                 startActivity(intent);
                 finish();
