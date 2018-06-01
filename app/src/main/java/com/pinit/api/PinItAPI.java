@@ -38,6 +38,10 @@ public class PinItAPI {
     }
 
     public static void uploadNewPin(RequestQueue requestQueue, Pin pin) {
-        NetworkUtils.postJSONObject(requestQueue, PINS_URL, pin.toJSONObject());
+        uploadNewPin(requestQueue, pin, null);
+    }
+
+    public static void uploadNewPin(RequestQueue requestQueue, Pin pin, NetworkListener<JSONObject> listener) {
+        NetworkUtils.postJSONObject(requestQueue, PINS_URL, pin.toJSONObject(), listener);
     }
 }
