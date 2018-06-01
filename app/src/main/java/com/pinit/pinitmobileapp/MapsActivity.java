@@ -3,6 +3,8 @@ package com.pinit.pinitmobileapp;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,9 +12,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -20,6 +24,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,8 +82,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 } else {
                     pincolor = R.drawable.pinseis;
                 }
-//
-
+//                Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
+//                startActivity(intent);
+//                finish();
 
             }
         });
@@ -105,9 +111,29 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             @Override
             public void onMapClick(LatLng point) {
                 lstLatLng.add(point);
-                googleMap.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(pincolor)));
+                googleMap.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(pincolor)).title("Other").snippet("Dangerous to cross Exhibition Road"));
             }
         });
+    }
+
+    public void onMapSearch(View view) {
+        EditText locationSearch = (EditText) findViewById(R.id.editText);
+        String location = locationSearch.getText().toString();
+        List<Address> addressList = null;
+
+        if (location != null || !location.equals("")) {
+            Geocoder geocoder = new Geocoder(this);
+            try {
+                addressList = geocoder.getFromLocationName(location, 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Address address = addressList.get(0);
+            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.circle)));
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+        }
     }
 
     private void enableMyLocation() {
