@@ -36,4 +36,9 @@ public class PinItAPI {
       }
     });
   }
+
+  public static void uploadNewPin(RequestQueue requestQueue, Pin pin) {
+    String url = API_URL + Pin.API_ENDPOINT + "/";
+    NetworkUtils.postJSONObject(requestQueue, url, pin.toJSONObject());
+  }
 }
