@@ -35,6 +35,18 @@ public class Pin {
     this.longitude = longitude;
   }
 
+  public Type getType() {
+    return type;
+  }
+
+  public double getLatitude() {
+    return latitude;
+  }
+
+  public double getLongitude() {
+    return longitude;
+  }
+
   @Override
   public String toString() {
     return type.toString() + "@(" + latitude + ", " + longitude + ")";
