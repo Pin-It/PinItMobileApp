@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PinItAPI {
-    public static final String API_URL = "https://pin-it-app.herokuapp.com/api/";
+    private static final String API_URL = "https://pin-it-app.herokuapp.com/api/";
+    private static final String PINS_URL = API_URL + Pin.API_ENDPOINT + "/";
 
     public static void getAllPins(RequestQueue requestQueue, final NetworkListener<List<Pin>> listener) {
-        String url = API_URL + Pin.API_ENDPOINT + "/";
-        NetworkUtils.requestJSONArray(requestQueue, url, new NetworkListener<JSONArray>() {
+        NetworkUtils.requestJSONArray(requestQueue, PINS_URL, new NetworkListener<JSONArray>() {
             @Override
             public void onReceive(JSONArray response) {
                 List<Pin> pins = new ArrayList<>();
@@ -38,7 +38,6 @@ public class PinItAPI {
     }
 
     public static void uploadNewPin(RequestQueue requestQueue, Pin pin) {
-        String url = API_URL + Pin.API_ENDPOINT + "/";
-        NetworkUtils.postJSONObject(requestQueue, url, pin.toJSONObject());
+        NetworkUtils.postJSONObject(requestQueue, PINS_URL, pin.toJSONObject());
     }
 }
