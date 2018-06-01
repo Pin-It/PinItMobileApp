@@ -1,7 +1,6 @@
 package com.pinit.pinitmobileapp;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -16,6 +15,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -23,6 +24,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.pinit.api.PinItAPI;
+import com.pinit.api.models.Pin;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,13 +41,15 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     public List<ImageButton> imgButtonList = new ArrayList<>();
 
+    RequestQueue requestQueue = null;
+
     int pincolor;
+    Pin.Type pinType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_frame_work);
-
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -71,16 +76,22 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             public void onClick(View v) {
                 if (imgButton.equals((ImageButton)findViewById(R.id.pinunoButton))) {
                     pincolor = R.drawable.pinuno;
+                    pinType = Pin.Type.PICKPOCKET;
                 } else if (imgButton.equals((ImageButton)findViewById(R.id.pindosButton))) {
                     pincolor = R.drawable.pindos;
+                    pinType = Pin.Type.DRUNK;
                 } else if (imgButton.equals((ImageButton)findViewById(R.id.pintresButton))) {
                     pincolor = R.drawable.pintres;
+                    pinType = Pin.Type.ROBBERY;
                 } else if (imgButton.equals((ImageButton)findViewById(R.id.pincuatroButton))) {
                     pincolor = R.drawable.pincuatro;
+                    pinType = Pin.Type.SCAM;
                 } else if (imgButton.equals((ImageButton)findViewById(R.id.pincincoButton))) {
                     pincolor = R.drawable.pincinco;
+                    pinType = Pin.Type.HARASSMENT;
                 } else {
                     pincolor = R.drawable.pinseis;
+                    pinType = Pin.Type.OTHERS;
                 }
 //                Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
 //                startActivity(intent);
@@ -111,6 +122,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             @Override
             public void onMapClick(LatLng point) {
                 lstLatLng.add(point);
+                Pin pin = new Pin(pinType, point.latitude, point.longitude);
+                if (requestQueue == null) requestQueue = Volley.newRequestQueue(getApplication());
+                PinItAPI.uploadNewPin(requestQueue, pin);
                 googleMap.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(pincolor)).title("Other").snippet("Dangerous to cross Exhibition Road"));
             }
         });
