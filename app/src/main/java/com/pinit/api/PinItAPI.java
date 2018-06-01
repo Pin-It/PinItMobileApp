@@ -18,11 +18,6 @@ public class PinItAPI {
     NetworkUtils.requestJSONArray(requestQueue, url, new NetworkListener<JSONArray>() {
       @Override
       public void onReceive(JSONArray response) {
-        if (response == null) {
-          listener.onReceive(null);
-          return;
-        }
-
         List<Pin> pins = new ArrayList<>();
         try {
           for (int i = 0; i < response.length(); i++) {

@@ -18,7 +18,6 @@ public class NetworkUtils {
       @Override
       public void onErrorResponse(VolleyError error) {
         listener.onError(error);
-        listener.onReceive(null);
       }
     };
 
@@ -38,7 +37,6 @@ public class NetworkUtils {
       @Override
       public void onErrorResponse(VolleyError error) {
         listener.onError(error);
-        listener.onReceive(null);
       }
     };
 
