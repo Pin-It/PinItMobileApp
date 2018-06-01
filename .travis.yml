@@ -1,32 +1,47 @@
 language: android
-
-android:
-  components:
-    - tools
-    - platform-tools
-    - tools
-    - build-tools-27.0.3
-    
-    - android-27
-    - android-24
-
-    - extra-google-google_play_services
-    - extra-google-m2repository
-    - extra-android-m2repository
-    - addon-google_apis-google-27
-    
-    - sys-img-armeabi-v7a-android-24
-
+jdk: oraclejdk8
 env:
   global:
-    - ADB_INSTALL_TIMEOUT=8
-
-before_script:
-  - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a 
-  - emulator -avd test -no-skin -no-audio -no-window -engine classic &
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
-
+  - secure: dtZJsYXN2C6PML8uIjCLZm/3Yg6zrozfsPCz8uowl2ZldbXpKs2z2tIKJSswjyshYS+B8+1ySRHa4QjinKT45xpTzeN3vmxs6wLJFl11opr2GLq8f0U2qnEx0JBeO7JIi+t5qooh56Z5iW3n0HEQj8EXWMpHi+nRNSLXgCPLI6asTNAZRfu7pfJEVftRtNObMwcqpU2+LrImDBNaMp+JKDvroy50DWORUpcTz8XEoCivpg1y9U3Tr+pnBn6Bv6u5+FcB/fjui8EdGWKmaSlD0HnjHraxnQiFReon8HckLiMQF+K2D4uMFbC1pVWnK33+XB6r+QJoRsdoOuUs1Y4KkFVZiKEzXXRJF1BS8BjkQuvTZkjIJCuLtJFyo4yVp5hqe3Lr0Ou9aS/AQP0YnR36ZG1lLYWDpcrpsXPRG3lltnT/TerGPdZVvcE8URnm94+wEBaDpaEnSshJEQV1N6yBBPFSed1AlsOP+MMZd24dN3qkAGEBOQE/IyEegBMDXCnBWZufIiW0rIlOWFUxQJB/RqDT5Hq9W3EktixOMWVVC3y4rzHipirGos9KGWAiRJNAm8uGr/lv2Pfb9jiHkCotyj0nvoPyKJT0lH6oRBgbsGSO0OCR+sbdJ/BH3fEeZHFjCiy4CmsRaBSSWUDs+ysxsGBRXE/S7yZwnB0qaO987gc=
+  - secure: FVkmN0QMm9h6ezAlYBL1NddehGV2lA/mFgSNhbfz7C0HDLaj3FIgl5Ecbzw90w0Lb3L05QOX8LlNZTSj7PRU8Juu2pY/pNe5Py6AuKWfRsF7H1yakBkE2sPR6HUi2qlUdC5mLPMXgwtyXMUSlOCN9eEX1OG25hvkntMRUiBBlT9kTu6ZP+OqBINDaVwex1J1Qs3Y/92gAOOXSowL/fc02aVO9BAQeY/MvSOErOyzPWeimwvKOA8hv1FLNw9k+h73LLPqvfvHoxFASkptqTH0Cb+WPmcE1wZICxMTqTeQqP/nD3tng4KVxPzhEEYDgV8Z4DfhTzBfTQFGRW3I3WZKi7O3p5QFu2yLUYwAv3+W8JT5oKmtENEm9TaQgWeQs1MsRHWDUwixY06pg6HlINO2Jy8a8mfVrZJFRAGjRXNF4pbcGqbbf6vHoe9b6z7wZ3GYeC+kNHYE2EyNSdSkMKTuW9chMcNTGS+oq/WDRb0bLANMOcUxRvseh8hVpRlO5LsuG90v3n4bxZZgE+W5lLHNoyKBa1kVWCm2pmKjHuwebEd13Lb8FIzIUL6NfzUe3FLB3oLKPiCk2HLTEL/pcUWw20/YlK6G+p/xqvhMihhjGfAzrk6drSBqKXWxIea/7clY4EIHegeFgVoPRbC2Vf5zov8oFBvcrF3/bmJEOPEfvVI=
+  - secure: izPn0sY7SzFXI8nWs546x4rrWtjSSTVv4Z9Nj2UfVMk5OEcOoxQvy2EM3C4IlMHEXra+TY9pmQgWRokJjcpLo5wkvGxsEmIjIqV7kAUMDg0iFi+L8oeaX7L36U+GDqVlbFowMi6PCBC+mUSmLajPtaUc9lp8ximXFQemH0ua2VqIQ9u6aSu7hod4bmEeBYk30J3BTi1thPho1kmaUp3ceuwlQ1KRviNepSg5MgfNI/woo6Ko1kXXOpL15Wlg2CAo7Jef6VT977Wog+sSug6qWTzrDQVwADkovoYncojHKHcohheXdCzj73bA7AppvZlCFjOdfXiKT74/7nSxK4se+zpcSgUOuczE+ipzhbsFFmS1BjrTh4UzifUfPJOYVdFNkyYqtLze3GsCPZN6tkz+z8y+yQ2p0xy09674nuJtlxGxhTigf6NdLvZoFK31woMFtICb8VpunnlgNeJzLDhrcIaKx3rfVtWlZtiKq/3dHm4YRgKhSgWVHDT7/Hv1wuGyUiyF35dNzqa5fGcYsSquKTs7pvO/q3Hq+D8OdeEOy/MYy/DbppMBd14j8yi9TwTinVumIywaQUOfMQRHyWni4FsDOKu7vWodkTz794pSnnIU0INuCfYkNPMEpAJnhnrdj4ogcS2blxvCd7KBfr81wQg3L54udRZpNjHhbvr1tQI=
+before_cache:
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -rf $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - "$HOME/.android/build-cache"
+android:
+  components:
+  - tools
+  - platform-tools
+  - tools
+  - build-tools-27.0.3
+  - android-27
+  - extra-google-google_play_services
+  - extra-google-m2repository
+  - extra-android-m2repository
+  - extra-android-support
+  - addon-google_apis-google-27
+  licenses:
+  - android-sdk-preview-.+
+  - android-sdk-license-.+
+  - google-gdk-license-.+
 script:
-  - android list target
-  - ./gradlew connectedAndroidTest
+- "./gradlew build check"
+- "./gradlew test"
+deploy:
+  provider: releases
+  api_key: $GITHUB_KEY
+  file_glob: true
+  file: app/build/outputs/apk/release/PinItAndroid.apk
+  overwrite: true
+  skip_cleanup: true
+  on:
+    repo: Pin-It/PinItMobileApp
+    branch: master
+    tags: true
+before_install:
+- openssl enc -aes-256-cbc -d -in keystore.jks.enc -out keystore.jks -base64 -K $TRAVIS_KEY -iv $TRAVIS_IV

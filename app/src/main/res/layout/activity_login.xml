@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.pinit.haileyfong.pinitmobileapp.LoginActivity">
+    tools:context=".LoginActivity">
 
     <!-- Login progress -->
     <ProgressBar
@@ -59,7 +59,6 @@
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/amatic_sc"
                     android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
@@ -92,11 +91,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:background="#fc6262"
                 android:fontFamily="@font/amatic_sc"
                 android:text="@string/action_sign_in"
-                android:textStyle="bold"
-                android:background="#fc6262"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+
+
+            <Button
+                android:id="@+id/not_uni"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:fontFamily="@font/amatic_sc"
+                android:text="@string/notuni"
+                android:textColor="#fc6262"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </ScrollView>

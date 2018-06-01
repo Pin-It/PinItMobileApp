@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.text.method.PasswordTransformationMethod;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -71,6 +72,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
         textView = (TextView)findViewById(R.id.simpleTextView);
 
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -94,6 +96,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 attemptLogin();
                 intent = new Intent(LoginActivity.this, MapsActivity.class);
                 startActivity(intent);
+                finish();
+            }
+        });
+
+
+        Button mNotUniStudent = (Button) findViewById(R.id.not_uni);
+        mNotUniStudent.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent newIntent = new Intent(LoginActivity.this, GeneralySafetyMapActivity.class);
+                startActivity(newIntent);
                 finish();
             }
         });
