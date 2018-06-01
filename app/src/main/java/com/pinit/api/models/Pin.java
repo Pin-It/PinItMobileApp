@@ -4,6 +4,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Pin {
+  public static final String API_ENDPOINT = "pins";
+
   private static final String KEY_TYPE = "pin_type";
   private static final String KEY_LATITUDE = "latitude";
   private static final String KEY_LONGITUDE = "longitude";
