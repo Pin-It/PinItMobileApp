@@ -14,6 +14,11 @@ public class PinItAPI {
     private static final String API_URL = "https://pin-it-app.herokuapp.com/api/";
     private static final String PINS_URL = API_URL + Pin.API_ENDPOINT + "/";
 
+    /**
+     * Gets a list of all pins from the server.
+     * @param requestQueue Volley request queue
+     * @param listener this listener is needed to return the result of the request (a list of pins)
+     */
     public static void getAllPins(RequestQueue requestQueue, final NetworkListener<List<Pin>> listener) {
         NetworkUtils.requestJSONArray(requestQueue, PINS_URL, new NetworkListener<JSONArray>() {
             @Override
@@ -41,6 +46,12 @@ public class PinItAPI {
         uploadNewPin(requestQueue, pin, null);
     }
 
+    /**
+     * Uploads a new pin to the server
+     * @param requestQueue Volley request queue
+     * @param pin the pin to be uploaded
+     * @param listener (optional) listener for the result of the POST request
+     */
     public static void uploadNewPin(RequestQueue requestQueue, Pin pin, NetworkListener<JSONObject> listener) {
         NetworkUtils.postJSONObject(requestQueue, PINS_URL, pin.toJSONObject(), listener);
     }
