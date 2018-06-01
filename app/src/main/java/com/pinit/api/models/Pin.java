@@ -3,7 +3,7 @@ package com.pinit.api.models;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Pin {
+public class Pin implements Model {
   public static final String API_ENDPOINT = "pins";
 
   private static final String KEY_TYPE = "pin_type";
@@ -48,6 +48,19 @@ public class Pin {
   }
 
   @Override
+  public JSONObject toJSONObject() {
+    JSONObject json = new JSONObject();
+    try {
+      json.put(KEY_TYPE, this.type.toInt());
+      json.put(KEY_LATITUDE, this.latitude);
+      json.put(KEY_LONGITUDE, this.longitude);
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return json;
+  }
+
+  @Override
   public String toString() {
     return type.toString() + "@(" + latitude + ", " + longitude + ")";
   }
@@ -57,6 +70,10 @@ public class Pin {
 
     public static Type fromInt(int i) {
       return Type.values()[i - 1];
+    }
+
+    public int toInt() {
+      return ordinal() + 1;
     }
   }
 }
