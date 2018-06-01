@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,6 +25,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.pinit.api.NetworkListener;
 import com.pinit.api.PinItAPI;
 import com.pinit.api.models.Pin;
 
@@ -45,6 +47,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     int pincolor;
     Pin.Type pinType;
+
+    private List<Pin> allPins = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,14 +122,55 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         mMap.setOnMyLocationClickListener(this);
         enableMyLocation();
 
+        if (requestQueue == null) requestQueue = Volley.newRequestQueue(this);
+
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
                 lstLatLng.add(point);
                 Pin pin = new Pin(pinType, point.latitude, point.longitude);
-                if (requestQueue == null) requestQueue = Volley.newRequestQueue(getApplication());
                 PinItAPI.uploadNewPin(requestQueue, pin);
                 googleMap.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(pincolor)).title("Other").snippet("Dangerous to cross Exhibition Road"));
+            }
+        });
+
+        PinItAPI.getAllPins(requestQueue, new NetworkListener<List<Pin>>() {
+            @Override
+            public void onReceive(List<Pin> pins) {
+                allPins = pins;
+                System.out.println("hello pins" + pins.size());
+                for (Pin pin : allPins) {
+                    System.out.println("maybe here?");
+                    LatLng point = new LatLng(pin.getLatitude(), pin.getLongitude());
+                    Pin.Type type = pin.getType();
+                    int color;
+                    switch (type.toInt()) {
+                        case 1:
+                            color = R.drawable.pinuno;
+                            break;
+                        case 2:
+                            color = R.drawable.pindos;
+                            break;
+                        case 3:
+                            color = R.drawable.pintres;
+                            break;
+                        case 4:
+                            color = R.drawable.pincuatro;
+                            break;
+                        case 5:
+                            color = R.drawable.pincinco;
+                            break;
+                        default:
+                            color = R.drawable.pinseis;
+                            break;
+                    }
+                    mMap.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(color)).title(type.toString()));
+                }
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+
             }
         });
     }
