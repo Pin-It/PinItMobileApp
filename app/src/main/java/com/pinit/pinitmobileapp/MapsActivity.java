@@ -138,9 +138,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             @Override
             public void onReceive(List<Pin> pins) {
                 allPins = pins;
-                System.out.println("hello pins" + pins.size());
                 for (Pin pin : allPins) {
-                    System.out.println("maybe here?");
                     LatLng point = new LatLng(pin.getLatitude(), pin.getLongitude());
                     Pin.Type type = pin.getType();
                     int color;
