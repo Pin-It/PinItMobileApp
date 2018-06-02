@@ -1,12 +1,16 @@
 package com.pinit.pinitmobileapp;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Camera;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -23,6 +27,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -52,15 +57,15 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        imgButtonList.add((ImageButton)findViewById(R.id.pinunoButton));
-        imgButtonList.add((ImageButton)findViewById(R.id.pindosButton));
-        imgButtonList.add((ImageButton)findViewById(R.id.pintresButton));
-        imgButtonList.add((ImageButton)findViewById(R.id.pincuatroButton));
-        imgButtonList.add((ImageButton)findViewById(R.id.pincincoButton));
-        imgButtonList.add((ImageButton)findViewById(R.id.pinseisButton));
+        imgButtonList.add((ImageButton) findViewById(R.id.pinunoButton));
+        imgButtonList.add((ImageButton) findViewById(R.id.pindosButton));
+        imgButtonList.add((ImageButton) findViewById(R.id.pintresButton));
+        imgButtonList.add((ImageButton) findViewById(R.id.pincuatroButton));
+        imgButtonList.add((ImageButton) findViewById(R.id.pincincoButton));
+        imgButtonList.add((ImageButton) findViewById(R.id.pinseisButton));
 
 
-        for(int i = 0; i < imgButtonList.size(); i++) {
+        for (int i = 0; i < imgButtonList.size(); i++) {
             addListenerButton(i);
         }
     }
@@ -72,15 +77,15 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         imgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (imgButton.equals((ImageButton)findViewById(R.id.pinunoButton))) {
+                if (imgButton.equals((ImageButton) findViewById(R.id.pinunoButton))) {
                     pincolor = R.drawable.pinuno;
-                } else if (imgButton.equals((ImageButton)findViewById(R.id.pindosButton))) {
+                } else if (imgButton.equals((ImageButton) findViewById(R.id.pindosButton))) {
                     pincolor = R.drawable.pindos;
-                } else if (imgButton.equals((ImageButton)findViewById(R.id.pintresButton))) {
+                } else if (imgButton.equals((ImageButton) findViewById(R.id.pintresButton))) {
                     pincolor = R.drawable.pintres;
-                } else if (imgButton.equals((ImageButton)findViewById(R.id.pincuatroButton))) {
+                } else if (imgButton.equals((ImageButton) findViewById(R.id.pincuatroButton))) {
                     pincolor = R.drawable.pincuatro;
-                } else if (imgButton.equals((ImageButton)findViewById(R.id.pincincoButton))) {
+                } else if (imgButton.equals((ImageButton) findViewById(R.id.pincincoButton))) {
                     pincolor = R.drawable.pincinco;
                 } else {
                     pincolor = R.drawable.pinseis;
@@ -104,7 +109,28 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
-        enableMyLocation();
+        //   enableMyLocation();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        mMap.setMyLocationEnabled(true);
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria,false));
+        if (location != null) {
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
+            CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(location.getLatitude(), location.getLongitude()))
+                    .zoom(17).bearing(90).tilt(40).build();
+            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        }
 
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -128,34 +154,34 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     }
 
-    public void onMapSearch(View view) {
-        EditText locationSearch = (EditText) findViewById(R.id.editText);
-        String location = locationSearch.getText().toString();
-        List<Address> addressList = null;
+//    public void onMapSearch(View view) {
+//        EditText locationSearch = (EditText) findViewById(R.id.editText);
+//        String location = locationSearch.getText().toString();
+//        List<Address> addressList = null;
+//
+//        if (location != null || !location.equals("")) {
+//            Geocoder geocoder = new Geocoder(this);
+//            try {
+//                addressList = geocoder.getFromLocationName(location, 1);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//            Address address = addressList.get(0);
+//            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+//            mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.circle)));
+//            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+//        }
+//    }
 
-        if (location != null || !location.equals("")) {
-            Geocoder geocoder = new Geocoder(this);
-            try {
-                addressList = geocoder.getFromLocationName(location, 1);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            Address address = addressList.get(0);
-            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.circle)));
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-        }
-    }
-
-    private void enableMyLocation() {
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-        != PackageManager.PERMISSION_GRANTED) {
-            PermissionUtility.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE, Manifest.permission.ACCESS_FINE_LOCATION, true);
-        } else if (mMap != null){
-            mMap.setMyLocationEnabled(true);
-        }
-    }
+//    private void enableMyLocation() {
+//        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+//        != PackageManager.PERMISSION_GRANTED) {
+//            PermissionUtility.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE, Manifest.permission.ACCESS_FINE_LOCATION, true);
+//        } else if (mMap != null){
+//            mMap.setMyLocationEnabled(true);
+//        }
+//    }
 
     @Override
     public boolean onMyLocationButtonClick() {
@@ -168,19 +194,19 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if(requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
-            return;
-        }
-
-        if(PermissionUtility.isPermissionGranted(permissions, grantResults, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            enableMyLocation();
-        } else {
-            mPermissionDenied = true;
-        }
-    }
+  // @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+//                                           @NonNull int[] grantResults) {
+//        if(requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
+//            return;
+//        }
+//
+//        if(PermissionUtility.isPermissionGranted(permissions, grantResults, Manifest.permission.ACCESS_FINE_LOCATION)) {
+//            enableMyLocation();
+//        } else {
+//            mPermissionDenied = true;
+//        }
+//    }
 
     @Override
     protected void onResumeFragments() {
