@@ -39,6 +39,10 @@ public class PinItAPI {
     }
 
     public void login(String email, String password, final LoginListener listener) {
+        login(email, password, true, listener);
+    }
+
+    public void login(String email, String password, boolean blocking, final LoginListener listener) {
         JSONObject json = new JSONObject();
         try {
             json.put(USERNAME_FIELD, email);
@@ -52,13 +56,14 @@ public class PinItAPI {
                 .withMethod(Request.Method.POST)
                 .withURL(TOKEN_AUTH_URL)
                 .withJSONData(json)
+                .setBlocking(blocking)
                 .withNetworkListener(new NetworkListener<JSONObject>() {
                     @Override
                     public void onReceive(JSONObject response) {
                         if (response.has(TOKEN_FIELD)) {
                             try {
                                 token = response.getString(TOKEN_FIELD);
-                                if (listener != null) listener.onSuccess();
+                                if (listener != null) listener.onSuccess(token);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 throw new RuntimeException(e);
@@ -71,7 +76,13 @@ public class PinItAPI {
 
                     @Override
                     public void onError(VolleyError error) {
-                        if (listener != null) listener.onNetworkError(error);
+                        if (listener != null) {
+                            if (error != null) {
+                                listener.onCredentialsError();
+                            } else {
+                                listener.onNetworkError(error);
+                            }
+                        }
                     }
                 })
                 .send();

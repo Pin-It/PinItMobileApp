@@ -37,6 +37,8 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
 
+    public static final String USER_TOKEN = "userToken";
+
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean mPermissionDenied = false;
     private GoogleMap mMap;
@@ -55,7 +57,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_frame_work);
 
-        api = new PinItAPI(Volley.newRequestQueue(this));
+        String token = getIntent().getExtras().getString(USER_TOKEN);
+        api = new PinItAPI(Volley.newRequestQueue(this), token);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
