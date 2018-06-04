@@ -37,15 +37,18 @@
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="235dp"
         android:layout_marginEnd="17dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@drawable/rectangle"
+        android:paddingHorizontal="7dp"
+        android:elevation="2dp">
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/pinunoText"
             style="@android:style/TextAppearance.Material.Widget.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="3dp"
             android:fontFamily="@font/amatic_sc"
+            android:layout_marginStart="3dp"
             android:text="Pinuno"
             android:textSize="17sp"
             android:textStyle="bold"/>
@@ -57,9 +60,13 @@
         android:clickable="true"
         android:focusable="true"
         android:scaleType="center"
-        app:backgroundTint="@android:color/white"
+        android:layout_marginEnd="-4dp"
         app:fabSize="mini"
-        app:srcCompat="@drawable/pinuno" />
+        app:srcCompat="@drawable/pinuno"
+        app:borderWidth="0dp"
+        android:elevation="0dp"
+        app:elevation="0dp"
+        android:backgroundTint="@android:color/white"/>
 
     </LinearLayout>
 
@@ -71,14 +78,17 @@
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="200dp"
         android:layout_marginEnd="17dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@drawable/rectangle"
+        android:paddingHorizontal="7dp"
+        android:elevation="2dp">
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/pintresText"
             style="@android:style/TextAppearance.Material.Widget.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="3dp"
+            android:layout_marginStart="3dp"
             android:fontFamily="@font/amatic_sc"
             android:text="Pintres"
             android:textSize="17sp"
@@ -91,8 +101,12 @@
         android:clickable="true"
         android:focusable="true"
         android:scaleType="center"
+        android:layout_marginEnd="-4dp"
         app:backgroundTint="@android:color/white"
         app:fabSize="mini"
+        app:borderWidth="0dp"
+        android:elevation="0dp"
+        app:elevation="0dp"
         app:srcCompat="@drawable/pintres" />
 
     </LinearLayout>
@@ -105,14 +119,17 @@
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="165dp"
         android:layout_marginEnd="17dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@drawable/rectangle"
+        android:paddingHorizontal="7dp"
+        android:elevation="2dp">
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/pinseisText"
             style="@android:style/TextAppearance.Material.Widget.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="3dp"
+            android:layout_marginStart="3dp"
             android:fontFamily="@font/amatic_sc"
             android:text="Pinseis"
             android:textSize="17sp"
@@ -125,8 +142,12 @@
         android:clickable="true"
         android:focusable="true"
         android:scaleType="center"
+        android:layout_marginEnd="-4dp"
         app:backgroundTint="@android:color/white"
         app:fabSize="mini"
+        app:borderWidth="0dp"
+        android:elevation="0dp"
+        app:elevation="0dp"
         app:srcCompat="@drawable/pinseis" />
 
     </LinearLayout>
@@ -139,14 +160,17 @@
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="130dp"
         android:layout_marginEnd="17dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@drawable/rectangle"
+        android:paddingHorizontal="7dp"
+        android:elevation="2dp">
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/pindosText"
             style="@android:style/TextAppearance.Material.Widget.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="3dp"
+            android:layout_marginStart="3dp"
             android:fontFamily="@font/amatic_sc"
             android:text="Pindos"
             android:textSize="17sp"
@@ -159,8 +183,12 @@
         android:clickable="true"
         android:focusable="true"
         android:scaleType="center"
+        android:layout_marginEnd="-4dp"
         app:backgroundTint="@android:color/white"
         app:fabSize="mini"
+        app:borderWidth="0dp"
+        android:elevation="0dp"
+        app:elevation="0dp"
         app:srcCompat="@drawable/pindos" />
 
     </LinearLayout>
@@ -173,14 +201,17 @@
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="95dp"
         android:layout_marginEnd="17dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@drawable/rectangle"
+        android:paddingHorizontal="7dp"
+        android:elevation="2dp">
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/pincuatroText"
             style="@android:style/TextAppearance.Material.Widget.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="3dp"
+            android:layout_marginStart="3dp"
             android:fontFamily="@font/amatic_sc"
             android:text="Pincuatro"
             android:textSize="17sp"
@@ -193,8 +224,12 @@
         android:clickable="true"
         android:focusable="true"
         android:scaleType="center"
+        android:layout_marginEnd="-4dp"
         app:backgroundTint="@android:color/white"
         app:fabSize="mini"
+        app:borderWidth="0dp"
+        android:elevation="0dp"
+        app:elevation="0dp"
         app:srcCompat="@drawable/pincuatro" />
 
     </LinearLayout>
@@ -207,14 +242,17 @@
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="60dp"
         android:layout_marginEnd="17dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@drawable/rectangle"
+        android:paddingHorizontal="7dp"
+        android:elevation="2dp">
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/pincincoText"
             style="@android:style/TextAppearance.Material.Widget.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="3dp"
+            android:layout_marginStart="3dp"
             android:fontFamily="@font/amatic_sc"
             android:text="Pincinco"
             android:textSize="17sp"
@@ -227,8 +265,12 @@
         android:clickable="true"
         android:focusable="true"
         android:scaleType="center"
+        android:layout_marginEnd="-4dp"
         app:backgroundTint="@android:color/white"
         app:fabSize="mini"
+        app:borderWidth="0dp"
+        android:elevation="0dp"
+        app:elevation="0dp"
         app:srcCompat="@drawable/pincinco" />
 
     </LinearLayout>

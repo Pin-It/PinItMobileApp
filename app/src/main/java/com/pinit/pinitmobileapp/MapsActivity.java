@@ -1,6 +1,7 @@
 package com.pinit.pinitmobileapp;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,7 +14,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +47,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private List<LatLng> lstLatLng = new ArrayList<LatLng>();
 
     public List<ImageButton> imgButtonList = new ArrayList<>();
-//    private List<FloatingActionButton> floatButtonList = new ArrayList<>();
     private Map<FloatingActionButton, TextView> pinsToText = new HashMap<>();
     FloatingActionButton pinsMenu, pincinco, pincuatro, pindos, pinseis, pintres, pinuno;
     int pincolor;
@@ -79,7 +82,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     setAllPinsVisibility(false, false, null);
                     pinsMenu.setImageResource(R.drawable.pinuno);
                 } else {
-                    setAllPinsVisibility(true, false, null);
+                    setAllPinsVisibility(true, true, null);
                     pinsMenu.setImageResource(R.drawable.cancel);
                 }
             }
@@ -104,17 +107,43 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                         pincolor = R.drawable.pinseis;
                     }
 
-                    boolean visibilityText = true;
-
-                    if (isTextVisibile(bttn)) {
-                        visibilityText = false;
-                    }
-
-                    setAllPinsVisibility(true, visibilityText, bttn);
+//                    boolean visibilityText = true;
+//
+//                    if (isTextVisibile(bttn)) {
+//                        visibilityText = false;
+//                    }
+//
+//                    setAllPinsVisibility(true, visibilityText, bttn);
+                    showCommentDialogueBox();
 
                 }
             });
         }
+
+
+    }
+
+    private void showCommentDialogueBox() {
+        AlertDialog.Builder commentDialogueBuilder = new AlertDialog.Builder(MapsActivity.this);
+        View commentView = getLayoutInflater().inflate(R.layout.activity_add_comment, null);
+        TextView commentDialogueBoxTitle = commentView.findViewById(R.id.addComment);
+        EditText commentInputText = commentView.findViewById(R.id.comment_text_input);
+        Button submitButton = commentView.findViewById(R.id.submit_comment);
+        Button skipButton = commentView.findViewById(R.id.skip_comment);
+
+        commentDialogueBuilder.setView(commentView);
+        final AlertDialog commentDialogue = commentDialogueBuilder.create();
+
+        skipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                commentDialogue.dismiss();
+            }
+        });
+
+        commentDialogue.show();
+
+
 
 
     }
