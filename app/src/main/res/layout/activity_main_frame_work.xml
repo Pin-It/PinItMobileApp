@@ -27,8 +27,6 @@
         android:scaleType="center"
         app:backgroundTint="@android:color/white"
         app:fabSize="normal"
-        app:fab_colorPressed="#faefe6"
-        app:fab_showShadow="true"
         app:srcCompat="@drawable/pinuno" />
 
     <LinearLayout
