@@ -337,6 +337,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             if (mToken != null) {
                 intent = new Intent(LoginActivity.this, MapsActivity.class);
+                intent.putExtra(MapsActivity.USER_TOKEN, mToken);
                 startActivity(intent);
                 finish();
             } else if (mNetworkError) {
