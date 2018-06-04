@@ -76,7 +76,11 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_frame_work);
 
-        String token = getIntent().getExtras().getString(USER_TOKEN);
+        Bundle extras = getIntent().getExtras();
+        String token = null;
+        if (extras != null) {
+            token = extras.getString(USER_TOKEN, null);
+        }
         api = new PinItAPI(Volley.newRequestQueue(this), token);
   
         pincolor = R.drawable.pinuno;

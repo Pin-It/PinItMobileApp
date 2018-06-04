@@ -15,6 +15,10 @@ public class ExplanationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explanation);
+
+        final String token = getIntent().getExtras().getString(MapsActivity.USER_TOKEN, null);
+
+
         fabuno = findViewById(R.id.fab1);
         fabdos = findViewById(R.id.fab2);
 
@@ -22,6 +26,7 @@ public class ExplanationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent nextIntent = new Intent(ExplanationActivity.this, MapsActivity.class);
+                nextIntent.putExtra(MapsActivity.USER_TOKEN, token);
                 startActivity(nextIntent);
                 finish();
             }
@@ -31,6 +36,7 @@ public class ExplanationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent secIntent = new Intent(ExplanationActivity.this, GeneralySafetyMapActivity.class);
+                secIntent.putExtra(MapsActivity.USER_TOKEN, token);
                 startActivity(secIntent);
                 finish();
             }
