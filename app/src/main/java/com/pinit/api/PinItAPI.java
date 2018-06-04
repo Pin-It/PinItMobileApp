@@ -1,5 +1,6 @@
 package com.pinit.api;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.pinit.api.models.Pin;
@@ -9,6 +10,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.pinit.api.JSONRequestBuilder.newJSONArrayRequest;
+import static com.pinit.api.JSONRequestBuilder.newJSONObjectRequest;
 
 public class PinItAPI {
     private static final String BASE_URL = "https://pin-it-app.herokuapp.com/";
@@ -42,28 +46,33 @@ public class PinItAPI {
             throw new RuntimeException(e);
         }
 
-        NetworkUtils.postJSONObject(requestQueue, TOKEN_AUTH_URL, json, new NetworkListener<JSONObject>() {
-            @Override
-            public void onReceive(JSONObject response) {
-                if (response.has(TOKEN_FIELD)) {
-                    try {
-                        token = response.getString(TOKEN_FIELD);
-                        listener.onSuccess();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        throw new RuntimeException(e);
+        newJSONObjectRequest(requestQueue)
+                .withMethod(Request.Method.POST)
+                .withURL(TOKEN_AUTH_URL)
+                .withJSONData(json)
+                .withNetworkListener(new NetworkListener<JSONObject>() {
+                    @Override
+                    public void onReceive(JSONObject response) {
+                        if (response.has(TOKEN_FIELD)) {
+                            try {
+                                token = response.getString(TOKEN_FIELD);
+                                listener.onSuccess();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            // Wrong email/password combination
+                            listener.onCredentialsError();
+                        }
                     }
-                } else {
-                    // Wrong email/password combination
-                    listener.onCredentialsError();
-                }
-            }
 
-            @Override
-            public void onError(VolleyError error) {
-                listener.onNetworkError(error);
-            }
-        });
+                    @Override
+                    public void onError(VolleyError error) {
+                        listener.onNetworkError(error);
+                    }
+                })
+                .send();
     }
 
     public void getAllPins(final NetworkListener<List<Pin>> listener) {
@@ -76,26 +85,30 @@ public class PinItAPI {
      * @param listener this listener is needed to return the result of the request (a list of pins)
      */
     public static void getAllPins(RequestQueue requestQueue, final NetworkListener<List<Pin>> listener) {
-        NetworkUtils.requestJSONArray(requestQueue, PINS_URL, new NetworkListener<JSONArray>() {
-            @Override
-            public void onReceive(JSONArray response) {
-                List<Pin> pins = new ArrayList<>();
-                try {
-                    for (int i = 0; i < response.length(); i++) {
-                        JSONObject obj = response.getJSONObject(i);
-                        pins.add(new Pin(obj));
+        newJSONArrayRequest(requestQueue)
+                .withMethod(Request.Method.GET)
+                .withURL(PINS_URL)
+                .withNetworkListener(new NetworkListener<JSONArray>() {
+                    @Override
+                    public void onReceive(JSONArray response) {
+                        List<Pin> pins = new ArrayList<>();
+                        try {
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject obj = response.getJSONObject(i);
+                                pins.add(new Pin(obj));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        listener.onReceive(pins);
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                listener.onReceive(pins);
-            }
 
-            @Override
-            public void onError(VolleyError error) {
-                listener.onError(error);
-            }
-        });
+                    @Override
+                    public void onError(VolleyError error) {
+                        listener.onError(error);
+                    }
+                })
+                .send();
     }
 
     public void uploadNewPin(Pin pin) {
@@ -117,7 +130,12 @@ public class PinItAPI {
      * @param listener (optional) listener for the result of the POST request
      */
     public static void uploadNewPin(RequestQueue requestQueue, Pin pin, NetworkListener<JSONObject> listener) {
-        NetworkUtils.postJSONObject(requestQueue, PINS_URL, pin.toJSONObject(), listener);
+        newJSONObjectRequest(requestQueue)
+                .withMethod(Request.Method.POST)
+                .withURL(PINS_URL)
+                .withJSONData(pin.toJSONObject())
+                .withNetworkListener(listener)
+                .send();
     }
 
     public String getToken() {
