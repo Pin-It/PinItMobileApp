@@ -1,6 +1,7 @@
 package com.pinit.pinitmobileapp;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,10 +13,15 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.Switch;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +53,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private Switch mSwitch;
 
     public List<ImageButton> imgButtonList = new ArrayList<>();
-//    private List<FloatingActionButton> floatButtonList = new ArrayList<>();
     private Map<FloatingActionButton, TextView> pinsToText = new HashMap<>();
     FloatingActionButton pinsMenu, pincinco, pincuatro, pindos, pinseis, pintres, pinuno;
     int pincolor;
@@ -57,6 +62,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_frame_work);
+
+        pincolor = R.drawable.pinuno;
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -83,7 +90,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     setAllPinsVisibility(false, false, null);
                     pinsMenu.setImageResource(R.drawable.pinuno);
                 } else {
-                    setAllPinsVisibility(true, false, null);
+                    setAllPinsVisibility(true, true, null);
                     pinsMenu.setImageResource(R.drawable.cancel);
                 }
             }
@@ -108,13 +115,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                         pincolor = R.drawable.pinseis;
                     }
 
-                    boolean visibilityText = true;
-
-                    if (isTextVisibile(bttn)) {
-                        visibilityText = false;
-                    }
-
-                    setAllPinsVisibility(true, visibilityText, bttn);
+//                    boolean visibilityText = true;
+//
+//                    if (isTextVisibile(bttn)) {
+//                        visibilityText = false;
+//                    }
+//
+//                    setAllPinsVisibility(true, visibilityText, bttn);
+//                    showCommentDialogueBox();
 
                 }
             });
@@ -132,6 +140,31 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 }
             }
         });
+    }
+
+    private void showCommentDialogueBox() {
+        AlertDialog.Builder commentDialogueBuilder = new AlertDialog.Builder(MapsActivity.this);
+        View commentView = getLayoutInflater().inflate(R.layout.activity_add_comment, null);
+        TextView commentDialogueBoxTitle = commentView.findViewById(R.id.addComment);
+        EditText commentInputText = commentView.findViewById(R.id.comment_text_input);
+        Button submitButton = commentView.findViewById(R.id.submit_comment);
+        Button skipButton = commentView.findViewById(R.id.skip_comment);
+
+        commentDialogueBuilder.setView(commentView);
+        final AlertDialog commentDialogue = commentDialogueBuilder.create();
+
+        skipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                commentDialogue.dismiss();
+            }
+        });
+
+        commentDialogue.show();
+
+
+
+
     }
 
     private void setAllPinsVisibility(boolean pin, boolean text, FloatingActionButton bttn) {
@@ -198,13 +231,15 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
         }
-
+        Log.d("MapReady", "ready");
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
                 lstLatLng.add(point);
+                Log.d("MapReady", "click");
                 MarkerOptions markerOptions = new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(pincolor));
                 googleMap.addMarker(markerOptions);
+                showCommentDialogueBox();
             }
         });
 
@@ -214,7 +249,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
                 startActivity(intent);
                 finish();
-
+                showCommentDialogueBox();
                 return true;
             }
         });

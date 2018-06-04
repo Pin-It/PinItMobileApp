@@ -15,7 +15,7 @@ public class AddCommentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_comment);
-        message = (EditText) findViewById(R.id.plain_text_input);
+        message = (EditText) findViewById(R.id.comment_text_input);
         submit_button = (Button) findViewById(R.id.submit_comment);
 
         submit_button.setOnClickListener(new View.OnClickListener() {

@@ -40,17 +40,23 @@
         android:hint="@string/password"
         android:inputType="textPassword" />
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="125dp">
     <Button
         android:id="@+id/btnEnter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="125dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
         android:background="#fc6262"
         android:textSize="20sp"
         android:textColor="@android:color/white"
         android:text="@string/enterLogin" />
+    </LinearLayout>
 
     <!--<Button-->
         <!--android:layout_width="match_parent"-->

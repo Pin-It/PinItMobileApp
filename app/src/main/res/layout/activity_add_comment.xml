@@ -21,28 +21,47 @@
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/plain_text_input"
+        android:id="@+id/comment_text_input"
         android:layout_width="311dp"
-        android:layout_height="210dp"
+        android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="122dp"
+        android:layout_marginTop="90dp"
+        android:hint="Type your comment here"
         android:fontFamily="@font/amatic_sc"
         android:inputType="text" />
 
 
-    <Button
-        android:id="@+id/submit_comment"
-        android:layout_width="299dp"
-        android:layout_height="29dp"
+    <LinearLayout
+        android:id="@+id/commentBttns"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="182dp"
-        android:background="#fc6262"
-        android:fontFamily="@font/amatic_sc"
-        android:text="@string/submit_comment"
-        android:textColor="@android:color/white"
-        android:textStyle="bold" />
+        android:layout_marginBottom="390dp"
+        android:layout_centerHorizontal="true">
+        <Button
+            android:id="@+id/skip_comment"
+            android:layout_width="150dp"
+            android:layout_height="29dp"
+            android:background="#E0E0E0"
+            android:fontFamily="@font/amatic_sc"
+            android:text="skip this"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/submit_comment"
+            android:layout_width="150dp"
+            android:layout_height="29dp"
+            android:background="#fc6262"
+            android:fontFamily="@font/amatic_sc"
+            android:text="@string/submit_comment"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
+
 
 
 </RelativeLayout>
