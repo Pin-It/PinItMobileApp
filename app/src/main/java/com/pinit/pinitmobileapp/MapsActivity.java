@@ -3,23 +3,18 @@ package com.pinit.pinitmobileapp;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Camera;
-import android.location.Address;
 import android.location.Criteria;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -32,9 +27,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.IOException;
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
@@ -45,6 +43,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private List<LatLng> lstLatLng = new ArrayList<LatLng>();
 
     public List<ImageButton> imgButtonList = new ArrayList<>();
+//    private List<FloatingActionButton> floatButtonList = new ArrayList<>();
+    private Map<FloatingActionButton, TextView> pinsToText = new HashMap<>();
+    FloatingActionButton pinsMenu, pincinco, pincuatro, pindos, pinseis, pintres, pinuno;
     int pincolor;
 
 
@@ -57,42 +58,93 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        imgButtonList.add((ImageButton) findViewById(R.id.pinunoButton));
-        imgButtonList.add((ImageButton) findViewById(R.id.pindosButton));
-        imgButtonList.add((ImageButton) findViewById(R.id.pintresButton));
-        imgButtonList.add((ImageButton) findViewById(R.id.pincuatroButton));
-        imgButtonList.add((ImageButton) findViewById(R.id.pincincoButton));
-        imgButtonList.add((ImageButton) findViewById(R.id.pinseisButton));
+
+        pinsMenu = (FloatingActionButton) findViewById(R.id.pinListBttn);
+        pinsToText.put((FloatingActionButton) findViewById(R.id.pincincoBttn), (TextView) findViewById(R.id.pincincoText));
+        pinsToText.put((FloatingActionButton) findViewById(R.id.pincuatroBttn), (TextView) findViewById(R.id.pincuatroText));
+        pinsToText.put((FloatingActionButton) findViewById(R.id.pindosBttn), (TextView) findViewById(R.id.pindosText));
+        pinsToText.put((FloatingActionButton) findViewById(R.id.pinseisBttn), (TextView) findViewById(R.id.pinseisText));
+        pinsToText.put((FloatingActionButton) findViewById(R.id.pintresBttn), (TextView) findViewById(R.id.pintresText));
+        pinsToText.put((FloatingActionButton) findViewById(R.id.pinunoBttn), (TextView) findViewById(R.id.pinunoText));
 
 
-        for (int i = 0; i < imgButtonList.size(); i++) {
-            addListenerButton(i);
-        }
-    }
+        setAllPinsVisibility(false, false, null);
+        final TextView purpletext = (TextView) findViewById(R.id.pincincoText);
+        purpletext.setVisibility(View.GONE);
 
-
-    public void addListenerButton(int num) {
-        final ImageButton imgButton = imgButtonList.get(num);
-
-        imgButton.setOnClickListener(new View.OnClickListener() {
+        pinsMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (imgButton.equals((ImageButton) findViewById(R.id.pinunoButton))) {
-                    pincolor = R.drawable.pinuno;
-                } else if (imgButton.equals((ImageButton) findViewById(R.id.pindosButton))) {
-                    pincolor = R.drawable.pindos;
-                } else if (imgButton.equals((ImageButton) findViewById(R.id.pintresButton))) {
-                    pincolor = R.drawable.pintres;
-                } else if (imgButton.equals((ImageButton) findViewById(R.id.pincuatroButton))) {
-                    pincolor = R.drawable.pincuatro;
-                } else if (imgButton.equals((ImageButton) findViewById(R.id.pincincoButton))) {
-                    pincolor = R.drawable.pincinco;
+                if(isPinsVisible()) {
+                    setAllPinsVisibility(false, false, null);
+                    pinsMenu.setImageResource(R.drawable.pinuno);
                 } else {
-                    pincolor = R.drawable.pinseis;
+                    setAllPinsVisibility(true, false, null);
+                    pinsMenu.setImageResource(R.drawable.cancel);
                 }
             }
         });
+
+        for (final FloatingActionButton bttn : pinsToText.keySet()) {
+            bttn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (bttn.equals((FloatingActionButton) findViewById(R.id.pinunoBttn))) {
+                        pincolor = R.drawable.pinuno;
+                    } else if (bttn.getId() == R.id.pindosBttn) {
+                        pincolor = R.drawable.pindos;
+                    } else if (bttn.equals((FloatingActionButton) findViewById(R.id.pintresBttn))) {
+                        pincolor = R.drawable.pintres;
+                    } else if (bttn.equals((FloatingActionButton) findViewById(R.id.pincuatroBttn))) {
+                        pincolor = R.drawable.pincuatro;
+                    } else if (bttn.equals((FloatingActionButton) findViewById(R.id.pincincoBttn))) {
+                        pincolor = R.drawable.pincinco;
+                    } else {
+                        pincolor = R.drawable.pinseis;
+                    }
+
+                    boolean visibilityText = true;
+
+                    if (isTextVisibile(bttn)) {
+                        visibilityText = false;
+                    }
+
+                    setAllPinsVisibility(true, visibilityText, bttn);
+
+                }
+            });
+        }
+
+
     }
+
+    private void setAllPinsVisibility(boolean pin, boolean text, FloatingActionButton bttn) {
+        int visibilityPin = pin ? View.VISIBLE : View.GONE;
+        int visibilityText = text ? View.VISIBLE : View.GONE;
+
+        if (bttn == null) {
+            for (Map.Entry<FloatingActionButton, TextView> entry : pinsToText.entrySet()) {
+                entry.getKey().setVisibility(visibilityPin);
+                entry.getValue().setVisibility(visibilityText);
+            }
+        } else {
+            pinsToText.get(bttn).setVisibility(visibilityText);
+        }
+
+    }
+
+    private boolean isPinsVisible() {
+        boolean visible = true;
+        for (FloatingActionButton bttn : pinsToText.keySet()) {
+            if (bttn.getVisibility() == View.GONE) {
+                visible = false;
+                break;
+            }
+        }
+        return visible;
+    }
+
 
     /**
      * Manipulates the map once available.
@@ -219,5 +271,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     private void showMissingPermissionError() {
         PermissionUtility.PermissionDeniedDialog.newInstance(true).show(getSupportFragmentManager(), "dialog");
+    }
+
+    public boolean isTextVisibile(FloatingActionButton bttn) {
+        return pinsToText.get(bttn).getVisibility() == View.VISIBLE;
     }
 }

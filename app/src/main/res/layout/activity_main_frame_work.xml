@@ -1,89 +1,240 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MapsActivity" >
+    tools:context=".MapsActivity">
 
     <fragment
         android:id="@+id/map"
+        class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        class="com.google.android.gms.maps.SupportMapFragment" />
+        android:layout_height="match_parent" />
 
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/pinListBttn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="center"
+        app:backgroundTint="@android:color/white"
+        app:fabSize="normal"
+        app:fab_colorPressed="#faefe6"
+        app:fab_showShadow="true"
+        app:srcCompat="@drawable/pinuno" />
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:id="@+id/pinunoLayout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/footer"
-        android:orientation="horizontal"
-        android:background="@android:color/background_light"
         android:layout_alignParentBottom="true"
-        style="@android:style/ButtonBar">
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="235dp"
+        android:layout_marginEnd="17dp"
+        android:orientation="horizontal">
 
-
-        <ImageButton
-            android:id="@+id/pinunoButton"
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/pinunoText"
+            style="@android:style/TextAppearance.Material.Widget.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/pinuno"
-            android:layout_weight="1"
-            android:contentDescription="@string/button_1"
-            style="?android:attr/borderlessButtonStyle"
-            />
+            android:layout_marginEnd="3dp"
+            android:fontFamily="@font/amatic_sc"
+            android:text="Pinuno"
+            android:textSize="17sp"
+            android:textStyle="bold"/>
 
-        <ImageButton
-            android:id="@+id/pindosButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/pindos"
-            android:contentDescription="@string/button_2"
-            android:layout_weight="1"
-            style="?android:attr/borderlessButtonStyle"
-            />
-
-        <ImageButton
-            android:id="@+id/pintresButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/pintres"
-            android:contentDescription="@string/button_3"
-            android:layout_weight="1"
-            style="?android:attr/borderlessButtonStyle"
-            />
-
-        <ImageButton
-            android:id="@+id/pincuatroButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/pincuatro"
-            android:contentDescription="@string/button_4"
-            android:layout_weight="1"
-            style="?android:attr/borderlessButtonStyle"
-            />
-
-        <ImageButton
-            android:id="@+id/pincincoButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/pincinco"
-            android:contentDescription="@string/button_5"
-            android:layout_weight="1"
-            style="?android:attr/borderlessButtonStyle"
-            />
-
-        <ImageButton
-            android:id="@+id/pinseisButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/pinseis"
-            android:contentDescription="@string/button_6"
-            android:layout_weight="1"
-            style="?android:attr/borderlessButtonStyle"
-            />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/pinunoBttn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="center"
+        app:backgroundTint="@android:color/white"
+        app:fabSize="mini"
+        app:srcCompat="@drawable/pinuno" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/pintresLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="200dp"
+        android:layout_marginEnd="17dp"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/pintresText"
+            style="@android:style/TextAppearance.Material.Widget.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="3dp"
+            android:fontFamily="@font/amatic_sc"
+            android:text="Pintres"
+            android:textSize="17sp"
+            android:textStyle="bold"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/pintresBttn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="center"
+        app:backgroundTint="@android:color/white"
+        app:fabSize="mini"
+        app:srcCompat="@drawable/pintres" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/pinseisLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="165dp"
+        android:layout_marginEnd="17dp"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/pinseisText"
+            style="@android:style/TextAppearance.Material.Widget.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="3dp"
+            android:fontFamily="@font/amatic_sc"
+            android:text="Pinseis"
+            android:textSize="17sp"
+            android:textStyle="bold"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/pinseisBttn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="center"
+        app:backgroundTint="@android:color/white"
+        app:fabSize="mini"
+        app:srcCompat="@drawable/pinseis" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/pindosLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="130dp"
+        android:layout_marginEnd="17dp"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/pindosText"
+            style="@android:style/TextAppearance.Material.Widget.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="3dp"
+            android:fontFamily="@font/amatic_sc"
+            android:text="Pindos"
+            android:textSize="17sp"
+            android:textStyle="bold"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/pindosBttn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="center"
+        app:backgroundTint="@android:color/white"
+        app:fabSize="mini"
+        app:srcCompat="@drawable/pindos" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/pincuatroLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="95dp"
+        android:layout_marginEnd="17dp"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/pincuatroText"
+            style="@android:style/TextAppearance.Material.Widget.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="3dp"
+            android:fontFamily="@font/amatic_sc"
+            android:text="Pincuatro"
+            android:textSize="17sp"
+            android:textStyle="bold"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/pincuatroBttn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="center"
+        app:backgroundTint="@android:color/white"
+        app:fabSize="mini"
+        app:srcCompat="@drawable/pincuatro" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/pincincoLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="60dp"
+        android:layout_marginEnd="17dp"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/pincincoText"
+            style="@android:style/TextAppearance.Material.Widget.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="3dp"
+            android:fontFamily="@font/amatic_sc"
+            android:text="Pincinco"
+            android:textSize="17sp"
+            android:textStyle="bold"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/pincincoBttn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="center"
+        app:backgroundTint="@android:color/white"
+        app:fabSize="mini"
+        app:srcCompat="@drawable/pincinco" />
+
+    </LinearLayout>
+
 
     <!--<LinearLayout-->
         <!--android:layout_width="match_parent"-->
