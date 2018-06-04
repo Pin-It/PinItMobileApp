@@ -63,7 +63,7 @@ public class PinItAPI {
                         if (response.has(TOKEN_FIELD)) {
                             try {
                                 token = response.getString(TOKEN_FIELD);
-                                if (listener != null) listener.onSuccess();
+                                if (listener != null) listener.onSuccess(token);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 throw new RuntimeException(e);
