@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -56,6 +57,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_frame_work);
+
+        pincolor = R.drawable.pinuno;
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -114,7 +117,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 //                    }
 //
 //                    setAllPinsVisibility(true, visibilityText, bttn);
-                    showCommentDialogueBox();
+//                    showCommentDialogueBox();
 
                 }
             });
@@ -212,13 +215,15 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
         }
-
+        Log.d("MapReady", "ready");
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
                 lstLatLng.add(point);
+                Log.d("MapReady", "click");
                 MarkerOptions markerOptions = new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(pincolor));
                 googleMap.addMarker(markerOptions);
+                showCommentDialogueBox();
             }
         });
 
@@ -228,7 +233,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
                 startActivity(intent);
                 finish();
-
+                showCommentDialogueBox();
                 return true;
             }
         });
