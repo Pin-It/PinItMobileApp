@@ -1,10 +1,13 @@
 package com.pinit.pinitmobileapp;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.mapbox.android.core.location.LocationEngine;
@@ -31,6 +34,8 @@ public class GeneralySafetyMapActivity extends AppCompatActivity implements Loca
     private LocationEngine locationEngine;
     private MapboxMap mapboxMap;
     private MapView mapView;
+    private Switch mSwitch;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +48,19 @@ public class GeneralySafetyMapActivity extends AppCompatActivity implements Loca
             public void onMapReady(MapboxMap mapboxMap) {
                 GeneralySafetyMapActivity.this.mapboxMap = mapboxMap;
                 enableLocation();
+            }
+        });
+
+        mSwitch = (Switch) findViewById(R.id.switching);
+        mSwitch.setChecked(true);
+        mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!mSwitch.isChecked()) {
+                    Intent newIntent = new Intent(GeneralySafetyMapActivity.this, MapsActivity.class);
+                    startActivity(newIntent);
+                    finish();
+                }
             }
         });
     }

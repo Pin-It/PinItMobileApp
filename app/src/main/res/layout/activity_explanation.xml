@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".ExplanationActivity">
+
+    <TextView
+        android:id="@+id/introTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/amatic_sc"
+        android:gravity="center"
+        android:text="Hello"
+        android:textColor="#fc6262"
+        android:layout_marginTop="10dp"
+        android:textSize="40sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/explainTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/amatic_sc"
+        android:gravity="center"
+        android:text="See anything unsafe? PinIt!"
+        android:textSize="25sp"
+        android:layout_below="@id/introTextView"/>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab1"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_width="119dp"
+        android:layout_height="124dp"
+        android:src="@drawable/pinmap"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/explainPinView"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/amatic_sc"
+        android:gravity="center"
+        android:text="Take me to the Pin Map"
+        android:textSize="15sp"
+        android:layout_below="@id/fab1"/>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab2"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_width="119dp"
+        android:layout_height="124dp"
+        android:src="@drawable/generalmap"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/explainGeneralView"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/amatic_sc"
+        android:gravity="center"
+        android:text="Show me the general safety of the area"
+        android:textSize="15sp"
+        android:layout_below="@id/fab2"/>
+</LinearLayout>
