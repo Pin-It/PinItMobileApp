@@ -161,7 +161,11 @@ public class JSONRequestBuilder<T> {
             listener.onReceive(future.get());
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
-            listener.onError(null);
+            if (e.getCause() instanceof ClientError) {
+                listener.onError(new VolleyError());
+            } else {
+                listener.onError(null);
+            }
         }
     }
 }

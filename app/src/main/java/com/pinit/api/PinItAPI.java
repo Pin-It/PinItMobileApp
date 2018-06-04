@@ -76,7 +76,13 @@ public class PinItAPI {
 
                     @Override
                     public void onError(VolleyError error) {
-                        if (listener != null) listener.onNetworkError(error);
+                        if (listener != null) {
+                            if (error != null) {
+                                listener.onCredentialsError();
+                            } else {
+                                listener.onNetworkError(error);
+                            }
+                        }
                     }
                 })
                 .send();
