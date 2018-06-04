@@ -20,17 +20,19 @@ public class PinItAPI {
     private static final String USERNAME_FIELD = "username";
     private static final String PASSWORD_FIELD = "password";
 
+    private RequestQueue requestQueue;
     private String token;
 
-    public PinItAPI() {
-        this(null);
+    public PinItAPI(RequestQueue requestQueue) {
+        this(requestQueue, null);
     }
 
-    public PinItAPI(String token) {
+    public PinItAPI(RequestQueue requestQueue, String token) {
+        this.requestQueue = requestQueue;
         this.token = token;
     }
 
-    public void login(RequestQueue requestQueue, String email, String password, final LoginListener listener) {
+    public void login(String email, String password, final LoginListener listener) {
         JSONObject json = new JSONObject();
         try {
             json.put(USERNAME_FIELD, email);
@@ -64,6 +66,10 @@ public class PinItAPI {
         });
     }
 
+    public void getAllPins(final NetworkListener<List<Pin>> listener) {
+        getAllPins(requestQueue, listener);
+    }
+
     /**
      * Gets a list of all pins from the server.
      * @param requestQueue Volley request queue
@@ -90,6 +96,14 @@ public class PinItAPI {
                 listener.onError(error);
             }
         });
+    }
+
+    public void uploadNewPin(Pin pin) {
+        uploadNewPin(requestQueue, pin);
+    }
+
+    public void uploadNewPin(Pin pin, NetworkListener<JSONObject> listener) {
+        uploadNewPin(requestQueue, pin, listener);
     }
 
     public static void uploadNewPin(RequestQueue requestQueue, Pin pin) {
