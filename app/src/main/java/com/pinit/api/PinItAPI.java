@@ -9,7 +9,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.pinit.api.JSONRequestBuilder.newJSONArrayRequest;
 import static com.pinit.api.JSONRequestBuilder.newJSONObjectRequest;
@@ -46,7 +48,7 @@ public class PinItAPI {
             throw new RuntimeException(e);
         }
 
-        newJSONObjectRequest(requestQueue)
+        getNewJSONObjectRequest()
                 .withMethod(Request.Method.POST)
                 .withURL(TOKEN_AUTH_URL)
                 .withJSONData(json)
@@ -56,36 +58,31 @@ public class PinItAPI {
                         if (response.has(TOKEN_FIELD)) {
                             try {
                                 token = response.getString(TOKEN_FIELD);
-                                listener.onSuccess();
+                                if (listener != null) listener.onSuccess();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 throw new RuntimeException(e);
                             }
                         } else {
                             // Wrong email/password combination
-                            listener.onCredentialsError();
+                            if (listener != null) listener.onCredentialsError();
                         }
                     }
 
                     @Override
                     public void onError(VolleyError error) {
-                        listener.onNetworkError(error);
+                        if (listener != null) listener.onNetworkError(error);
                     }
                 })
                 .send();
     }
 
-    public void getAllPins(final NetworkListener<List<Pin>> listener) {
-        getAllPins(requestQueue, listener);
-    }
-
     /**
      * Gets a list of all pins from the server.
-     * @param requestQueue Volley request queue
      * @param listener this listener is needed to return the result of the request (a list of pins)
      */
-    public static void getAllPins(RequestQueue requestQueue, final NetworkListener<List<Pin>> listener) {
-        newJSONArrayRequest(requestQueue)
+    public void getAllPins(final NetworkListener<List<Pin>> listener) {
+        getNewJSONArrayRequest()
                 .withMethod(Request.Method.GET)
                 .withURL(PINS_URL)
                 .withNetworkListener(new NetworkListener<JSONArray>() {
@@ -111,31 +108,38 @@ public class PinItAPI {
                 .send();
     }
 
-    public void uploadNewPin(Pin pin) {
-        uploadNewPin(requestQueue, pin);
-    }
-
-    public void uploadNewPin(Pin pin, NetworkListener<JSONObject> listener) {
-        uploadNewPin(requestQueue, pin, listener);
-    }
-
-    public static void uploadNewPin(RequestQueue requestQueue, Pin pin) {
-        uploadNewPin(requestQueue, pin, null);
-    }
-
     /**
      * Uploads a new pin to the server
-     * @param requestQueue Volley request queue
      * @param pin the pin to be uploaded
      * @param listener (optional) listener for the result of the POST request
      */
-    public static void uploadNewPin(RequestQueue requestQueue, Pin pin, NetworkListener<JSONObject> listener) {
-        newJSONObjectRequest(requestQueue)
+    public void uploadNewPin(Pin pin, NetworkListener<JSONObject> listener) {
+        getNewJSONObjectRequest()
                 .withMethod(Request.Method.POST)
                 .withURL(PINS_URL)
                 .withJSONData(pin.toJSONObject())
                 .withNetworkListener(listener)
                 .send();
+    }
+
+    public void uploadNewPin(Pin pin) {
+        uploadNewPin(pin, null);
+    }
+
+    private JSONRequestBuilder<JSONObject> getNewJSONObjectRequest() {
+        return newJSONObjectRequest(requestQueue).withHeaders(getHeaders());
+    }
+
+    private JSONRequestBuilder<JSONArray> getNewJSONArrayRequest() {
+        return newJSONArrayRequest(requestQueue).withHeaders(getHeaders());
+    }
+
+    private Map<String, String> getHeaders() {
+        Map<String, String> headers = new HashMap<>();
+        if (token != null) {
+            headers.put("Authorization", "Token " + token);
+        }
+        return headers;
     }
 
     public String getToken() {

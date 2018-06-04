@@ -1,9 +1,6 @@
 package com.pinit.api;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
+import com.android.volley.*;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONArray;
@@ -96,14 +93,29 @@ public class JSONRequestBuilder<T> {
     @SuppressWarnings("unchecked")
     private void sendJSONObjectRequest() {
         Response.Listener<JSONObject> jsonObjectListener = (Response.Listener<JSONObject>) responseListener;
-        JsonObjectRequest request = new JsonObjectRequest(method, url, (JSONObject) jsonData, jsonObjectListener, errorListener);
+        JsonObjectRequest request = new JsonObjectRequest(method, url, (JSONObject) jsonData, jsonObjectListener, errorListener) {
+            @Override
+            public Map<String, String> getHeaders() {
+                return headers;
+            }
+        };
+        try {
+            System.out.println(request.getHeaders());
+        } catch (AuthFailureError authFailureError) {
+            authFailureError.printStackTrace();
+        }
         requestQueue.add(request);
     }
 
     @SuppressWarnings("unchecked")
     private void sendJSONArrayRequest() {
         Response.Listener<JSONArray> jsonArrayListener = (Response.Listener<JSONArray>) responseListener;
-        JsonArrayRequest request = new JsonArrayRequest(method, url, (JSONArray) jsonData, jsonArrayListener, errorListener);
+        JsonArrayRequest request = new JsonArrayRequest(method, url, (JSONArray) jsonData, jsonArrayListener, errorListener) {
+            @Override
+            public Map<String, String> getHeaders() {
+                return headers;
+            }
+        };
         requestQueue.add(request);
     }
 }
