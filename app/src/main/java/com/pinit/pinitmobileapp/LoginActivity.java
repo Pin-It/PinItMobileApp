@@ -21,16 +21,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.text.method.PasswordTransformationMethod;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.*;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+import com.pinit.api.LoginListener;
+import com.pinit.api.PinItAPI;
 
 
 import java.util.ArrayList;
@@ -101,9 +100,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
                 attemptLogin();
-                intent = new Intent(LoginActivity.this, ExplanationActivity.class);
-                startActivity(intent);
-                finish();
             }
         });
 
@@ -200,8 +196,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
         }
@@ -209,10 +205,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
         }
@@ -228,16 +220,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
-    }
-
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
     }
 
     /**
@@ -334,10 +316,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<Void, Void, Void> {
 
         private final String mEmail;
         private final String mPassword;
+        private String mToken = null;
+        private boolean mNetworkError = false;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
@@ -345,36 +329,40 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
+        protected Void doInBackground(Void... params) {
+            PinItAPI api = new PinItAPI(Volley.newRequestQueue(getApplicationContext()));
+            api.login(mEmail, mPassword, true, new LoginListener() {
+                @Override
+                public void onSuccess(String token) {
+                    mToken = token;
                 }
-            }
 
-            // TODO: register the new account here.
-            return true;
+                @Override
+                public void onNetworkError(VolleyError error) {
+                    mNetworkError = true;
+                }
+
+                @Override
+                public void onCredentialsError() {
+                }
+            });
+            return null;
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(Void v) {
             mAuthTask = null;
             showProgress(false);
 
-            if (success) {
+            if (mToken != null) {
+                intent = new Intent(LoginActivity.this, ExplanationActivity.class);
+                intent.putExtra(MapsActivity.USER_TOKEN, mToken);
+                startActivity(intent);
                 finish();
+            } else if (mNetworkError) {
+                Toast.makeText(LoginActivity.this, "Network error: try again", Toast.LENGTH_LONG).show();
             } else {
+                // Credentials error
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }

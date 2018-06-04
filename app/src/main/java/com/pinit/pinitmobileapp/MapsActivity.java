@@ -25,6 +25,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -34,6 +37,10 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.pinit.api.NetworkListener;
+import com.pinit.api.PinItAPI;
+import com.pinit.api.models.Pin;
+import org.json.JSONObject;
 
 import org.w3c.dom.Text;
 
@@ -46,6 +53,8 @@ import java.util.Objects;
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
 
+    public static final String USER_TOKEN = "userToken";
+
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean mPermissionDenied = false;
     private GoogleMap mMap;
@@ -55,7 +64,11 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public List<ImageButton> imgButtonList = new ArrayList<>();
     private Map<FloatingActionButton, TextView> pinsToText = new HashMap<>();
     FloatingActionButton pinsMenu, pincinco, pincuatro, pindos, pinseis, pintres, pinuno;
-    int pincolor;
+    int pincolor = -1;
+    Pin.Type pinType;
+
+    private List<Pin> allPins = new ArrayList<>();
+    private PinItAPI api;
 
 
     @Override
@@ -63,6 +76,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_frame_work);
 
+        String token = getIntent().getExtras().getString(USER_TOKEN);
+        api = new PinItAPI(Volley.newRequestQueue(this), token);
+  
         pincolor = R.drawable.pinuno;
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -103,16 +119,22 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
                     if (bttn.equals((FloatingActionButton) findViewById(R.id.pinunoBttn))) {
                         pincolor = R.drawable.pinuno;
+                        pinType = Pin.Type.PICKPOCKET;
                     } else if (bttn.getId() == R.id.pindosBttn) {
                         pincolor = R.drawable.pindos;
+                        pinType = Pin.Type.DRUNK;
                     } else if (bttn.equals((FloatingActionButton) findViewById(R.id.pintresBttn))) {
                         pincolor = R.drawable.pintres;
+                        pinType = Pin.Type.ROBBERY;
                     } else if (bttn.equals((FloatingActionButton) findViewById(R.id.pincuatroBttn))) {
                         pincolor = R.drawable.pincuatro;
+                        pinType = Pin.Type.SCAM;
                     } else if (bttn.equals((FloatingActionButton) findViewById(R.id.pincincoBttn))) {
                         pincolor = R.drawable.pincinco;
+                        pinType = Pin.Type.HARASSMENT;
                     } else {
                         pincolor = R.drawable.pinseis;
+                        pinType = Pin.Type.OTHERS;
                     }
 
 //                    boolean visibilityText = true;
@@ -234,12 +256,60 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         Log.d("MapReady", "ready");
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
-            public void onMapClick(LatLng point) {
+            public void onMapClick(final LatLng point) {
+                if (pincolor == -1) return;
                 lstLatLng.add(point);
-                Log.d("MapReady", "click");
-                MarkerOptions markerOptions = new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(pincolor));
-                googleMap.addMarker(markerOptions);
-                showCommentDialogueBox();
+                Pin pin = new Pin(pinType, point.latitude, point.longitude);
+                api.uploadNewPin(pin, new NetworkListener<JSONObject>() {
+                    @Override
+                    public void onReceive(JSONObject response) {
+                        mMap.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(pincolor)).title("Newly added"));
+                        showCommentDialogueBox();
+                    }
+
+                    @Override
+                    public void onError(VolleyError error) {
+                        Toast.makeText(getApplication(), "You're not logged in :(", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
+
+        api.getAllPins(new NetworkListener<List<Pin>>() {
+            @Override
+            public void onReceive(List<Pin> pins) {
+                allPins = pins;
+                for (Pin pin : allPins) {
+                    LatLng point = new LatLng(pin.getLatitude(), pin.getLongitude());
+                    Pin.Type type = pin.getType();
+                    int color;
+                    switch (type.toInt()) {
+                        case 1:
+                            color = R.drawable.pinuno;
+                            break;
+                        case 2:
+                            color = R.drawable.pindos;
+                            break;
+                        case 3:
+                            color = R.drawable.pintres;
+                            break;
+                        case 4:
+                            color = R.drawable.pincuatro;
+                            break;
+                        case 5:
+                            color = R.drawable.pincinco;
+                            break;
+                        default:
+                            color = R.drawable.pinseis;
+                            break;
+                    }
+                    mMap.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(color)).title(type.toString()));
+                }
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+
             }
         });
 
