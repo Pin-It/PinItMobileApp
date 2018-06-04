@@ -27,13 +27,13 @@ public class ExplanationActivity extends AppCompatActivity {
             }
         });
 
-//        fabdos.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent secIntent = new Intent(ExplanationActivity.this, GeneralySafetyMapActivity.class);
-//                startActivity(secIntent);
-//                finish();
-//            }
-//        });
+        fabdos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent secIntent = new Intent(ExplanationActivity.this, GeneralySafetyMapActivity.class);
+                startActivity(secIntent);
+                finish();
+            }
+        });
     }
 }

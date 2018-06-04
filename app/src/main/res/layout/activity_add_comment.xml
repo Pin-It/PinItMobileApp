@@ -39,6 +39,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="390dp"
         android:layout_centerHorizontal="true">
+
         <Button
             android:id="@+id/skip_comment"
             android:layout_width="150dp"
