@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.pinit.api.NetworkListener;
 import com.pinit.api.PinItAPI;
 import com.pinit.api.models.Pin;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,17 +44,18 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     public List<ImageButton> imgButtonList = new ArrayList<>();
 
-    RequestQueue requestQueue = null;
-
     int pincolor = -1;
     Pin.Type pinType;
 
     private List<Pin> allPins = new ArrayList<>();
+    private PinItAPI api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_frame_work);
+
+        api = new PinItAPI(Volley.newRequestQueue(this));
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -122,20 +124,27 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         mMap.setOnMyLocationClickListener(this);
         enableMyLocation();
 
-        if (requestQueue == null) requestQueue = Volley.newRequestQueue(this);
-
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
-            public void onMapClick(LatLng point) {
+            public void onMapClick(final LatLng point) {
                 if (pincolor == -1) return;
                 lstLatLng.add(point);
                 Pin pin = new Pin(pinType, point.latitude, point.longitude);
-                PinItAPI.uploadNewPin(requestQueue, pin);
-                googleMap.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(pincolor)).title("Other").snippet("Dangerous to cross Exhibition Road"));
+                api.uploadNewPin(pin, new NetworkListener<JSONObject>() {
+                    @Override
+                    public void onReceive(JSONObject response) {
+                        mMap.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(pincolor)).title("Newly added"));
+                    }
+
+                    @Override
+                    public void onError(VolleyError error) {
+                        Toast.makeText(getApplication(), "You're not logged in :(", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
 
-        PinItAPI.getAllPins(requestQueue, new NetworkListener<List<Pin>>() {
+        api.getAllPins(new NetworkListener<List<Pin>>() {
             @Override
             public void onReceive(List<Pin> pins) {
                 allPins = pins;
