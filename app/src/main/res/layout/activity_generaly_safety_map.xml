@@ -14,4 +14,5 @@
         mapbox:mapbox_styleUrl="mapbox://styles/yoonkim97/cjhuwgvyg018o2qnff15k76ky"
         mapbox:mapbox_cameraZoom="11"
         />
+
 </RelativeLayout>

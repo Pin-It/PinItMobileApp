@@ -232,8 +232,6 @@
         app:srcCompat="@drawable/pincinco" />
 
     </LinearLayout>
-
-
     <!--<LinearLayout-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="wrap_content"-->
@@ -258,6 +256,14 @@
 
     <!--</LinearLayout>-->
 
+    <Switch
+        android:id="@+id/switch_maps"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/pincincoLayout"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="-60dp"/>
 </RelativeLayout>
 
 

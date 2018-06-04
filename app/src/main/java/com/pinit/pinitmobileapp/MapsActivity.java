@@ -13,7 +13,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
@@ -41,6 +44,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private boolean mPermissionDenied = false;
     private GoogleMap mMap;
     private List<LatLng> lstLatLng = new ArrayList<LatLng>();
+    private Switch mSwitch;
 
     public List<ImageButton> imgButtonList = new ArrayList<>();
 //    private List<FloatingActionButton> floatButtonList = new ArrayList<>();
@@ -116,7 +120,18 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             });
         }
 
-
+        mSwitch = (Switch) findViewById(R.id.switch_maps);
+        mSwitch.setChecked(true);
+        mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!mSwitch.isChecked()) {
+                    Intent newIntent = new Intent(MapsActivity.this, GeneralySafetyMapActivity.class);
+                    startActivity(newIntent);
+                    finish();
+                }
+            }
+        });
     }
 
     private void setAllPinsVisibility(boolean pin, boolean text, FloatingActionButton bttn) {
