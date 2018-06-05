@@ -20,13 +20,9 @@ import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -37,18 +33,16 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.pinit.api.errors.APIError;
 import com.pinit.api.NetworkListener;
 import com.pinit.api.PinItAPI;
 import com.pinit.api.models.Pin;
 import org.json.JSONObject;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
@@ -272,7 +266,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     }
 
                     @Override
-                    public void onError(VolleyError error) {
+                    public void onError(APIError error) {
                         Toast.makeText(getApplication(), "You're not logged in :(", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -312,7 +306,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
 
             @Override
-            public void onError(VolleyError error) {
+            public void onError(APIError error) {
 
             }
         });

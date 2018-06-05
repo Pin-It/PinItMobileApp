@@ -1,11 +1,11 @@
 package com.pinit.api;
 
-import com.android.volley.VolleyError;
+import com.pinit.api.errors.APIError;
 
 public interface LoginListener {
     void onSuccess(String token);
 
-    void onNetworkError(VolleyError error);
+    void onNetworkError(APIError error);
 
     void onCredentialsError();
 }
