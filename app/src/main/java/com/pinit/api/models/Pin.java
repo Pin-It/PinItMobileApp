@@ -11,7 +11,7 @@ public class Pin implements Model {
     private static final String KEY_LATITUDE = "latitude";
     private static final String KEY_LONGITUDE = "longitude";
 
-    private int id = -1;
+    private int id;
     private Type type;
     private double latitude;
     private double longitude;
@@ -33,6 +33,7 @@ public class Pin implements Model {
     }
 
     public Pin(Type type, double latitude, double longitude) {
+        this.id = -1;
         this.type = type;
         this.latitude = latitude;
         this.longitude = longitude;
