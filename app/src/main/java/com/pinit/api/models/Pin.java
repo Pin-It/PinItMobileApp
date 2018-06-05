@@ -39,18 +39,6 @@ public class Pin implements Model {
         this.longitude = longitude;
     }
 
-    public Type getType() {
-        return type;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
     @Override
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
@@ -72,6 +60,18 @@ public class Pin implements Model {
 
     public int getId() {
         return id;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     public enum Type {
