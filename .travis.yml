@@ -30,7 +30,6 @@ android:
   - google-gdk-license-.+
 script:
 - "./gradlew build check"
-- "./gradlew test"
 deploy:
   provider: releases
   api_key: "$GITHUB_KEY"
