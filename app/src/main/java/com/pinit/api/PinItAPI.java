@@ -166,6 +166,15 @@ public class PinItAPI {
                 .send();
     }
 
+    public void uploadNewComment(Comment comment, NetworkListener<JSONObject> listener) {
+        getNewJSONObjectRequest()
+                .withMethod(Request.Method.POST)
+                .withURL(COMMENTS_URL)
+                .withJSONData(comment.toJSONObject())
+                .withNetworkListener(listener)
+                .send();
+    }
+
     private JSONRequestBuilder<JSONObject> getNewJSONObjectRequest() {
         return newJSONObjectRequest(requestQueue).withHeaders(getHeaders());
     }

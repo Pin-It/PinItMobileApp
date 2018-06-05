@@ -24,6 +24,10 @@ public class Comment implements Model {
         }
     }
 
+    public Comment(Pin pin, String text) {
+        this(pin.getId(), text);
+    }
+
     public Comment(int pinId, String text) {
         this.pinId = pinId;
         this.text = text;

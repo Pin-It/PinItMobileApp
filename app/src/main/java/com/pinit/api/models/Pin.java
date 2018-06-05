@@ -70,6 +70,10 @@ public class Pin implements Model {
         return type.toString() + "@(" + latitude + ", " + longitude + ")";
     }
 
+    public int getId() {
+        return id;
+    }
+
     public enum Type {
         PICKPOCKET, DRUNK, ROBBERY, SCAM, HARASSMENT, OTHERS;
 
