@@ -43,5 +43,5 @@ deploy:
     repo: Pin-It/PinItMobileApp
     branch: master
     tags: true
-before_install:
+before_deploy:
 - openssl enc -aes-256-cbc -d -in keystore.jks.enc -out keystore.jks -base64 -K $TRAVIS_KEY -iv $TRAVIS_IV
