@@ -1,9 +1,9 @@
 package com.pinit.api;
 
-import com.android.volley.VolleyError;
+import com.pinit.api.errors.APIError;
 
 public interface NetworkListener<T> {
     void onReceive(T response);
 
-    void onError(VolleyError error);
+    void onError(APIError error);
 }

@@ -4,6 +4,8 @@ import com.android.volley.*;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
+import com.pinit.api.errors.APIError;
+import com.pinit.api.errors.UnknownError;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -37,7 +39,9 @@ public class JSONRequestBuilder<T> {
         errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (listener != null) listener.onError(error);
+                if (listener != null) {
+                    listener.onError(APIError.fromVolleyError(error));
+                }
             }
         };
     }
@@ -161,10 +165,11 @@ public class JSONRequestBuilder<T> {
             listener.onReceive(future.get());
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
-            if (e.getCause() instanceof ClientError) {
-                listener.onError(new VolleyError());
+            if (e.getCause() instanceof VolleyError) {
+                VolleyError volleyError = (VolleyError) e.getCause();
+                listener.onError(APIError.fromVolleyError(volleyError));
             } else {
-                listener.onError(null);
+                listener.onError(new UnknownError(e.getMessage()));
             }
         }
     }

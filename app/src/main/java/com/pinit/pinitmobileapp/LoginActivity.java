@@ -26,16 +26,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.pinit.api.errors.APIError;
 import com.pinit.api.LoginListener;
 import com.pinit.api.PinItAPI;
 
 
 import java.util.ArrayList;
 import java.util.List;
-
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -338,7 +336,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
 
                 @Override
-                public void onNetworkError(VolleyError error) {
+                public void onNetworkError(APIError error) {
                     mNetworkError = true;
                 }
 

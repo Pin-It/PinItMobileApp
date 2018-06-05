@@ -2,7 +2,7 @@ package com.pinit.api;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
+import com.pinit.api.errors.APIError;
 import com.pinit.api.models.Comment;
 import com.pinit.api.models.Pin;
 import org.json.JSONArray;
@@ -77,7 +77,7 @@ public class PinItAPI {
                     }
 
                     @Override
-                    public void onError(VolleyError error) {
+                    public void onError(APIError error) {
                         if (listener != null) {
                             if (error != null) {
                                 listener.onCredentialsError();
@@ -114,7 +114,7 @@ public class PinItAPI {
                     }
 
                     @Override
-                    public void onError(VolleyError error) {
+                    public void onError(APIError error) {
                         listener.onError(error);
                     }
                 })
@@ -163,7 +163,7 @@ public class PinItAPI {
                     }
 
                     @Override
-                    public void onError(VolleyError error) {
+                    public void onError(APIError error) {
                         listener.onError(error);
                     }
                 })
