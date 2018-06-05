@@ -1,6 +1,5 @@
 package com.pinit.api.models;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -9,21 +8,16 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-public class PinTest {
+public class CommentTest {
     @Test
     public void canConstructWithJSONObject() throws JSONException {
         JSONObject json = new JSONObject();
-        json.put("id", 10);
-        json.put("pin_type", 1);
-        json.put("latitude", 123.456);
-        json.put("longitude", 0.65432);
-        json.put("comments", new JSONArray(new String[] {"comment 1", "comment 2"}));
+        json.put("pin", 10);
+        json.put("text", "test comment");
 
-        Pin pin = new Pin(json);
-        assertThat(pin.getId(), is(10));
-        assertThat(pin.getType(), is(Pin.Type.PICKPOCKET));
-        assertThat(pin.getLatitude(), is(123.456));
-        assertThat(pin.getLongitude(), is(0.65432));
+        Comment comment = new Comment(json);
+        assertThat(comment.getPinId(), is(10));
+        assertThat(comment.getText(), is("test comment"));
     }
 
     @Test
