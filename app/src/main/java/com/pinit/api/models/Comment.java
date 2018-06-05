@@ -17,6 +17,7 @@ public class Comment implements Model {
         }
 
         try {
+            this.pinId = json.getInt(KEY_PIN_ID);
             this.text = json.getString(KEY_TEXT);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -48,5 +49,13 @@ public class Comment implements Model {
     @Override
     public String toString() {
         return "Comment on Pin " + pinId + ": " + text;
+    }
+
+    public int getPinId() {
+        return pinId;
+    }
+
+    public String getText() {
+        return text;
     }
 }
