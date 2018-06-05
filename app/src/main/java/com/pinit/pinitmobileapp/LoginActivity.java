@@ -337,6 +337,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 @Override
                 public void onNetworkError(APIError error) {
+                    error.printStackTrace();
                     mNetworkError = true;
                 }
 

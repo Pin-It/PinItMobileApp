@@ -3,6 +3,7 @@ package com.pinit.api;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.pinit.api.errors.APIError;
+import com.pinit.api.errors.BadRequestError;
 import com.pinit.api.models.Comment;
 import com.pinit.api.models.Pin;
 import org.json.JSONArray;
@@ -79,7 +80,7 @@ public class PinItAPI {
                     @Override
                     public void onError(APIError error) {
                         if (listener != null) {
-                            if (error != null) {
+                            if (error instanceof BadRequestError) {
                                 listener.onCredentialsError();
                             } else {
                                 listener.onNetworkError(error);
