@@ -6,10 +6,12 @@ import org.json.JSONObject;
 public class Pin implements Model {
     public static final String API_ENDPOINT = "pins";
 
+    private static final String KEY_ID = "id";
     private static final String KEY_TYPE = "pin_type";
     private static final String KEY_LATITUDE = "latitude";
     private static final String KEY_LONGITUDE = "longitude";
 
+    private int id = -1;
     private Type type;
     private double latitude;
     private double longitude;
@@ -20,6 +22,7 @@ public class Pin implements Model {
         }
 
         try {
+            this.id = json.getInt(KEY_ID);
             this.type = Type.fromInt(json.getInt(KEY_TYPE));
             this.latitude = json.getDouble(KEY_LATITUDE);
             this.longitude = json.getDouble(KEY_LONGITUDE);
@@ -51,6 +54,7 @@ public class Pin implements Model {
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
         try {
+            if (id > -1) json.put(KEY_ID, this.id);
             json.put(KEY_TYPE, this.type.toInt());
             json.put(KEY_LATITUDE, this.latitude);
             json.put(KEY_LONGITUDE, this.longitude);
