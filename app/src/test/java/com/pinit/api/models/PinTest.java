@@ -1,5 +1,6 @@
 package com.pinit.api.models;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -16,6 +17,7 @@ public class PinTest {
         json.put("pin_type", 1);
         json.put("latitude", 123.456);
         json.put("longitude", 0.65432);
+        json.put("comments", new JSONArray(new String[] {"comment 1", "comment 2"}));
 
         Pin pin = new Pin(json);
         assertThat(pin.getId(), is(10));
