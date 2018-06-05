@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -59,12 +60,15 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private boolean mPermissionDenied = false;
     private GoogleMap mMap;
     private List<LatLng> lstLatLng = new ArrayList<LatLng>();
-    private Switch mSwitch;
+    private SwitchCompat mSwitch;
+    private SwitchCompat pSwitch;
 
     public List<ImageButton> imgButtonList = new ArrayList<>();
     private Map<FloatingActionButton, TextView> pinsToText = new HashMap<>();
     FloatingActionButton pinsMenu, pincinco, pincuatro, pindos, pinseis, pintres, pinuno;
+    FloatingActionButton shapePinsMenu, circlepin, extraflagpin, flagpin, starpin, wallpin, checkpin;
     int pincolor = -1;
+    int pinshape = -1;
     Pin.Type pinType;
 
     private List<Pin> allPins = new ArrayList<>();
@@ -84,12 +88,35 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         api = new PinItAPI(Volley.newRequestQueue(this), token);
   
         pincolor = R.drawable.pinuno;
+        pinshape = R.drawable.circlepin;
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        mSwitch = (SwitchCompat) findViewById(R.id.switch_maps);
+        mSwitch.setChecked(true);
+        mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!mSwitch.isChecked()) {
+                    Intent newIntent = new Intent(MapsActivity.this, GeneralySafetyMapActivity.class);
+                    startActivity(newIntent);
+                    finish();
+                }
+            }
+        });
+
+        pSwitch = (SwitchCompat) findViewById(R.id.switch_pins);
+        if(pSwitch.isChecked()) {
+            colorPinMode();
+        } else {
+            shapePinMode();
+        }
+    }
+
+    private void colorPinMode() {
         pinsMenu = (FloatingActionButton) findViewById(R.id.pinListBttn);
         pinsToText.put((FloatingActionButton) findViewById(R.id.pincincoBttn), (TextView) findViewById(R.id.pincincoText));
         pinsToText.put((FloatingActionButton) findViewById(R.id.pincuatroBttn), (TextView) findViewById(R.id.pincuatroText));
@@ -140,34 +167,66 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                         pincolor = R.drawable.pinseis;
                         pinType = Pin.Type.OTHERS;
                     }
-
-//                    boolean visibilityText = true;
-//
-//                    if (isTextVisibile(bttn)) {
-//                        visibilityText = false;
-//                    }
-//
-//                    setAllPinsVisibility(true, visibilityText, bttn);
-//                    showCommentDialogueBox();
-
                 }
             });
         }
+    }
 
-        mSwitch = (Switch) findViewById(R.id.switch_maps);
-        mSwitch.setChecked(true);
-        mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    private void shapePinMode() {
+        shapePinsMenu = (FloatingActionButton) findViewById(R.id.switchPinButton);
+        pinsToText.put((FloatingActionButton) findViewById(R.id.circlePinBttn), (TextView) findViewById(R.id.circlePinText));
+        pinsToText.put((FloatingActionButton) findViewById(R.id.checkPinBttn), (TextView) findViewById(R.id.checkPinText));
+        pinsToText.put((FloatingActionButton) findViewById(R.id.extraFlagPinBttn), (TextView) findViewById(R.id.extraFlagPinText));
+        pinsToText.put((FloatingActionButton) findViewById(R.id.flagPinBttn), (TextView) findViewById(R.id.flagPinText));
+        pinsToText.put((FloatingActionButton) findViewById(R.id.starPinBttn), (TextView) findViewById(R.id.starPinText));
+        pinsToText.put((FloatingActionButton) findViewById(R.id.wallPinBttn), (TextView) findViewById(R.id.wallPinText));
+
+
+        setAllPinsVisibility(false, false, null);
+        final TextView purpletext = (TextView) findViewById(R.id.circlePinText);
+        purpletext.setVisibility(View.GONE);
+
+        shapePinsMenu.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!mSwitch.isChecked()) {
-                    Intent newIntent = new Intent(MapsActivity.this, GeneralySafetyMapActivity.class);
-                    startActivity(newIntent);
-                    finish();
+            public void onClick(View v) {
+                if(isPinsVisible()) {
+                    setAllPinsVisibility(false, false, null);
+                    shapePinsMenu.setImageResource(R.drawable.wallpin);
+                } else {
+                    setAllPinsVisibility(true, true, null);
+                    shapePinsMenu.setImageResource(R.drawable.cancel);
                 }
             }
         });
-    }
 
+        for (final FloatingActionButton bttn : pinsToText.keySet()) {
+            bttn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (bttn.equals((FloatingActionButton) findViewById(R.id.circlePinBttn))) {
+                        pincolor = R.drawable.circlepin;
+                        pinType = Pin.Type.PICKPOCKET;
+                    } else if (bttn.getId() == R.id.checkPinBttn) {
+                        pincolor = R.drawable.checkpin;
+                        pinType = Pin.Type.DRUNK;
+                    } else if (bttn.equals((FloatingActionButton) findViewById(R.id.extraFlagPinBttn))) {
+                        pincolor = R.drawable.extraflagpin;
+                        pinType = Pin.Type.ROBBERY;
+                    } else if (bttn.equals((FloatingActionButton) findViewById(R.id.flagPinBttn))) {
+                        pincolor = R.drawable.flagpin;
+                        pinType = Pin.Type.SCAM;
+                    } else if (bttn.equals((FloatingActionButton) findViewById(R.id.starPinBttn))) {
+                        pincolor = R.drawable.starpin;
+                        pinType = Pin.Type.HARASSMENT;
+                    } else {
+                        pincolor = R.drawable.wallpin;
+                        pinType = Pin.Type.OTHERS;
+                    }
+                }
+            });
+        }
+    }
     private void showCommentDialogueBox() {
         AlertDialog.Builder commentDialogueBuilder = new AlertDialog.Builder(MapsActivity.this);
         View commentView = getLayoutInflater().inflate(R.layout.activity_add_comment, null);
@@ -187,9 +246,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         });
 
         commentDialogue.show();
-
-
-
 
     }
 

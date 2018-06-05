@@ -6,6 +6,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -34,7 +35,7 @@ public class GeneralySafetyMapActivity extends AppCompatActivity implements Loca
     private LocationEngine locationEngine;
     private MapboxMap mapboxMap;
     private MapView mapView;
-    private Switch mSwitch;
+    private SwitchCompat mSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,7 @@ public class GeneralySafetyMapActivity extends AppCompatActivity implements Loca
             }
         });
 
-        mSwitch = (Switch) findViewById(R.id.switching);
+        mSwitch = (SwitchCompat) findViewById(R.id.switching);
         mSwitch.setChecked(true);
         mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
