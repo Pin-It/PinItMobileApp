@@ -139,6 +139,10 @@ public class PinItAPI {
         uploadNewPin(pin, null);
     }
 
+    /**
+     * Gets a list of all comments from the server
+     * @param listener this listener is needed to return the result of the request (a list of pins)
+     */
     public void getAllComments(final NetworkListener<List<Comment>> listener) {
         getNewJSONArrayRequest()
                 .withMethod(Request.Method.GET)
@@ -166,6 +170,11 @@ public class PinItAPI {
                 .send();
     }
 
+    /**
+     * Uploads a new pin to the server
+     * @param comment the comment to be uploaded
+     * @param listener (optional) listener for the result of the POST request
+     */
     public void uploadNewComment(Comment comment, NetworkListener<JSONObject> listener) {
         getNewJSONObjectRequest()
                 .withMethod(Request.Method.POST)
