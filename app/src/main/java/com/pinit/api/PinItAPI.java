@@ -3,6 +3,7 @@ package com.pinit.api;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
+import com.pinit.api.models.Comment;
 import com.pinit.api.models.Pin;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +21,7 @@ public class PinItAPI {
     private static final String BASE_URL = "https://pin-it-app.herokuapp.com/";
     private static final String API_URL = BASE_URL + "api/";
     private static final String PINS_URL = API_URL + Pin.API_ENDPOINT + "/";
+    private static final String COMMENTS_URL = API_URL + Comment.API_ENDPOINT + "/";
     private static final String TOKEN_AUTH_URL = BASE_URL + "api-token-auth/";
 
     private static final String TOKEN_FIELD = "token";
@@ -135,6 +137,33 @@ public class PinItAPI {
 
     public void uploadNewPin(Pin pin) {
         uploadNewPin(pin, null);
+    }
+
+    public void getAllComments(final NetworkListener<List<Comment>> listener) {
+        getNewJSONArrayRequest()
+                .withMethod(Request.Method.GET)
+                .withURL(COMMENTS_URL)
+                .withNetworkListener(new NetworkListener<JSONArray>() {
+                    @Override
+                    public void onReceive(JSONArray response) {
+                        List<Comment> comments = new ArrayList<>();
+                        try {
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject obj = response.getJSONObject(i);
+                                comments.add(new Comment(obj));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        listener.onReceive(comments);
+                    }
+
+                    @Override
+                    public void onError(VolleyError error) {
+                        listener.onError(error);
+                    }
+                })
+                .send();
     }
 
     private JSONRequestBuilder<JSONObject> getNewJSONObjectRequest() {
