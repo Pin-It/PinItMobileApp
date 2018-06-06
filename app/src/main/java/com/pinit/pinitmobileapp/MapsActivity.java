@@ -105,7 +105,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         colours.add(R.drawable.pinseis);
         colours.add(R.drawable.pintres);
 
-        icons.add(R.drawable.circle);
+        icons.add(R.drawable.circlepin);
         icons.add(R.drawable.checkpin);
         icons.add(R.drawable.extraflagpin);
         icons.add(R.drawable.flagpin);
@@ -115,6 +115,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         setAllPinsVisibility(false, null);
 
         mSwitch = (SwitchCompat) findViewById(R.id.switch_maps);
+
         mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -129,6 +130,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         });
 
         PinsMenu = (FloatingActionButton) findViewById(R.id.switchPinButton);
+        PinsMenu.setImageResource(R.drawable.wallpin);
 
         pSwitch = (SwitchCompat) findViewById(R.id.switch_pins);
         pSwitch.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
@@ -164,8 +166,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
         });
 
-        int i = 0;
-
         for (AppCompatButton bttn : pinsList) {
             bttn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -182,118 +182,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         this.currentMode = colour;
     }
 
-//    private void colorPinMode() {
-////        pinsMenu = (FloatingActionButton) findViewById(R.id.pinListBttn);
-////        pinsList.add((AppCompatButton) findViewById(R.id.pinunoBttn));
-////        pinsList.add((AppCompatButton) findViewById(R.id.pincincoBttn));
-////        pinsList.add((AppCompatButton) findViewById(R.id.pincuatroBttn));
-////        pinsList.add((AppCompatButton) findViewById(R.id.pindosBttn));
-////        pinsList.add((AppCompatButton) findViewById(R.id.pinseisBttn));
-////        pinsList.add((AppCompatButton) findViewById(R.id.pintresBttn));
-//
-//        setAllPinsVisibility(false, null);
-//        PinsMenu.setImageResource(R.drawable.pinuno);
-//        setAllPinsMode(PinMode.COLOUR);
-//
-//        PinsMenu.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if(isPinsVisible()) {
-//                    setAllPinsVisibility(false, null);
-//                    PinsMenu.setImageResource(R.drawable.pinuno);
-//                } else {
-//                    setAllPinsVisibility(true, null);
-//                    PinsMenu.setImageResource(R.drawable.cancel);
-//                }
-//            }
-//        });
-//
-//        for (final AppCompatButton bttn : pinsList) {
-//            bttn.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//                    if (bttn.getId() == R.id.pinunoBttn) {
-//                        pincolor = R.drawable.pinuno;
-//                        pinType = Pin.Type.PICKPOCKET;
-//                    } else if (bttn.getId() == R.id.pindosBttn) {
-//                        pincolor = R.drawable.pindos;
-//                        pinType = Pin.Type.DRUNK;
-//                    } else if (bttn.getId() == R.id.pintresBttn) {
-//                        pincolor = R.drawable.pintres;
-//                        pinType = Pin.Type.ROBBERY;
-//                    } else if (bttn.getId() == R.id.pincuatroBttn) {
-//                        pincolor = R.drawable.pincuatro;
-//                        pinType = Pin.Type.SCAM;
-//                    } else if (bttn.getId() == R.id.pincincoBttn) {
-//                        pincolor = R.drawable.pincinco;
-//                        pinType = Pin.Type.HARASSMENT;
-//                    } else {
-//                        pincolor = R.drawable.pinseis;
-//                        pinType = Pin.Type.OTHERS;
-//                    }
-//
-//                    setAllPinsVisibility(false, null);
-//                    PinsMenu.setImageResource(R.drawable.pinuno);
-//                }
-//            });
-//        }
-//    }
-//
-//    private void shapePinMode() {
-////        shapePinsMenu = (FloatingActionButton) findViewById(R.id.switchPinButton);
-////        pinsList.add((AppCompatButton) findViewById(R.id.circlePinBttn));
-////        pinsList.add((AppCompatButton) findViewById(R.id.checkPinBttn));
-////        pinsList.add((AppCompatButton) findViewById(R.id.extraFlagPinBttn));
-////        pinsList.add((AppCompatButton) findViewById(R.id.flagPinBttn));
-////        pinsList.add((AppCompatButton) findViewById(R.id.starPinBttn));
-////        pinsList.add((AppCompatButton) findViewById(R.id.wallPinBttn));
-//
-//        PinsMenu.setImageResource(R.drawable.pinuno);
-//        setAllPinsMode(PinMode.ICON);
-//        setAllPinsVisibility(false, null);
-//
-//        PinsMenu.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if(isPinsVisible()) {
-//                    setAllPinsVisibility(false,  null);
-//                    PinsMenu.setImageResource(R.drawable.wallpin);
-//                } else {
-//                    setAllPinsVisibility(true,  null);
-//                    PinsMenu.setImageResource(R.drawable.cancel);
-//                }
-//            }
-//        });
-//
-//        for (final AppCompatButton bttn : pinsList) {
-//            bttn.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//                    if (bttn.getId() == R.id.circlePinBttn) {
-//                        pincolor = R.drawable.circlepin;
-//                        pinType = Pin.Type.PICKPOCKET;
-//                    } else if (bttn.getId() == R.id.checkPinBttn) {
-//                        pincolor = R.drawable.checkpin;
-//                        pinType = Pin.Type.DRUNK;
-//                    } else if (bttn.getId() == R.id.extraFlagPinBttn) {
-//                        pincolor = R.drawable.extraflagpin;
-//                        pinType = Pin.Type.ROBBERY;
-//                    } else if (bttn.getId() == R.id.flagPinBttn) {
-//                        pincolor = R.drawable.flagpin;
-//                        pinType = Pin.Type.SCAM;
-//                    } else if (bttn.getId() == R.id.starPinBttn) {
-//                        pincolor = R.drawable.starpin;
-//                        pinType = Pin.Type.HARASSMENT;
-//                    } else {
-//                        pincolor = R.drawable.wallpin;
-//                        pinType = Pin.Type.OTHERS;
-//                    }
-//                }
-//            });
-//        }
-//    }
 
 //    private void showCommentDialogueBox() {
 //        AlertDialog.Builder commentDialogueBuilder = new AlertDialog.Builder(MapsActivity.this);
