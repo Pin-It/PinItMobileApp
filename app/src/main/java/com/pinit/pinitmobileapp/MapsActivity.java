@@ -72,6 +72,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     int pinshape = -1;
     private Pin.Type pinType = Pin.Type.OTHERS;
     public PinMode currentMode = PinMode.ICON;
+    private boolean pinChosen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +174,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     } else {
                         PinsMenu.setImageResource(R.drawable.pinuno);
                     }
+                    pinChosen = false;
                 } else {
                     setAllPinsVisibility(true,  null);
                     PinsMenu.setImageResource(R.drawable.cancel);
@@ -187,6 +189,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     List<Integer> list = currentMode == PinMode.COLOUR ? colours : icons;
                     pincolor = list.get(pinsList.indexOf((AppCompatButton) v));
                     pinType = Pin.Type.values()[pinsList.indexOf((AppCompatButton) v)];
+                    pinChosen = true;
                 }
             });
         }
@@ -287,6 +290,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             @Override
             public void onMapClick(final LatLng point) {
                 if (pincolor == -1) return;
+                if (!pinChosen) return;
                 lstLatLng.add(point);
                 Pin pin = new Pin(pinType, point.latitude, point.longitude);
                 api.uploadNewPin(pin, new NetworkListener<JSONObject>() {
