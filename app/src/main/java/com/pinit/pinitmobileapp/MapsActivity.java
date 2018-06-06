@@ -136,15 +136,27 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         pSwitch.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                int pinsMenuId = 0;
+
+                if (isPinsVisible()) {
+                    pinsMenuId = R.drawable.cancel;
+                }
+
                 if (compoundButton.isChecked()) {
                     setMode(PinMode.COLOUR);
                     setAllPinsMode(PinMode.COLOUR);
-                    PinsMenu.setImageResource(R.drawable.pinuno);
+                    if (!isPinsVisible()) {
+                        pinsMenuId = R.drawable.pinuno;
+                    }
                 } else {
                     setMode(PinMode.ICON);
                     setAllPinsMode(PinMode.ICON);
-                    PinsMenu.setImageResource(R.drawable.wallpin);
+                    if (!isPinsVisible()) {
+                        pinsMenuId = R.drawable.wallpin;
+                    }
                 }
+
+                PinsMenu.setImageResource(pinsMenuId);
             }
         });
 
