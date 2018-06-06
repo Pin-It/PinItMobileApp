@@ -3,7 +3,6 @@ package com.pinit.pinitmobileapp;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
@@ -14,7 +13,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
@@ -22,13 +20,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
-import com.android.volley.VolleyError;
-import android.widget.ImageButton;
-import android.widget.Switch;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,6 +33,7 @@ import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.pinit.api.errors.APIError;
 import com.pinit.api.NetworkListener;
 import com.pinit.api.PinItAPI;
+import com.pinit.api.models.Comment;
 import com.pinit.api.models.Pin;
 import org.json.JSONObject;
 
@@ -72,6 +66,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     int pinshape = -1;
     private Pin.Type pinType = Pin.Type.OTHERS;
     public PinMode currentMode = PinMode.ICON;
+    private boolean pinChosen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +149,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     if (!isPinsVisible()) {
                         pinsMenuId = R.drawable.pinuno;
                     }
+
                 } else {
                     setMode(PinMode.ICON);
                     setAllPinsMode(PinMode.ICON);
@@ -162,6 +158,10 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     }
                 }
 
+                for (Marker m : allMarkers) {
+                    Pin pin = (Pin) m.getTag();
+                    m.setIcon(BitmapDescriptorFactory.fromResource(pinTypeToResource(pin.getType())));
+                }
                 PinsMenu.setImageResource(pinsMenuId);
             }
         });
@@ -177,6 +177,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     } else {
                         PinsMenu.setImageResource(R.drawable.pinuno);
                     }
+                    pinChosen = false;
                 } else {
                     setAllPinsVisibility(true,  null);
                     PinsMenu.setImageResource(R.drawable.cancel);
@@ -191,6 +192,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     List<Integer> list = currentMode == PinMode.COLOUR ? colours : icons;
                     pincolor = list.get(pinsList.indexOf((AppCompatButton) v));
                     pinType = Pin.Type.values()[pinsList.indexOf((AppCompatButton) v)];
+                    pinChosen = true;
                 }
             });
         }
@@ -201,16 +203,19 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     }
 
 
-    private void showCommentDialogueBox() {
+    private void showCommentDialogueBox(final Pin pin) {
         AlertDialog.Builder commentDialogueBuilder = new AlertDialog.Builder(MapsActivity.this);
-        View commentView = getLayoutInflater().inflate(R.layout.activity_add_comment, null);
         LayoutInflater inflater = MapsActivity.this.getLayoutInflater();
+        View commentView = getLayoutInflater().inflate(R.layout.activity_add_comment, null);
         TextView commentDialogueBoxTitle = commentView.findViewById(R.id.addComment);
-        EditText commentInputText = commentView.findViewById(R.id.comment_text_input);
+        final EditText commentInputText = commentView.findViewById(R.id.comment_text_input);
         AppCompatButton submitButton = commentView.findViewById(R.id.submit_comment);
         AppCompatButton cancelButton = commentView.findViewById(R.id.cancel_button);
 
+        commentDialogueBuilder.setView(commentView);
         final AlertDialog commentDialogue = commentDialogueBuilder.create();
+        commentDialogue.show();
+        commentDialogue.getWindow().setLayout(1000,800);
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,9 +223,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 commentDialogue.dismiss();
             }
         });
-
-        commentDialogueBuilder.setView(commentView);
-        commentDialogue.show();
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String commentText = commentInputText.getText().toString();
+                Comment comment = new Comment(pin, commentText);
+                api.uploadNewComment(comment);
+            }
+        });
     }
 
 
@@ -286,19 +296,20 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
         }
-        Log.d("MapReady", "ready");
+
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(final LatLng point) {
                 if (pincolor == -1) return;
+                if (!pinChosen) return;
                 lstLatLng.add(point);
                 Pin pin = new Pin(pinType, point.latitude, point.longitude);
                 api.uploadNewPin(pin, new NetworkListener<JSONObject>() {
                     @Override
                     public void onReceive(JSONObject response) {
-                        addNewMarker(point, pincolor, "Newly added");
-//                        Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
-//                        startActivity(intent);
+                        Pin addedPin = new Pin(response);
+                        addNewMarker(addedPin);
+                        showCommentDialogueBox(addedPin);
                     }
 
                     @Override
@@ -306,7 +317,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                         Toast.makeText(getApplication(), "You're not logged in :(", Toast.LENGTH_LONG).show();
                     }
                 });
-                showCommentDialogueBox();
             }
         });
 
@@ -315,32 +325,10 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             public void onReceive(List<Pin> pins) {
                 allPins = pins;
                 for (Pin pin : allPins) {
-                    LatLng point = new LatLng(pin.getLatitude(), pin.getLongitude());
-                    Pin.Type type = pin.getType();
-                    int color;
-                    switch (type.toInt()) {
-                        case 1:
-                            color = R.drawable.pinuno;
-                            break;
-                        case 2:
-                            color = R.drawable.pindos;
-                            break;
-                        case 3:
-                            color = R.drawable.pintres;
-                            break;
-                        case 4:
-                            color = R.drawable.pincuatro;
-                            break;
-                        case 5:
-                            color = R.drawable.pincinco;
-                            break;
-                        default:
-                            color = R.drawable.pinseis;
-                            break;
-                    }
-                    addNewMarker(point, color, type.toString());
+                    addNewMarker(pin);
                 }
             }
+
 
             @Override
             public void onError(APIError error) {
@@ -352,8 +340,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             @Override
             public boolean onMarkerClick(Marker marker) {
                 Log.d("MapReady", "click");
-                Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
+//                startActivity(intent);
                 return true;
             }
         });
@@ -463,10 +451,19 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         return latLngs;
     }
 
-    private void addNewMarker(LatLng point, int color, String title) {
+    private void addNewMarker(Pin pin) {
+        LatLng point = new LatLng(pin.getLatitude(), pin.getLongitude());
+        String title = pin.getType().toString();
+        int color = pinTypeToResource(pin.getType());
         MarkerOptions options = new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(color)).title(title);
         Marker marker = mMap.addMarker(options);
+        marker.setTag(pin);
         allMarkers.add(marker);
+    }
+
+    private int pinTypeToResource(Pin.Type type) {
+        List<Integer> list = currentMode == PinMode.COLOUR ? colours : icons;
+        return list.get(type.ordinal());
     }
 
     private void hideAllPins() {
