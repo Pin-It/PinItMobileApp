@@ -3,7 +3,6 @@ package com.pinit.pinitmobileapp;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
@@ -14,7 +13,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
@@ -22,13 +20,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
-import com.android.volley.VolleyError;
-import android.widget.ImageButton;
-import android.widget.Switch;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -152,6 +145,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     if (!isPinsVisible()) {
                         pinsMenuId = R.drawable.pinuno;
                     }
+
                 } else {
                     setMode(PinMode.ICON);
                     setAllPinsMode(PinMode.ICON);
@@ -160,6 +154,10 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     }
                 }
 
+                for (Marker m : allMarkers) {
+                    Pin pin = (Pin) m.getTag();
+                    m.setIcon(BitmapDescriptorFactory.fromResource(pinTypeToResource(pin.getType())));
+                }
                 PinsMenu.setImageResource(pinsMenuId);
             }
         });
@@ -305,8 +303,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 api.uploadNewPin(pin, new NetworkListener<JSONObject>() {
                     @Override
                     public void onReceive(JSONObject response) {
-                        addNewMarker(point, pincolor, "Newly added");
                         Pin addedPin = new Pin(response);
+                        addNewMarker(addedPin);
                         showCommentDialogueBox(addedPin);
                     }
 
@@ -323,30 +321,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             public void onReceive(List<Pin> pins) {
                 allPins = pins;
                 for (Pin pin : allPins) {
-                    LatLng point = new LatLng(pin.getLatitude(), pin.getLongitude());
-                    Pin.Type type = pin.getType();
-                    int color;
-                    switch (type.toInt()) {
-                        case 1:
-                            color = R.drawable.pinuno;
-                            break;
-                        case 2:
-                            color = R.drawable.pindos;
-                            break;
-                        case 3:
-                            color = R.drawable.pintres;
-                            break;
-                        case 4:
-                            color = R.drawable.pincuatro;
-                            break;
-                        case 5:
-                            color = R.drawable.pincinco;
-                            break;
-                        default:
-                            color = R.drawable.pinseis;
-                            break;
-                    }
-                    addNewMarker(point, color, type.toString());
+                    addNewMarker(pin);
                 }
             }
 
@@ -472,10 +447,19 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         return latLngs;
     }
 
-    private void addNewMarker(LatLng point, int color, String title) {
+    private void addNewMarker(Pin pin) {
+        LatLng point = new LatLng(pin.getLatitude(), pin.getLongitude());
+        String title = pin.getType().toString();
+        int color = pinTypeToResource(pin.getType());
         MarkerOptions options = new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(color)).title(title);
         Marker marker = mMap.addMarker(options);
+        marker.setTag(pin);
         allMarkers.add(marker);
+    }
+
+    private int pinTypeToResource(Pin.Type type) {
+        List<Integer> list = currentMode == PinMode.COLOUR ? colours : icons;
+        return list.get(type.ordinal());
     }
 
     private void hideAllPins() {
