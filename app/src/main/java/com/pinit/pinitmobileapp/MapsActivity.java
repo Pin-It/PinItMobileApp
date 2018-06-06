@@ -58,6 +58,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     Pin.Type pinType;
 
     private List<Pin> allPins = new ArrayList<>();
+    private List<Marker> allMarkers = new ArrayList<>();
     private PinItAPI api;
 
 
@@ -150,8 +151,10 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (mSwitch.isChecked()) {
                     showHeatMap();
+                    hideAllPins();
                 } else {
                     hideHeatMap();
+                    showAllPins();
                 }
             }
         });
@@ -256,7 +259,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 api.uploadNewPin(pin, new NetworkListener<JSONObject>() {
                     @Override
                     public void onReceive(JSONObject response) {
-                        mMap.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(pincolor)).title("Newly added"));
+                        addNewMarker(point, pincolor, "Newly added");
                         showCommentDialogueBox();
                     }
 
@@ -296,7 +299,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             color = R.drawable.pinseis;
                             break;
                     }
-                    mMap.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(color)).title(type.toString()));
+                    addNewMarker(point, color, type.toString());
                 }
             }
 
@@ -415,5 +418,23 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             latLngs.add(new LatLng(pin.getLatitude(), pin.getLongitude()));
         }
         return latLngs;
+    }
+
+    private void addNewMarker(LatLng point, int color, String title) {
+        MarkerOptions options = new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(color)).title(title);
+        Marker marker = mMap.addMarker(options);
+        allMarkers.add(marker);
+    }
+
+    private void hideAllPins() {
+        for (Marker marker : allMarkers) {
+            marker.setVisible(false);
+        }
+    }
+
+    private void showAllPins() {
+        for (Marker marker : allMarkers) {
+            marker.setVisible(true);
+        }
     }
 }
