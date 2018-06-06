@@ -15,294 +15,164 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true" />
 
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/pinListBttn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:scaleType="center"
-        app:backgroundTint="@android:color/white"
-        app:fabSize="normal"
-        app:srcCompat="@drawable/pinuno" />
-
-    <LinearLayout
-        android:id="@+id/pinunoLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="235dp"
-        android:layout_marginEnd="17dp"
-        android:orientation="horizontal"
-        android:background="@drawable/rectangle"
-        android:paddingHorizontal="7dp"
-        android:elevation="2dp">
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/pinunoText"
-            style="@android:style/TextAppearance.Material.Widget.TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/amatic_sc"
-            android:layout_marginStart="3dp"
-            android:text="Pick Pocket"
-            android:textSize="17sp"
-            android:textStyle="bold"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/pinunoBttn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:scaleType="center"
-        android:layout_marginEnd="-4dp"
-        app:fabSize="mini"
-        app:srcCompat="@drawable/pinuno"
-        app:borderWidth="0dp"
-        android:elevation="0dp"
-        app:elevation="0dp"
-        android:backgroundTint="@android:color/white"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/pintresLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="200dp"
-        android:layout_marginEnd="17dp"
-        android:orientation="horizontal"
-        android:background="@drawable/rectangle"
-        android:paddingHorizontal="7dp"
-        android:elevation="2dp">
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/pintresText"
-            style="@android:style/TextAppearance.Material.Widget.TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:fontFamily="@font/amatic_sc"
-            android:text="Drunk"
-            android:textSize="17sp"
-            android:textStyle="bold"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/pintresBttn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:scaleType="center"
-        android:layout_marginEnd="-4dp"
-        app:backgroundTint="@android:color/white"
-        app:fabSize="mini"
-        app:borderWidth="0dp"
-        android:elevation="0dp"
-        app:elevation="0dp"
-        app:srcCompat="@drawable/pintres" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/pinseisLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="165dp"
-        android:layout_marginEnd="17dp"
-        android:orientation="horizontal"
-        android:background="@drawable/rectangle"
-        android:paddingHorizontal="7dp"
-        android:elevation="2dp">
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/pinseisText"
-            style="@android:style/TextAppearance.Material.Widget.TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:fontFamily="@font/amatic_sc"
-            android:text="Robbery"
-            android:textSize="17sp"
-            android:textStyle="bold"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/pinseisBttn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:scaleType="center"
-        android:layout_marginEnd="-4dp"
-        app:backgroundTint="@android:color/white"
-        app:fabSize="mini"
-        app:borderWidth="0dp"
-        android:elevation="0dp"
-        app:elevation="0dp"
-        app:srcCompat="@drawable/pinseis" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/pindosLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="130dp"
-        android:layout_marginEnd="17dp"
-        android:orientation="horizontal"
-        android:background="@drawable/rectangle"
-        android:paddingHorizontal="7dp"
-        android:elevation="2dp">
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/pindosText"
-            style="@android:style/TextAppearance.Material.Widget.TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:fontFamily="@font/amatic_sc"
-            android:text="Scam"
-            android:textSize="17sp"
-            android:textStyle="bold"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/pindosBttn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:scaleType="center"
-        android:layout_marginEnd="-4dp"
-        app:backgroundTint="@android:color/white"
-        app:fabSize="mini"
-        app:borderWidth="0dp"
-        android:elevation="0dp"
-        app:elevation="0dp"
-        app:srcCompat="@drawable/pindos" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/pincuatroLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="95dp"
-        android:layout_marginEnd="17dp"
-        android:orientation="horizontal"
-        android:background="@drawable/rectangle"
-        android:paddingHorizontal="7dp"
-        android:elevation="2dp">
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/pincuatroText"
-            style="@android:style/TextAppearance.Material.Widget.TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:fontFamily="@font/amatic_sc"
-            android:text="Harrassment"
-            android:textSize="17sp"
-            android:textStyle="bold"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/pincuatroBttn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:scaleType="center"
-        android:layout_marginEnd="-4dp"
-        app:backgroundTint="@android:color/white"
-        app:fabSize="mini"
-        app:borderWidth="0dp"
-        android:elevation="0dp"
-        app:elevation="0dp"
-        app:srcCompat="@drawable/pincuatro" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/pincincoLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="60dp"
-        android:layout_marginEnd="17dp"
-        android:orientation="horizontal"
-        android:background="@drawable/rectangle"
-        android:paddingHorizontal="7dp"
-        android:elevation="2dp">
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/pincincoText"
-            style="@android:style/TextAppearance.Material.Widget.TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:fontFamily="@font/amatic_sc"
-            android:text="Others"
-            android:textSize="17sp"
-            android:textStyle="bold"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/pincincoBttn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:scaleType="center"
-        android:layout_marginEnd="-4dp"
-        app:backgroundTint="@android:color/white"
-        app:fabSize="mini"
-        app:borderWidth="0dp"
-        android:elevation="0dp"
-        app:elevation="0dp"
-        app:srcCompat="@drawable/pincinco" />
-
-    </LinearLayout>
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/pinListBttn"-->
+        <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="0dp">-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_marginEnd="10dp"-->
+        <!--android:layout_marginBottom="10dp"-->
+        <!--android:clickable="true"-->
+        <!--android:focusable="true"-->
+        <!--android:scaleType="center"-->
+        <!--app:backgroundTint="@android:color/white"-->
+        <!--app:fabSize="normal"-->
+        <!--app:srcCompat="@drawable/pinuno" />-->
 
-        <!--<EditText-->
-            <!--android:id="@+id/editText"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="#faefe6"-->
-            <!--android:hint="Search Location Here"/>-->
+    <!--<android.support.v7.widget.AppCompatButton-->
+        <!--android:id="@+id/pinunoBttn"-->
+        <!--style="?android:textAppearanceLarge"-->
+        <!--android:layout_width="73dp"-->
+        <!--android:layout_height="25dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:backgroundTint="@android:color/white"-->
+        <!--android:background="@drawable/rectangle"-->
+        <!--android:paddingHorizontal="7dp"-->
+        <!--android:elevation="2dp"-->
+        <!--android:foreground="?attr/selectableItemBackground"-->
+        <!--android:fontFamily="@font/amatic_sc"-->
+        <!--android:textStyle="bold"-->
+        <!--android:textSize="17sp"-->
+        <!--android:drawableEnd="@drawable/pinuno"-->
+        <!--android:text="PINUNO"-->
+        <!--android:paddingStart="-13dp"-->
+        <!--android:drawablePadding="-28dp"-->
+        <!--android:layout_marginEnd="17dp"-->
+        <!--android:layout_marginBottom="235dp"-->
+        <!--android:clickable="true"-->
+        <!--/>-->
 
-        <!--<Button-->
-            <!--android:id="@+id/search_button_loc"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:onClick="onMapSearch"-->
-            <!--android:fontFamily="@font/amatic_sc"-->
-            <!--android:background="#fc6262"-->
-            <!--android:textColor="#faefe6"-->
-            <!--android:text="Search"/>-->
+    <!--<android.support.v7.widget.AppCompatButton-->
+        <!--android:id="@+id/pintresBttn"-->
+        <!--style="?android:textAppearanceLarge"-->
+        <!--android:layout_width="76dp"-->
+        <!--android:layout_height="25dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:backgroundTint="@android:color/white"-->
+        <!--android:background="@drawable/rectangle"-->
+        <!--android:paddingHorizontal="7dp"-->
+        <!--android:elevation="2dp"-->
+        <!--android:foreground="?attr/selectableItemBackground"-->
+        <!--android:fontFamily="@font/amatic_sc"-->
+        <!--android:textStyle="bold"-->
+        <!--android:textSize="17sp"-->
+        <!--android:drawableEnd="@drawable/pintres"-->
+        <!--android:text="PINTRES"-->
+        <!--android:paddingStart="-13dp"-->
+        <!--android:drawablePadding="-28dp"-->
+        <!--android:layout_marginEnd="17dp"-->
+        <!--android:layout_marginBottom="200dp"-->
+        <!--android:clickable="true"-->
+        <!--/>-->
 
-    <!--</LinearLayout>-->
+    <!--<android.support.v7.widget.AppCompatButton-->
+        <!--android:id="@+id/pinseisBttn"-->
+        <!--style="?android:textAppearanceLarge"-->
+        <!--android:layout_width="76dp"-->
+        <!--android:layout_height="25dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:backgroundTint="@android:color/white"-->
+        <!--android:background="@drawable/rectangle"-->
+        <!--android:paddingHorizontal="7dp"-->
+        <!--android:elevation="2dp"-->
+        <!--android:foreground="?attr/selectableItemBackground"-->
+        <!--android:fontFamily="@font/amatic_sc"-->
+        <!--android:textStyle="bold"-->
+        <!--android:textSize="17sp"-->
+        <!--android:drawableEnd="@drawable/pinseis"-->
+        <!--android:text="PINSEIS"-->
+        <!--android:paddingStart="-13dp"-->
+        <!--android:drawablePadding="-28dp"-->
+        <!--android:layout_marginEnd="17dp"-->
+        <!--android:layout_marginBottom="165dp"-->
+        <!--android:clickable="true"-->
+        <!--/>-->
 
+    <!--<android.support.v7.widget.AppCompatButton-->
+        <!--android:id="@+id/pindosBttn"-->
+        <!--style="?android:textAppearanceLarge"-->
+        <!--android:layout_width="73dp"-->
+        <!--android:layout_height="25dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:background="@drawable/rectangle"-->
+        <!--android:paddingHorizontal="7dp"-->
+        <!--android:foreground="?attr/selectableItemBackground"-->
+        <!--android:fontFamily="@font/amatic_sc"-->
+        <!--android:textStyle="bold"-->
+        <!--android:textSize="17sp"-->
+        <!--android:drawableEnd="@drawable/pindos"-->
+        <!--android:text="PINDOS"-->
+        <!--android:paddingStart="-13dp"-->
+        <!--android:drawablePadding="-28dp"-->
+        <!--android:layout_marginEnd="17dp"-->
+        <!--android:layout_marginBottom="130dp"-->
+        <!--android:clickable="true"-->
+        <!--android:focusable="true"-->
+        <!--android:elevation="5dp"-->
+        <!--/>-->
 
+    <!--<android.support.v7.widget.AppCompatButton-->
+        <!--android:id="@+id/pincuatroBttn"-->
+        <!--style="?android:textAppearanceLarge"-->
+        <!--android:layout_width="91dp"-->
+        <!--android:layout_height="25dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:backgroundTint="@android:color/white"-->
+        <!--android:background="@drawable/rectangle"-->
+        <!--android:paddingHorizontal="7dp"-->
+        <!--android:elevation="2dp"-->
+        <!--android:foreground="?attr/selectableItemBackground"-->
+        <!--android:fontFamily="@font/amatic_sc"-->
+        <!--android:textStyle="bold"-->
+        <!--android:textSize="17sp"-->
+        <!--android:drawableEnd="@drawable/pincuatro"-->
+        <!--android:text="PINCUATRO"-->
+        <!--android:paddingStart="-13dp"-->
+        <!--android:drawablePadding="-28dp"-->
+        <!--android:layout_marginEnd="17dp"-->
+        <!--android:layout_marginBottom="95dp"-->
+        <!--android:clickable="true"-->
+        <!--/>-->
 
-
+    <!--<android.support.v7.widget.AppCompatButton-->
+        <!--android:id="@+id/pincincoBttn"-->
+        <!--style="?android:textAppearanceLarge"-->
+        <!--android:layout_width="84dp"-->
+        <!--android:layout_height="25dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:backgroundTint="@android:color/white"-->
+        <!--android:background="@drawable/rectangle"-->
+        <!--android:paddingHorizontal="7dp"-->
+        <!--android:elevation="2dp"-->
+        <!--android:foreground="?attr/selectableItemBackground"-->
+        <!--android:fontFamily="@font/amatic_sc"-->
+        <!--android:textStyle="bold"-->
+        <!--android:textSize="17sp"-->
+        <!--android:drawableEnd="@drawable/pincinco"-->
+        <!--android:text="PINCINCO"-->
+        <!--android:paddingStart="-13dp"-->
+        <!--android:drawablePadding="-28dp"-->
+        <!--android:layout_marginEnd="17dp"-->
+        <!--android:layout_marginBottom="60dp"-->
+        <!--android:clickable="true"-->
+        <!--/>-->
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/switchPinButton"
@@ -319,251 +189,150 @@
         app:fabSize="normal"
         app:srcCompat="@drawable/changepin" />
 
-    <LinearLayout
-        android:id="@+id/circlePinLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/circlePinBttn"
+        style="?android:textAppearanceLarge"
+        android:layout_width="97dp"
+        android:layout_height="25dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:backgroundTint="@android:color/white"
+        android:background="@drawable/rectangle"
+        android:elevation="2dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:fontFamily="@font/amatic_sc"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:drawableEnd="@drawable/circlepin"
+        android:text="Pick Pocket"
+        android:paddingStart="0dp"
+        android:drawablePadding="-15dp"
+        android:layout_marginEnd="17dp"
         android:layout_marginBottom="235dp"
-        android:layout_marginEnd="17dp"
-        android:orientation="horizontal"
-        android:background="@drawable/rectangle"
-        android:paddingHorizontal="7dp"
-        android:elevation="2dp">
+        android:clickable="true"
+        android:focusable="true"
+        />
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/circlePinText"
-            style="@android:style/TextAppearance.Material.Widget.TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/amatic_sc"
-            android:layout_marginStart="3dp"
-            android:text="Pick Pocket"
-            android:textSize="17sp"
-            android:textStyle="bold"/>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/circlePinBttn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:scaleType="center"
-            android:layout_marginEnd="-4dp"
-            app:fabSize="mini"
-            app:srcCompat="@drawable/circlepin"
-            app:borderWidth="0dp"
-            android:elevation="0dp"
-            app:elevation="0dp"
-            android:backgroundTint="@android:color/white"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/checkPinLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/checkPinBttn"
+        style="?android:textAppearanceLarge"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:backgroundTint="@android:color/white"
+        android:background="@drawable/rectangle"
+        android:elevation="2dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:fontFamily="@font/amatic_sc"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:drawableEnd="@drawable/checkpin"
+        android:text="Drunk"
+        android:paddingStart="0dp"
+        android:drawablePadding="-15dp"
+        android:layout_marginEnd="17dp"
         android:layout_marginBottom="200dp"
-        android:layout_marginEnd="17dp"
-        android:orientation="horizontal"
-        android:background="@drawable/rectangle"
-        android:paddingHorizontal="7dp"
-        android:elevation="2dp">
+        android:clickable="true"
+        android:focusable="true"
+        />
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/checkPinText"
-            style="@android:style/TextAppearance.Material.Widget.TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:fontFamily="@font/amatic_sc"
-            android:text="Drunk"
-            android:textSize="17sp"
-            android:textStyle="bold"/>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/checkPinBttn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:scaleType="center"
-            android:layout_marginEnd="-4dp"
-            app:backgroundTint="@android:color/white"
-            app:fabSize="mini"
-            app:borderWidth="0dp"
-            android:elevation="0dp"
-            app:elevation="0dp"
-            app:srcCompat="@drawable/checkpin" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/extraFlagPinLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/extraFlagPinBttn"
+        style="?android:textAppearanceLarge"
+        android:layout_width="78dp"
+        android:layout_height="25dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:backgroundTint="@android:color/white"
+        android:background="@drawable/rectangle"
+        android:elevation="2dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:fontFamily="@font/amatic_sc"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:drawableEnd="@drawable/extraflagpin"
+        android:text="Robbery"
+        android:paddingStart="0dp"
+        android:drawablePadding="-15dp"
+        android:layout_marginEnd="17dp"
         android:layout_marginBottom="165dp"
-        android:layout_marginEnd="17dp"
-        android:orientation="horizontal"
-        android:background="@drawable/rectangle"
-        android:paddingHorizontal="7dp"
-        android:elevation="2dp">
+        android:clickable="true"
+        android:focusable="true"
+        />
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/extraFlagPinText"
-            style="@android:style/TextAppearance.Material.Widget.TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:fontFamily="@font/amatic_sc"
-            android:text="Robbery"
-            android:textSize="17sp"
-            android:textStyle="bold"/>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/extraFlagPinBttn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:scaleType="center"
-            android:layout_marginEnd="-4dp"
-            app:backgroundTint="@android:color/white"
-            app:fabSize="mini"
-            app:borderWidth="0dp"
-            android:elevation="0dp"
-            app:elevation="0dp"
-            app:srcCompat="@drawable/extraflagpin" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/flagPinLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/flagPinBttn"
+        style="?android:textAppearanceLarge"
+        android:layout_width="66dp"
+        android:layout_height="25dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:backgroundTint="@android:color/white"
+        android:background="@drawable/rectangle"
+        android:elevation="2dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:fontFamily="@font/amatic_sc"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:drawableEnd="@drawable/flagpin"
+        android:text="Scam"
+        android:paddingStart="0dp"
+        android:drawablePadding="-15dp"
+        android:layout_marginEnd="17dp"
         android:layout_marginBottom="130dp"
-        android:layout_marginEnd="17dp"
-        android:orientation="horizontal"
-        android:background="@drawable/rectangle"
-        android:paddingHorizontal="7dp"
-        android:elevation="2dp">
+        android:clickable="true"
+        android:focusable="true"
+        />
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/flagPinText"
-            style="@android:style/TextAppearance.Material.Widget.TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:fontFamily="@font/amatic_sc"
-            android:text="Scam"
-            android:textSize="17sp"
-            android:textStyle="bold"/>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/flagPinBttn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:scaleType="center"
-            android:layout_marginEnd="-4dp"
-            app:backgroundTint="@android:color/white"
-            app:fabSize="mini"
-            app:borderWidth="0dp"
-            android:elevation="0dp"
-            app:elevation="0dp"
-            app:srcCompat="@drawable/flagpin" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/starPinLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/starPinBttn"
+        style="?android:textAppearanceLarge"
+        android:layout_width="105dp"
+        android:layout_height="25dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:backgroundTint="@android:color/white"
+        android:background="@drawable/rectangle"
+        android:elevation="2dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:fontFamily="@font/amatic_sc"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:drawableEnd="@drawable/starpin"
+        android:text="Harrassment"
+        android:paddingStart="0dp"
+        android:drawablePadding="-15dp"
+        android:layout_marginEnd="17dp"
         android:layout_marginBottom="95dp"
-        android:layout_marginEnd="17dp"
-        android:orientation="horizontal"
-        android:background="@drawable/rectangle"
-        android:paddingHorizontal="7dp"
-        android:elevation="2dp">
+        android:clickable="true"
+        android:focusable="true"
+        />
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/starPinText"
-            style="@android:style/TextAppearance.Material.Widget.TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:fontFamily="@font/amatic_sc"
-            android:text="Harrassment"
-            android:textSize="17sp"
-            android:textStyle="bold"/>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/starPinBttn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:scaleType="center"
-            android:layout_marginEnd="-4dp"
-            app:backgroundTint="@android:color/white"
-            app:fabSize="mini"
-            app:borderWidth="0dp"
-            android:elevation="0dp"
-            app:elevation="0dp"
-            app:srcCompat="@drawable/starpin" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/wallPinLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/wallPinBttn"
+        style="?android:textAppearanceLarge"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="60dp"
-        android:layout_marginEnd="17dp"
-        android:orientation="horizontal"
+        android:backgroundTint="@android:color/white"
         android:background="@drawable/rectangle"
-        android:paddingHorizontal="7dp"
-        android:elevation="2dp">
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/wallPinText"
-            style="@android:style/TextAppearance.Material.Widget.TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:fontFamily="@font/amatic_sc"
-            android:text="Others"
-            android:textSize="17sp"
-            android:textStyle="bold"/>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/wallPinBttn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:scaleType="center"
-            android:layout_marginEnd="-4dp"
-            app:backgroundTint="@android:color/white"
-            app:fabSize="mini"
-            app:borderWidth="0dp"
-            android:elevation="0dp"
-            app:elevation="0dp"
-            app:srcCompat="@drawable/wallpin" />
-
-    </LinearLayout>
+        android:elevation="2dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:fontFamily="@font/amatic_sc"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:drawableEnd="@drawable/wallpin"
+        android:text="Others"
+        android:paddingStart="0dp"
+        android:drawablePadding="-15dp"
+        android:layout_marginEnd="17dp"
+        android:layout_marginBottom="60dp"
+        android:clickable="true"
+        android:focusable="true"
+        />
 
 
     <android.support.v7.widget.SwitchCompat
