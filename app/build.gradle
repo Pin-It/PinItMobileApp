@@ -55,6 +55,7 @@ dependencies {
 //    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
 //    implementation 'com.google.android.material:material:1.0.0-alpha1'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
+    implementation 'com.google.maps.android:android-maps-utils:0.5'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.android.support:design:27.1.1'
     testImplementation 'junit:junit:4.12'

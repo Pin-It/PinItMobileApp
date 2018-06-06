@@ -15,165 +15,6 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true" />
 
-    <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/pinListBttn"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:layout_marginEnd="10dp"-->
-        <!--android:layout_marginBottom="10dp"-->
-        <!--android:clickable="true"-->
-        <!--android:focusable="true"-->
-        <!--android:scaleType="center"-->
-        <!--app:backgroundTint="@android:color/white"-->
-        <!--app:fabSize="normal"-->
-        <!--app:srcCompat="@drawable/pinuno" />-->
-
-    <!--<android.support.v7.widget.AppCompatButton-->
-        <!--android:id="@+id/pinunoBttn"-->
-        <!--style="?android:textAppearanceLarge"-->
-        <!--android:layout_width="73dp"-->
-        <!--android:layout_height="25dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:backgroundTint="@android:color/white"-->
-        <!--android:background="@drawable/rectangle"-->
-        <!--android:paddingHorizontal="7dp"-->
-        <!--android:elevation="2dp"-->
-        <!--android:foreground="?attr/selectableItemBackground"-->
-        <!--android:fontFamily="@font/amatic_sc"-->
-        <!--android:textStyle="bold"-->
-        <!--android:textSize="17sp"-->
-        <!--android:drawableEnd="@drawable/pinuno"-->
-        <!--android:text="PINUNO"-->
-        <!--android:paddingStart="-13dp"-->
-        <!--android:drawablePadding="-28dp"-->
-        <!--android:layout_marginEnd="17dp"-->
-        <!--android:layout_marginBottom="235dp"-->
-        <!--android:clickable="true"-->
-        <!--/>-->
-
-    <!--<android.support.v7.widget.AppCompatButton-->
-        <!--android:id="@+id/pintresBttn"-->
-        <!--style="?android:textAppearanceLarge"-->
-        <!--android:layout_width="76dp"-->
-        <!--android:layout_height="25dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:backgroundTint="@android:color/white"-->
-        <!--android:background="@drawable/rectangle"-->
-        <!--android:paddingHorizontal="7dp"-->
-        <!--android:elevation="2dp"-->
-        <!--android:foreground="?attr/selectableItemBackground"-->
-        <!--android:fontFamily="@font/amatic_sc"-->
-        <!--android:textStyle="bold"-->
-        <!--android:textSize="17sp"-->
-        <!--android:drawableEnd="@drawable/pintres"-->
-        <!--android:text="PINTRES"-->
-        <!--android:paddingStart="-13dp"-->
-        <!--android:drawablePadding="-28dp"-->
-        <!--android:layout_marginEnd="17dp"-->
-        <!--android:layout_marginBottom="200dp"-->
-        <!--android:clickable="true"-->
-        <!--/>-->
-
-    <!--<android.support.v7.widget.AppCompatButton-->
-        <!--android:id="@+id/pinseisBttn"-->
-        <!--style="?android:textAppearanceLarge"-->
-        <!--android:layout_width="76dp"-->
-        <!--android:layout_height="25dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:backgroundTint="@android:color/white"-->
-        <!--android:background="@drawable/rectangle"-->
-        <!--android:paddingHorizontal="7dp"-->
-        <!--android:elevation="2dp"-->
-        <!--android:foreground="?attr/selectableItemBackground"-->
-        <!--android:fontFamily="@font/amatic_sc"-->
-        <!--android:textStyle="bold"-->
-        <!--android:textSize="17sp"-->
-        <!--android:drawableEnd="@drawable/pinseis"-->
-        <!--android:text="PINSEIS"-->
-        <!--android:paddingStart="-13dp"-->
-        <!--android:drawablePadding="-28dp"-->
-        <!--android:layout_marginEnd="17dp"-->
-        <!--android:layout_marginBottom="165dp"-->
-        <!--android:clickable="true"-->
-        <!--/>-->
-
-    <!--<android.support.v7.widget.AppCompatButton-->
-        <!--android:id="@+id/pindosBttn"-->
-        <!--style="?android:textAppearanceLarge"-->
-        <!--android:layout_width="73dp"-->
-        <!--android:layout_height="25dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:background="@drawable/rectangle"-->
-        <!--android:paddingHorizontal="7dp"-->
-        <!--android:foreground="?attr/selectableItemBackground"-->
-        <!--android:fontFamily="@font/amatic_sc"-->
-        <!--android:textStyle="bold"-->
-        <!--android:textSize="17sp"-->
-        <!--android:drawableEnd="@drawable/pindos"-->
-        <!--android:text="PINDOS"-->
-        <!--android:paddingStart="-13dp"-->
-        <!--android:drawablePadding="-28dp"-->
-        <!--android:layout_marginEnd="17dp"-->
-        <!--android:layout_marginBottom="130dp"-->
-        <!--android:clickable="true"-->
-        <!--android:focusable="true"-->
-        <!--android:elevation="5dp"-->
-        <!--/>-->
-
-    <!--<android.support.v7.widget.AppCompatButton-->
-        <!--android:id="@+id/pincuatroBttn"-->
-        <!--style="?android:textAppearanceLarge"-->
-        <!--android:layout_width="91dp"-->
-        <!--android:layout_height="25dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:backgroundTint="@android:color/white"-->
-        <!--android:background="@drawable/rectangle"-->
-        <!--android:paddingHorizontal="7dp"-->
-        <!--android:elevation="2dp"-->
-        <!--android:foreground="?attr/selectableItemBackground"-->
-        <!--android:fontFamily="@font/amatic_sc"-->
-        <!--android:textStyle="bold"-->
-        <!--android:textSize="17sp"-->
-        <!--android:drawableEnd="@drawable/pincuatro"-->
-        <!--android:text="PINCUATRO"-->
-        <!--android:paddingStart="-13dp"-->
-        <!--android:drawablePadding="-28dp"-->
-        <!--android:layout_marginEnd="17dp"-->
-        <!--android:layout_marginBottom="95dp"-->
-        <!--android:clickable="true"-->
-        <!--/>-->
-
-    <!--<android.support.v7.widget.AppCompatButton-->
-        <!--android:id="@+id/pincincoBttn"-->
-        <!--style="?android:textAppearanceLarge"-->
-        <!--android:layout_width="84dp"-->
-        <!--android:layout_height="25dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:backgroundTint="@android:color/white"-->
-        <!--android:background="@drawable/rectangle"-->
-        <!--android:paddingHorizontal="7dp"-->
-        <!--android:elevation="2dp"-->
-        <!--android:foreground="?attr/selectableItemBackground"-->
-        <!--android:fontFamily="@font/amatic_sc"-->
-        <!--android:textStyle="bold"-->
-        <!--android:textSize="17sp"-->
-        <!--android:drawableEnd="@drawable/pincinco"-->
-        <!--android:text="PINCINCO"-->
-        <!--android:paddingStart="-13dp"-->
-        <!--android:drawablePadding="-28dp"-->
-        <!--android:layout_marginEnd="17dp"-->
-        <!--android:layout_marginBottom="60dp"-->
-        <!--android:clickable="true"-->
-        <!--/>-->
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/switchPinButton"
         android:layout_width="wrap_content"
@@ -335,6 +176,25 @@
         />
 
 
+        <!--<EditText-->
+            <!--android:id="@+id/editText"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="#faefe6"-->
+            <!--android:hint="Search Location Here"/>-->
+
+        <!--<Button-->
+            <!--android:id="@+id/search_button_loc"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:onClick="onMapSearch"-->
+            <!--android:fontFamily="@font/amatic_sc"-->
+            <!--android:background="#fc6262"-->
+            <!--android:textColor="#faefe6"-->
+            <!--android:text="Search"/>-->
+
+    <!--</LinearLayout>-->
+
     <android.support.v7.widget.SwitchCompat
         style="@style/SwitchCompatStyle"
         android:id="@+id/switch_maps"
@@ -342,7 +202,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="38dp" />
+        android:layout_marginBottom="38dp"
+        android:checked="false"
+        tools:checked="false"/>
 
     <android.support.v7.widget.SwitchCompat
         style="@style/SwitchCompatStyleTwo"
