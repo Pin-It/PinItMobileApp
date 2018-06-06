@@ -199,14 +199,17 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     private void showCommentDialogueBox() {
         AlertDialog.Builder commentDialogueBuilder = new AlertDialog.Builder(MapsActivity.this);
-        View commentView = getLayoutInflater().inflate(R.layout.activity_add_comment, null);
         LayoutInflater inflater = MapsActivity.this.getLayoutInflater();
+        View commentView = getLayoutInflater().inflate(R.layout.activity_add_comment, null);
         TextView commentDialogueBoxTitle = commentView.findViewById(R.id.addComment);
         EditText commentInputText = commentView.findViewById(R.id.comment_text_input);
         AppCompatButton submitButton = commentView.findViewById(R.id.submit_comment);
         AppCompatButton cancelButton = commentView.findViewById(R.id.cancel_button);
 
+        commentDialogueBuilder.setView(commentView);
         final AlertDialog commentDialogue = commentDialogueBuilder.create();
+        commentDialogue.show();
+        commentDialogue.getWindow().setLayout(1000,800);
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -214,9 +217,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 commentDialogue.dismiss();
             }
         });
-
-        commentDialogueBuilder.setView(commentView);
-        commentDialogue.show();
     }
 
 
@@ -282,7 +282,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
         }
-        Log.d("MapReady", "ready");
+
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(final LatLng point) {
@@ -293,8 +293,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     @Override
                     public void onReceive(JSONObject response) {
                         addNewMarker(point, pincolor, "Newly added");
-//                        Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
-//                        startActivity(intent);
                     }
 
                     @Override
@@ -338,6 +336,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 }
             }
 
+
             @Override
             public void onError(APIError error) {
 
@@ -348,8 +347,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             @Override
             public boolean onMarkerClick(Marker marker) {
                 Log.d("MapReady", "click");
-                Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
+//                startActivity(intent);
                 return true;
             }
         });
