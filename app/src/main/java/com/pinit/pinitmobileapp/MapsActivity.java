@@ -40,6 +40,7 @@ import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.pinit.api.errors.APIError;
 import com.pinit.api.NetworkListener;
 import com.pinit.api.PinItAPI;
+import com.pinit.api.models.Comment;
 import com.pinit.api.models.Pin;
 import org.json.JSONObject;
 
@@ -197,12 +198,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     }
 
 
-    private void showCommentDialogueBox() {
+    private void showCommentDialogueBox(final Pin pin) {
         AlertDialog.Builder commentDialogueBuilder = new AlertDialog.Builder(MapsActivity.this);
         View commentView = getLayoutInflater().inflate(R.layout.activity_add_comment, null);
         LayoutInflater inflater = MapsActivity.this.getLayoutInflater();
         TextView commentDialogueBoxTitle = commentView.findViewById(R.id.addComment);
-        EditText commentInputText = commentView.findViewById(R.id.comment_text_input);
+        final EditText commentInputText = commentView.findViewById(R.id.comment_text_input);
         AppCompatButton submitButton = commentView.findViewById(R.id.submit_comment);
         AppCompatButton cancelButton = commentView.findViewById(R.id.cancel_button);
 
@@ -212,6 +213,15 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             @Override
             public void onClick(View view) {
                 commentDialogue.dismiss();
+            }
+        });
+
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String commentText = commentInputText.getText().toString();
+                Comment comment = new Comment(pin, commentText);
+                api.uploadNewComment(comment);
             }
         });
 
@@ -295,6 +305,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                         addNewMarker(point, pincolor, "Newly added");
 //                        Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
 //                        startActivity(intent);
+                        Pin addedPin = new Pin(response);
+                        showCommentDialogueBox(addedPin);
                     }
 
                     @Override
@@ -302,7 +314,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                         Toast.makeText(getApplication(), "You're not logged in :(", Toast.LENGTH_LONG).show();
                     }
                 });
-                showCommentDialogueBox();
             }
         });
 
