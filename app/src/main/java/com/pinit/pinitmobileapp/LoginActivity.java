@@ -54,6 +54,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
     };
+    private static final String PREFERENCE_USER_TOKEN = "userToken";
+
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -74,6 +76,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        checkLoginStatus();
+
         textView = (TextView)findViewById(R.id.simpleTextView);
 
 
@@ -116,6 +121,48 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mProgressView = findViewById(R.id.login_progress);
     }
 
+    /**
+     * Checks if the user has already logged in. Redirects to next activity if they are.
+     */
+    private void checkLoginStatus() {
+        String token = getUserToken();
+        if (token != null) {
+            completeLogin(token);
+        }
+    }
+
+    /**
+     * Gets user token from shared preferences if the user has logged in on this device before.
+     * Otherwise, return null.
+     * @return the user token for logging in to the remembered account
+     */
+    private String getUserToken() {
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        return preferences.getString(PREFERENCE_USER_TOKEN, null);
+    }
+
+    /**
+     * Token is acquired, move on to the next activity
+     * @param token the token needed to log in
+     */
+    private void completeLogin(String token) {
+        saveToken(token);
+        intent = new Intent(LoginActivity.this, ExplanationActivity.class);
+        intent.putExtra(MapsActivity.USER_TOKEN, token);
+        startActivity(intent);
+        finish();
+    }
+
+    /**
+     * Save the specified token to shared preferences
+     * @param token the token to be saved
+     */
+    private void saveToken(String token) {
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        preferences.edit()
+                .putString(PREFERENCE_USER_TOKEN, token)
+                .apply();
+    }
 
     private boolean isFirstTime() {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
@@ -354,10 +401,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (mToken != null) {
-                intent = new Intent(LoginActivity.this, ExplanationActivity.class);
-                intent.putExtra(MapsActivity.USER_TOKEN, mToken);
-                startActivity(intent);
-                finish();
+                completeLogin(mToken);
             } else if (mNetworkError) {
                 Toast.makeText(LoginActivity.this, "Network error: try again", Toast.LENGTH_LONG).show();
             } else {
