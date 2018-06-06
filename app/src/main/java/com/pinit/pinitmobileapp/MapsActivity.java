@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -28,21 +29,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.*;
+import com.google.maps.android.heatmaps.Gradient;
+import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.pinit.api.errors.APIError;
 import com.pinit.api.NetworkListener;
 import com.pinit.api.PinItAPI;
 import com.pinit.api.models.Pin;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
@@ -52,6 +48,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean mPermissionDenied = false;
     private GoogleMap mMap;
+    private HeatmapTileProvider mProvider;
+    private TileOverlay mOverlay;
     private List<LatLng> lstLatLng = new ArrayList<LatLng>();
     private Switch mSwitch;
 
@@ -154,9 +152,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!mSwitch.isChecked()) {
-                    Intent newIntent = new Intent(MapsActivity.this, GeneralySafetyMapActivity.class);
-                    startActivity(newIntent);
-                    finish();
+                    showHeatMap();
+                } else {
+                    hideHeatMap();
                 }
             }
         });
@@ -393,5 +391,32 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     public boolean isTextVisibile(FloatingActionButton bttn) {
         return pinsToText.get(bttn).getVisibility() == View.VISIBLE;
+    }
+
+    private void showHeatMap() {
+        if (mOverlay != null) {
+            List<LatLng> list = getPinsLatLngs(allPins);
+            mProvider = new HeatmapTileProvider.Builder()
+                    .data(list)
+                    .opacity(0.6)
+                    .build();
+            mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+        } else {
+            mOverlay.setVisible(true);
+        }
+    }
+
+    private void hideHeatMap() {
+        if (mOverlay != null) {
+            mOverlay.setVisible(false);
+        }
+    }
+
+    private List<LatLng> getPinsLatLngs(List<Pin> pins) {
+        List<LatLng> latLngs = new ArrayList<>();
+        for (Pin pin : pins) {
+            latLngs.add(new LatLng(pin.getLatitude(), pin.getLongitude()));
+        }
+        return latLngs;
     }
 }
