@@ -31,6 +31,7 @@ public class AddCommentActivity extends AppCompatActivity {
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String comment = message.getText().toString();
                 finish();
             }
         });

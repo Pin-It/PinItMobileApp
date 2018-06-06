@@ -1,6 +1,7 @@
 package com.pinit.pinitmobileapp;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,6 +18,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
@@ -68,7 +70,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     int pincolor = -1;
     int pinshape = -1;
-    private Pin.Type pinType;
+    private Pin.Type pinType = Pin.Type.OTHERS;
     public PinMode currentMode = PinMode.ICON;
 
     @Override
@@ -195,26 +197,27 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     }
 
 
-//    private void showCommentDialogueBox() {
-//        AlertDialog.Builder commentDialogueBuilder = new AlertDialog.Builder(MapsActivity.this);
-//        View commentView = getLayoutInflater().inflate(R.layout.activity_add_comment, null);
-//        LayoutInflater inflater = MapsActivity.this.getLayoutInflater();
-//        TextView commentDialogueBoxTitle = commentView.findViewById(R.id.addComment);
-//        EditText commentInputText = commentView.findViewById(R.id.comment_text_input);
-//        AppCompatButton submitButton = commentView.findViewById(R.id.submit_comment);
-//        AppCompatButton cancelButton = commentView.findViewById(R.id.cancel_button);
-//
-//        final AlertDialog commentDialogue = commentDialogueBuilder.create();
-//
-//        cancelButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                commentDialogue.dismiss();
-//            }
-//        });
-//        commentDialogueBuilder.setView(inflater.inflate(R.layout.activity_add_comment, null));
-//        commentDialogue.show();
-//    }
+    private void showCommentDialogueBox() {
+        AlertDialog.Builder commentDialogueBuilder = new AlertDialog.Builder(MapsActivity.this);
+        View commentView = getLayoutInflater().inflate(R.layout.activity_add_comment, null);
+        LayoutInflater inflater = MapsActivity.this.getLayoutInflater();
+        TextView commentDialogueBoxTitle = commentView.findViewById(R.id.addComment);
+        EditText commentInputText = commentView.findViewById(R.id.comment_text_input);
+        AppCompatButton submitButton = commentView.findViewById(R.id.submit_comment);
+        AppCompatButton cancelButton = commentView.findViewById(R.id.cancel_button);
+
+        final AlertDialog commentDialogue = commentDialogueBuilder.create();
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                commentDialogue.dismiss();
+            }
+        });
+
+        commentDialogueBuilder.setView(commentView);
+        commentDialogue.show();
+    }
 
 
     private void setAllPinsVisibility(boolean pin, AppCompatButton bttn) {
@@ -290,8 +293,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     @Override
                     public void onReceive(JSONObject response) {
                         addNewMarker(point, pincolor, "Newly added");
-                        Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
-                        startActivity(intent);
+//                        Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
+//                        startActivity(intent);
                     }
 
                     @Override
@@ -299,6 +302,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                         Toast.makeText(getApplication(), "You're not logged in :(", Toast.LENGTH_LONG).show();
                     }
                 });
+                showCommentDialogueBox();
             }
         });
 
