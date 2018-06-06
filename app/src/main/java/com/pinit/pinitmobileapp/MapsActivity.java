@@ -122,11 +122,15 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (mSwitch.isChecked()) {
+                    // General safety mode
                     showHeatMap();
                     hideAllPins();
+                    PinsMenu.hide();
                 } else {
+                    // Pin mode
                     hideHeatMap();
                     showAllPins();
+                    PinsMenu.show();
                 }
             }
         });
