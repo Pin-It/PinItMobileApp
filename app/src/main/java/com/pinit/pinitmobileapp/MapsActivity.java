@@ -145,11 +145,10 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         }
 
         mSwitch = (Switch) findViewById(R.id.switch_maps);
-        mSwitch.setChecked(true);
         mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!mSwitch.isChecked()) {
+                if (mSwitch.isChecked()) {
                     showHeatMap();
                 } else {
                     hideHeatMap();
@@ -392,7 +391,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     }
 
     private void showHeatMap() {
-        if (mOverlay != null) {
+        if (mOverlay == null) {
             List<LatLng> list = getPinsLatLngs(allPins);
             mProvider = new HeatmapTileProvider.Builder()
                     .data(list)
