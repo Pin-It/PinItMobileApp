@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#faefe6</color>
     <color name="colorAccent">#fc6262</color>
     <color name="background_material_light">#faefe6</color>
+    <color name="pin_shape_switch">#6fcdf0</color>
 </resources>

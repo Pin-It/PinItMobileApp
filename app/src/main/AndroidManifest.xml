@@ -49,7 +49,7 @@
         <activity android:name=".ExplanationActivity"></activity>
         <activity android:name=".GeneralySafetyMapActivity" />
         <activity android:name=".MapsActivity" />
-        <activity android:name=".AddCommentActivity" />
+        <activity android:name=".AddCommentActivity" android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
     </application>
 
 </manifest>
