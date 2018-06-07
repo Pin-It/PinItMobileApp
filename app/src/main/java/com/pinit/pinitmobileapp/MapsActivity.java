@@ -248,7 +248,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 .show();
     }
 
-    private void showCommentDialogueBox(final Pin pin) {
+    private void showCommentDialogueBox(final LatLng point) {
         AlertDialog.Builder commentDialogueBuilder = new AlertDialog.Builder(MapsActivity.this);
         View commentView = getLayoutInflater().inflate(R.layout.activity_add_comment, null);
         final EditText commentInputText = commentView.findViewById(R.id.comment_text_input);
@@ -269,7 +269,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Pin pin = new Pin(pinType, point.latitude, point.longitude);
+                final Pin pin = new Pin(pinType, point.latitude, point.longitude);
                 api.uploadNewPin(pin, new NetworkListener<JSONObject>() {
                     @Override
                     public void onReceive(JSONObject response) {
@@ -282,7 +282,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                         Toast.makeText(getApplication(), "You're not logged in :(", Toast.LENGTH_LONG).show();
                     }
                 });
-                String commentText = commentInputText.getText().toString();
+                final String commentText = commentInputText.getText().toString();
                 Comment comment = new Comment(pin, commentText);
                 api.uploadNewComment(comment, new NetworkListener<JSONObject>() {
                     @Override
@@ -390,20 +390,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         if (pincolor == -1) return;
         if (!pinChosen) return;
         lstLatLng.add(point);
-        Pin pin = new Pin(pinType, point.latitude, point.longitude);
-        api.uploadNewPin(pin, new NetworkListener<JSONObject>() {
-            @Override
-            public void onReceive(JSONObject response) {
-                Pin addedPin = new Pin(response);
-                addNewMarker(addedPin);
-                showCommentDialogueBox(addedPin);
-            }
-
-            @Override
-            public void onError(APIError error) {
-                Toast.makeText(getApplication(), "You're not logged in :(", Toast.LENGTH_LONG).show();
-            }
-        });
+        showCommentDialogueBox(point);
     }
 
     @Override
