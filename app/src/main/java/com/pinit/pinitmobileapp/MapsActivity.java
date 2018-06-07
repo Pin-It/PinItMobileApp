@@ -45,7 +45,8 @@ import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
-        GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
+        GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
+        GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener {
 
     public static final String USER_TOKEN = "userToken";
 
@@ -302,6 +303,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
+        mMap.setOnMapClickListener(this);
+        mMap.setOnMarkerClickListener(this);
         //   enableMyLocation();
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -325,29 +328,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         }
 
-        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(final LatLng point) {
-                if (pincolor == -1) return;
-                if (!pinChosen) return;
-                lstLatLng.add(point);
-                Pin pin = new Pin(pinType, point.latitude, point.longitude);
-                api.uploadNewPin(pin, new NetworkListener<JSONObject>() {
-                    @Override
-                    public void onReceive(JSONObject response) {
-                        Pin addedPin = new Pin(response);
-                        addNewMarker(addedPin);
-                        showCommentDialogueBox(addedPin);
-                    }
-
-                    @Override
-                    public void onError(APIError error) {
-                        Toast.makeText(getApplication(), "You're not logged in :(", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        });
-
         api.getAllPins(new NetworkListener<List<Pin>>() {
             @Override
             public void onReceive(List<Pin> pins) {
@@ -363,17 +343,35 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
             }
         });
+    }
 
-        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+    @Override
+    public void onMapClick(final LatLng point) {
+        if (pincolor == -1) return;
+        if (!pinChosen) return;
+        lstLatLng.add(point);
+        Pin pin = new Pin(pinType, point.latitude, point.longitude);
+        api.uploadNewPin(pin, new NetworkListener<JSONObject>() {
             @Override
-            public boolean onMarkerClick(Marker marker) {
-                Log.d("MapReady", "click");
-//                Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
-//                startActivity(intent);
-                return true;
+            public void onReceive(JSONObject response) {
+                Pin addedPin = new Pin(response);
+                addNewMarker(addedPin);
+                showCommentDialogueBox(addedPin);
+            }
+
+            @Override
+            public void onError(APIError error) {
+                Toast.makeText(getApplication(), "You're not logged in :(", Toast.LENGTH_LONG).show();
             }
         });
+    }
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Log.d("MapReady", "click");
+//                Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
+//                startActivity(intent);
+        return true;
     }
 
 //    public void onMapSearch(View view) {
