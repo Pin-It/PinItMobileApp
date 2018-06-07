@@ -368,9 +368,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Log.d("MapReady", "click");
-//                Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
-//                startActivity(intent);
+        marker.showInfoWindow();
         return true;
     }
 
