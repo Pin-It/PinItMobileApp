@@ -100,7 +100,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mNotUniStudent.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent newIntent = new Intent(LoginActivity.this, GeneralySafetyMapActivity.class);
+                Intent newIntent = new Intent(LoginActivity.this, MapsActivity.class);
                 startActivity(newIntent);
                 finish();
             }

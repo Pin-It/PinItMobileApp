@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
@@ -316,27 +317,21 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
-        //   enableMyLocation();
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
+       // enableMyLocation();
 
-        mMap.setMyLocationEnabled(true);
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-
-        Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria,false));
-        if (location != null) {
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
-            CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(location.getLatitude(), location.getLongitude()))
-                    .zoom(17).bearing(90).tilt(40).build();
-            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+           enableMyLocation();
+        } else {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(MapsActivity.this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        LOCATION_PERMISSION_REQUEST_CODE);
+            } else {
+                ActivityCompat.requestPermissions(MapsActivity.this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        LOCATION_PERMISSION_REQUEST_CODE);
+            }
         }
 
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -397,14 +392,22 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         }
     }
 
-//    private void enableMyLocation() {
-//        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-//        != PackageManager.PERMISSION_GRANTED) {
-//            PermissionUtility.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE, Manifest.permission.ACCESS_FINE_LOCATION, true);
-//        } else if (mMap != null){
-//            mMap.setMyLocationEnabled(true);
-//        }
-//    }
+    private void enableMyLocation() {
+        mMap.setMyLocationEnabled(true);
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+
+
+        Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria,false));
+        if (location != null) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
+            CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(location.getLatitude(), location.getLongitude()))
+                    .zoom(17).bearing(90).tilt(40).build();
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        }
+    }
 
     @Override
     public boolean onMyLocationButtonClick() {
@@ -417,19 +420,22 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
     }
 
-  // @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-//                                           @NonNull int[] grantResults) {
-//        if(requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
-//            return;
-//        }
-//
-//        if(PermissionUtility.isPermissionGranted(permissions, grantResults, Manifest.permission.ACCESS_FINE_LOCATION)) {
-//            enableMyLocation();
-//        } else {
-//            mPermissionDenied = true;
-//        }
-//    }
+   @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        switch(requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    enableMyLocation();
+                } else {
+                   mPermissionDenied = true;
+                }
+            }
+
+        }
+    }
 
     @Override
     protected void onResumeFragments() {
