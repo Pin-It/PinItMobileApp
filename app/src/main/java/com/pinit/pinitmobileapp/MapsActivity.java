@@ -46,7 +46,7 @@ import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
-        GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener {
+        GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.InfoWindowAdapter {
 
     public static final String USER_TOKEN = "userToken";
 
@@ -305,6 +305,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         mMap.setOnMyLocationClickListener(this);
         mMap.setOnMapClickListener(this);
         mMap.setOnMarkerClickListener(this);
+        mMap.setInfoWindowAdapter(this);
         //   enableMyLocation();
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -370,6 +371,25 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public boolean onMarkerClick(Marker marker) {
         marker.showInfoWindow();
         return true;
+    }
+
+    @Override
+    public View getInfoWindow(Marker marker) {
+        return null;
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        View view = getLayoutInflater().inflate(R.layout.pin_info_window, null);
+        TextView infoPinType = view.findViewById(R.id.info_pin_type);
+        TextView infoComment = view.findViewById(R.id.info_comment);
+        TextView infoViewAll = view.findViewById(R.id.info_view_all);
+
+        Pin pin = (Pin) marker.getTag();
+        infoPinType.setText(pin.getType().toString());
+        infoComment.setText("not a comment");
+        infoViewAll.setText(String.format(getString(R.string.view_all_comments), 10));
+        return view;
     }
 
 //    public void onMapSearch(View view) {
