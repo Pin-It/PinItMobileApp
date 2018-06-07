@@ -176,7 +176,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             public void onClick(View v) {
                 if(isPinsVisible()) {
                     setAllPinsVisibility(false,  null);
-                    setToCorrespondingImage();
+//                    setToCorrespondingImage();
+                    if (currentMode == PinMode.ICON) {
+                        pinsMenu.setImageResource(R.drawable.wallpin);
+                    } else {
+                        pinsMenu.setImageResource(R.drawable.pinuno);
+                    }
                     pinChosen = false;
                 } else {
                     setAllPinsVisibility(true,  null);
