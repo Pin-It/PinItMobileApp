@@ -53,7 +53,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private SwitchCompat mSwitch;
     private SwitchCompat pSwitch;
 
-    FloatingActionButton PinsMenu, circlepin, extraflagpin, flagpin, starpin, wallpin, checkpin;
+    FloatingActionButton pinsMenu, circlepin, extraflagpin, flagpin, starpin, wallpin, checkpin;
     private List<AppCompatButton> pinsList = new ArrayList<>();
     private List<Integer> colours = new ArrayList<>();
     private List<Integer> icons = new ArrayList<>();
@@ -120,18 +120,22 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     // General safety mode
                     showHeatMap();
                     hideAllPins();
-                    PinsMenu.hide();
+                    pinsMenu.hide();
+                    if (isPinsVisible()) {
+                        setAllPinsVisibility(false,null);
+                    }
                 } else {
                     // Pin mode
                     hideHeatMap();
                     showAllPins();
-                    PinsMenu.show();
+                    setToCorrespondingImage();
+                    pinsMenu.show();
                 }
             }
         });
 
-        PinsMenu = (FloatingActionButton) findViewById(R.id.switchPinButton);
-        PinsMenu.setImageResource(R.drawable.wallpin);
+        pinsMenu = (FloatingActionButton) findViewById(R.id.switchPinButton);
+        pinsMenu.setImageResource(R.drawable.wallpin);
 
         pSwitch = (SwitchCompat) findViewById(R.id.switch_pins);
         pSwitch.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
@@ -162,25 +166,21 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     Pin pin = (Pin) m.getTag();
                     m.setIcon(BitmapDescriptorFactory.fromResource(pinTypeToResource(pin.getType())));
                 }
-                PinsMenu.setImageResource(pinsMenuId);
+                pinsMenu.setImageResource(pinsMenuId);
             }
         });
 
 
-        PinsMenu.setOnClickListener(new View.OnClickListener() {
+        pinsMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(isPinsVisible()) {
                     setAllPinsVisibility(false,  null);
-                    if (currentMode == PinMode.ICON) {
-                        PinsMenu.setImageResource(R.drawable.wallpin);
-                    } else {
-                        PinsMenu.setImageResource(R.drawable.pinuno);
-                    }
+                    setToCorrespondingImage();
                     pinChosen = false;
                 } else {
                     setAllPinsVisibility(true,  null);
-                    PinsMenu.setImageResource(R.drawable.cancel);
+                    pinsMenu.setImageResource(R.drawable.cancel);
                 }
             }
         });
@@ -195,6 +195,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     pinChosen = true;
                 }
             });
+        }
+    }
+
+    private void setToCorrespondingImage() {
+        if (currentMode == PinMode.ICON) {
+            pinsMenu.setImageResource(R.drawable.wallpin);
+        } else {
+            pinsMenu.setImageResource(R.drawable.pinuno);
         }
     }
 
