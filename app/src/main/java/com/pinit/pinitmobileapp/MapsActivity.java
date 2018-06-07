@@ -166,6 +166,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     if (!isPinsVisible()) {
                         pinsMenuId = R.drawable.pinuno;
                     }
+                    pSwitch.setThumbDrawable(MapsActivity.this.getResources().getDrawable(R.drawable.switch_thumb_wallpins));
 
                 } else {
                     setMode(PinMode.ICON);
@@ -173,6 +174,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     if (!isPinsVisible()) {
                         pinsMenuId = R.drawable.wallpin;
                     }
+                    pSwitch.setThumbDrawable(MapsActivity.this.getResources().getDrawable(R.drawable.switch_thumb_pins));
                 }
 
                 for (Marker m : allMarkers) {
@@ -229,7 +231,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         this.currentMode = colour;
     }
 
-
     private void showAllCommentsBox(Pin pin) {
         View view = getLayoutInflater().inflate(R.layout.pin_comments, null);
         TextView title = view.findViewById(R.id.comments_list_title);
@@ -247,12 +248,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 .show();
     }
 
-
     private void showCommentDialogueBox(final Pin pin) {
         AlertDialog.Builder commentDialogueBuilder = new AlertDialog.Builder(MapsActivity.this);
-        LayoutInflater inflater = MapsActivity.this.getLayoutInflater();
         View commentView = getLayoutInflater().inflate(R.layout.activity_add_comment, null);
-        TextView commentDialogueBoxTitle = commentView.findViewById(R.id.addComment);
         final EditText commentInputText = commentView.findViewById(R.id.comment_text_input);
         AppCompatButton submitButton = commentView.findViewById(R.id.submit_comment);
         AppCompatButton cancelButton = commentView.findViewById(R.id.cancel_button);
@@ -260,7 +258,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         commentDialogueBuilder.setView(commentView);
         final AlertDialog commentDialogue = commentDialogueBuilder.create();
         commentDialogue.show();
-        commentDialogue.getWindow().setLayout(1000,800);
+        commentDialogue.getWindow().setLayout(1000,600);
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -271,7 +269,20 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String commentText = commentInputText.getText().toString();
+                Pin pin = new Pin(pinType, point.latitude, point.longitude);
+                api.uploadNewPin(pin, new NetworkListener<JSONObject>() {
+                    @Override
+                    public void onReceive(JSONObject response) {
+                        Pin addedPin = new Pin(response);
+                        addNewMarker(addedPin);
+
+                    }
+                    @Override
+                    public void onError(APIError error) {
+                        Toast.makeText(getApplication(), "You're not logged in :(", Toast.LENGTH_LONG).show();
+                    }
+                });
+                String commentText = commentInputText.getText().toString();
                 Comment comment = new Comment(pin, commentText);
                 api.uploadNewComment(comment, new NetworkListener<JSONObject>() {
                     @Override
@@ -289,7 +300,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
         });
     }
-
 
     private void setAllPinsVisibility(boolean pin, AppCompatButton bttn) {
         int visibilityPin = pin ? View.VISIBLE : View.GONE;
@@ -357,7 +367,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
         }
-
+      
         api.getAllPins(new NetworkListener<List<Pin>>() {
             @Override
             public void onReceive(List<Pin> pins) {
