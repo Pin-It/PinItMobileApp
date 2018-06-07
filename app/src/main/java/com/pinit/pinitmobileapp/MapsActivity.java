@@ -255,9 +255,21 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String commentText = commentInputText.getText().toString();
+                final String commentText = commentInputText.getText().toString();
                 Comment comment = new Comment(pin, commentText);
-                api.uploadNewComment(comment);
+                api.uploadNewComment(comment, new NetworkListener<JSONObject>() {
+                    @Override
+                    public void onReceive(JSONObject response) {
+                        pin.addComment(commentText);
+                        commentDialogue.dismiss();
+                    }
+
+                    @Override
+                    public void onError(APIError error) {
+                        String message = "Network error occured while posting comment, try again later";
+                        Toast.makeText(MapsActivity.this, message, Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
     }
@@ -381,7 +393,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         Pin pin = (Pin) marker.getTag();
         infoPinType.setText(pin.getType().toString());
-        infoComment.setText("not a comment");
+
+        List<String> comments = pin.getComments();
+        if (comments.isEmpty()) {
+            infoComment.setVisibility(View.GONE);
+        } else {
+            infoComment.setVisibility(View.VISIBLE);
+            infoComment.setText(comments.get(0));
+        }
         return view;
     }
 

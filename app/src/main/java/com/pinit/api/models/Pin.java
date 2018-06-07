@@ -20,7 +20,7 @@ public class Pin implements Model {
     private Type type;
     private double latitude;
     private double longitude;
-    private List<String> comments;
+    private List<String> comments = new ArrayList<>();
 
     public Pin(JSONObject json) {
         if (json == null) {
@@ -48,7 +48,6 @@ public class Pin implements Model {
         this.type = type;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.comments = new ArrayList<>();
     }
 
     @Override
@@ -88,6 +87,10 @@ public class Pin implements Model {
 
     public List<String> getComments() {
         return comments;
+    }
+
+    public void addComment(String commentText) {
+        comments.add(commentText);
     }
 
     public enum Type {
