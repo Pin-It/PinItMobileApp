@@ -20,7 +20,7 @@
             android:layout_height="29dp"
             android:background="#E0E0E0"
             android:fontFamily="@font/amatic_sc"
-            android:text="Cancel Button"
+            android:text="Cancel Pin"
             android:textSize="20sp"
             android:textColor="@android:color/white"
             android:textStyle="bold"
@@ -32,7 +32,7 @@
             android:layout_height="29dp"
             android:background="#fc6262"
             android:fontFamily="@font/amatic_sc"
-            android:text="@string/submit_comment"
+            android:text="submit"
             android:textSize="20sp"
             android:textColor="@android:color/white"
             android:textStyle="bold"
@@ -59,8 +59,6 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="90dp"
-        android:hint="Type your comment here (Optional)"
-        android:fontFamily="@font/amatic_sc"
         android:inputType="text" />
 
 
