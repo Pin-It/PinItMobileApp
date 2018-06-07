@@ -201,9 +201,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
         android:layout_marginBottom="38dp"
-        tools:checked="false"/>
+        android:layout_marginStart="7dp"
+        tools:checked="false" />
 
     <android.support.v7.widget.SwitchCompat
         style="@style/SwitchCompatStyleTwo"
@@ -211,9 +211,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
         android:layout_marginBottom="76dp"
-        android:layout_above="@id/switch_maps"/>
+        android:layout_marginStart="7dp"/>
 
 </RelativeLayout>
 
