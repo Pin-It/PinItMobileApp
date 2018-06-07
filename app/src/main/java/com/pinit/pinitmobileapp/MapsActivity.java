@@ -45,6 +45,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public static final String USER_TOKEN = "userToken";
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+
+    /**
+     * Used to anchor pins at a specific point, normalized to the range [0, 1]
+     * This makes the pins not "float".
+     */
+    public static final float PIN_ANCHOR_X = 0.5f;
+    public static final float PIN_ANCHOR_Y = 0.72f;
+
     private boolean mPermissionDenied = false;
     private GoogleMap mMap;
     private HeatmapTileProvider mProvider;
@@ -467,8 +475,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private void addNewMarker(Pin pin) {
         LatLng point = new LatLng(pin.getLatitude(), pin.getLongitude());
         String title = pin.getType().toString();
-        int color = pinTypeToResource(pin.getType());
-        MarkerOptions options = new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(color)).title(title);
+        int pinResource = pinTypeToResource(pin.getType());
+        MarkerOptions options = new MarkerOptions()
+                .position(point)
+                .icon(BitmapDescriptorFactory.fromResource(pinResource))
+                .anchor(PIN_ANCHOR_X, PIN_ANCHOR_Y)
+                .title(title);
         Marker marker = mMap.addMarker(options);
         marker.setTag(pin);
         allMarkers.add(marker);
