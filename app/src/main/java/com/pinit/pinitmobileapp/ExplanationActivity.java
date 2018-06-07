@@ -41,7 +41,7 @@ public class ExplanationActivity extends AppCompatActivity {
         fabdos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent secIntent = new Intent(ExplanationActivity.this, GeneralySafetyMapActivity.class);
+                Intent secIntent = new Intent(ExplanationActivity.this, MapsActivity.class);
                 secIntent.putExtra(MapsActivity.USER_TOKEN, token);
                 startActivity(secIntent);
                 finish();
