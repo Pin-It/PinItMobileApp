@@ -41,4 +41,6 @@
     <string name="button_5">Harrassment</string>
     <string name="button_6">Others</string>
 
+    <string name="info_more_comments">View more</string>
+
 </resources>

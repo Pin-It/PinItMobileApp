@@ -1,7 +1,11 @@
 package com.pinit.api.models;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Pin implements Model {
     public static final String API_ENDPOINT = "pins";
@@ -10,11 +14,13 @@ public class Pin implements Model {
     private static final String KEY_TYPE = "pin_type";
     private static final String KEY_LATITUDE = "latitude";
     private static final String KEY_LONGITUDE = "longitude";
+    private static final String KEY_COMMENTS = "comments";
 
     private int id;
     private Type type;
     private double latitude;
     private double longitude;
+    private List<String> comments = new ArrayList<>();
 
     public Pin(JSONObject json) {
         if (json == null) {
@@ -26,6 +32,11 @@ public class Pin implements Model {
             this.type = Type.fromInt(json.getInt(KEY_TYPE));
             this.latitude = json.getDouble(KEY_LATITUDE);
             this.longitude = json.getDouble(KEY_LONGITUDE);
+
+            JSONArray commentsJSONArray = json.getJSONArray(KEY_COMMENTS);
+            for (int i = 0; i < commentsJSONArray.length(); i++) {
+                this.comments.add(commentsJSONArray.getString(i));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("Malformed JSON, incompatible with Pin model");
@@ -72,6 +83,18 @@ public class Pin implements Model {
 
     public double getLongitude() {
         return longitude;
+    }
+
+    public List<String> getComments() {
+        return comments;
+    }
+
+    public void addComment(String commentText) {
+        comments.add(commentText);
+    }
+
+    public int getCommentCount() {
+        return comments.size();
     }
 
     public enum Type {

@@ -1,12 +1,15 @@
 package com.pinit.pinitmobileapp;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -14,15 +17,13 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.Toast;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -38,23 +39,29 @@ import com.pinit.api.models.Comment;
 import com.pinit.api.models.Pin;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.*;
 
-import co.mobiwise.materialintro.animation.MaterialIntroListener;
-import co.mobiwise.materialintro.shape.Focus;
-import co.mobiwise.materialintro.shape.FocusGravity;
-import co.mobiwise.materialintro.shape.ShapeType;
-import co.mobiwise.materialintro.view.MaterialIntroView;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
-        GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
+        GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
+        GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.InfoWindowAdapter,
+        GoogleMap.OnInfoWindowClickListener {
 
     public static final String USER_TOKEN = "userToken";
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+
+    /**
+     * Used to anchor pins at a specific point, normalized to the range [0, 1]
+     * This makes the pins not "float".
+     */
+    public static final float PIN_ANCHOR_X = 0.5f;
+    public static final float PIN_ANCHOR_Y = 0.72f;
+
     private boolean mPermissionDenied = false;
     private GoogleMap mMap;
     private HeatmapTileProvider mProvider;
@@ -77,7 +84,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private Pin.Type pinType = Pin.Type.OTHERS;
     public PinMode currentMode = PinMode.ICON;
     private boolean pinChosen = false;
-    private static final String SHOWCASE_ID = "Simple Showcase";
+
+    private static final String SHOWCASE_ID = "SHOWCASE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +172,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     if (!isPinsVisible()) {
                         pinsMenuId = R.drawable.pinuno;
                     }
+                    pSwitch.setThumbDrawable(MapsActivity.this.getResources().getDrawable(R.drawable.switch_thumb_wallpins));
 
                 } else {
                     setMode(PinMode.ICON);
@@ -171,6 +180,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     if (!isPinsVisible()) {
                         pinsMenuId = R.drawable.wallpin;
                     }
+                    pSwitch.setThumbDrawable(MapsActivity.this.getResources().getDrawable(R.drawable.switch_thumb_pins));
                 }
 
                 for (Marker m : allMarkers) {
@@ -228,12 +238,26 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         this.currentMode = colour;
     }
 
+    private void showAllCommentsBox(Pin pin) {
+        View view = getLayoutInflater().inflate(R.layout.pin_comments, null);
+        TextView title = view.findViewById(R.id.comments_list_title);
+        TextView subtitle = view.findViewById(R.id.comments_list_subtitle);
+        ListView list = view.findViewById(R.id.comments_list);
 
-    private void showCommentDialogueBox(final Pin pin) {
+        title.setText(pin.getType().toString());
+        subtitle.setText(pin.getCommentCount() + " comments");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.comment_list_item, R.id.comment_text, pin.getComments());
+        list.setAdapter(adapter);
+
+        new AlertDialog.Builder(MapsActivity.this)
+                .setView(view)
+                .create()
+                .show();
+    }
+
+    private void showCommentDialogueBox(final LatLng point) {
         AlertDialog.Builder commentDialogueBuilder = new AlertDialog.Builder(MapsActivity.this);
-        LayoutInflater inflater = MapsActivity.this.getLayoutInflater();
         View commentView = getLayoutInflater().inflate(R.layout.activity_add_comment, null);
-        TextView commentDialogueBoxTitle = commentView.findViewById(R.id.addComment);
         final EditText commentInputText = commentView.findViewById(R.id.comment_text_input);
         AppCompatButton submitButton = commentView.findViewById(R.id.submit_comment);
         AppCompatButton cancelButton = commentView.findViewById(R.id.cancel_button);
@@ -241,7 +265,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         commentDialogueBuilder.setView(commentView);
         final AlertDialog commentDialogue = commentDialogueBuilder.create();
         commentDialogue.show();
-        commentDialogue.getWindow().setLayout(1000,800);
+        commentDialogue.getWindow().setLayout(1000,600);
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -252,13 +276,37 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String commentText = commentInputText.getText().toString();
+                final Pin pin = new Pin(pinType, point.latitude, point.longitude);
+                api.uploadNewPin(pin, new NetworkListener<JSONObject>() {
+                    @Override
+                    public void onReceive(JSONObject response) {
+                        Pin addedPin = new Pin(response);
+                        addNewMarker(addedPin);
+
+                    }
+                    @Override
+                    public void onError(APIError error) {
+                        Toast.makeText(getApplication(), "You're not logged in :(", Toast.LENGTH_LONG).show();
+                    }
+                });
+                final String commentText = commentInputText.getText().toString();
                 Comment comment = new Comment(pin, commentText);
-                api.uploadNewComment(comment);
+                api.uploadNewComment(comment, new NetworkListener<JSONObject>() {
+                    @Override
+                    public void onReceive(JSONObject response) {
+                        pin.addComment(commentText);
+                        commentDialogue.dismiss();
+                    }
+
+                    @Override
+                    public void onError(APIError error) {
+                        String message = "Network error occured while posting comment, try again later";
+                        Toast.makeText(MapsActivity.this, message, Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
     }
-
 
     private void setAllPinsVisibility(boolean pin, AppCompatButton bttn) {
         int visibilityPin = pin ? View.VISIBLE : View.GONE;
@@ -300,52 +348,25 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
-        //   enableMyLocation();
+        mMap.setOnMapClickListener(this);
+        mMap.setOnMarkerClickListener(this);
+        mMap.setInfoWindowAdapter(this);
+        mMap.setOnInfoWindowClickListener(this);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-
-        mMap.setMyLocationEnabled(true);
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-
-        Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria,false));
-        if (location != null) {
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
-            CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(location.getLatitude(), location.getLongitude()))
-                    .zoom(17).bearing(90).tilt(40).build();
-            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-        }
-
-        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(final LatLng point) {
-                if (pincolor == -1) return;
-                if (!pinChosen) return;
-                lstLatLng.add(point);
-                Pin pin = new Pin(pinType, point.latitude, point.longitude);
-                api.uploadNewPin(pin, new NetworkListener<JSONObject>() {
-                    @Override
-                    public void onReceive(JSONObject response) {
-                        Pin addedPin = new Pin(response);
-                        addNewMarker(addedPin);
-                        showCommentDialogueBox(addedPin);
-                    }
-
-                    @Override
-                    public void onError(APIError error) {
-                        Toast.makeText(getApplication(), "You're not logged in :(", Toast.LENGTH_LONG).show();
-                    }
-                });
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+           enableMyLocation();
+        } else {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(MapsActivity.this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        LOCATION_PERMISSION_REQUEST_CODE);
+            } else {
+                ActivityCompat.requestPermissions(MapsActivity.this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        LOCATION_PERMISSION_REQUEST_CODE);
             }
-        });
-
+        }
+      
         api.getAllPins(new NetworkListener<List<Pin>>() {
             @Override
             public void onReceive(List<Pin> pins) {
@@ -361,47 +382,83 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
             }
         });
-
-        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                Log.d("MapReady", "click");
-//                Intent intent = new Intent(MapsActivity.this, AddCommentActivity.class);
-//                startActivity(intent);
-                return true;
-            }
-        });
-
     }
 
-//    public void onMapSearch(View view) {
-//        EditText locationSearch = (EditText) findViewById(R.id.editText);
-//        String location = locationSearch.getText().toString();
-//        List<Address> addressList = null;
-//
-//        if (location != null || !location.equals("")) {
-//            Geocoder geocoder = new Geocoder(this);
-//            try {
-//                addressList = geocoder.getFromLocationName(location, 1);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//            Address address = addressList.get(0);
-//            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-//            mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.circle)));
-//            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-//        }
-//    }
+    @Override
+    public void onMapClick(final LatLng point) {
+        if (pincolor == -1) return;
+        if (!pinChosen) return;
+        lstLatLng.add(point);
+        showCommentDialogueBox(point);
+    }
 
-//    private void enableMyLocation() {
-//        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-//        != PackageManager.PERMISSION_GRANTED) {
-//            PermissionUtility.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE, Manifest.permission.ACCESS_FINE_LOCATION, true);
-//        } else if (mMap != null){
-//            mMap.setMyLocationEnabled(true);
-//        }
-//    }
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        marker.showInfoWindow();
+        return true;
+    }
+
+    @Override
+    public View getInfoWindow(Marker marker) {
+        View view = getLayoutInflater().inflate(R.layout.pin_info_window, null);
+        TextView infoPinType = view.findViewById(R.id.info_pin_type);
+        TextView infoComment = view.findViewById(R.id.info_comment);
+
+        Pin pin = (Pin) marker.getTag();
+        infoPinType.setText(pin.getType().toString());
+
+        List<String> comments = pin.getComments();
+        if (comments.isEmpty()) {
+            infoComment.setVisibility(View.GONE);
+        } else {
+            infoComment.setVisibility(View.VISIBLE);
+            infoComment.setText(comments.get(0));
+        }
+        return view;
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        return null;
+    }
+
+    public void onMapSearch(View view) {
+        EditText locationSearch = (EditText) findViewById(R.id.editText);
+        String location = locationSearch.getText().toString();
+        List<Address> addressList = null;
+
+        if (location != null || !location.equals("")) {
+            Geocoder geocoder = new Geocoder(this);
+            try {
+                addressList = geocoder.getFromLocationName(location, 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Address address = addressList.get(0);
+            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.circle)));
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void enableMyLocation() {
+        mMap.setMyLocationEnabled(true);
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+
+
+        Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria,false));
+        if (location != null) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
+            CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(location.getLatitude(), location.getLongitude()))
+                    .zoom(17).bearing(90).tilt(40).build();
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        }
+    }
 
     @Override
     public boolean onMyLocationButtonClick() {
@@ -414,19 +471,22 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
     }
 
-  // @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-//                                           @NonNull int[] grantResults) {
-//        if(requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
-//            return;
-//        }
-//
-//        if(PermissionUtility.isPermissionGranted(permissions, grantResults, Manifest.permission.ACCESS_FINE_LOCATION)) {
-//            enableMyLocation();
-//        } else {
-//            mPermissionDenied = true;
-//        }
-//    }
+   @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        switch(requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    enableMyLocation();
+                } else {
+                   mPermissionDenied = true;
+                }
+            }
+
+        }
+    }
 
     @Override
     protected void onResumeFragments() {
@@ -480,8 +540,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private void addNewMarker(Pin pin) {
         LatLng point = new LatLng(pin.getLatitude(), pin.getLongitude());
         String title = pin.getType().toString();
-        int color = pinTypeToResource(pin.getType());
-        MarkerOptions options = new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(color)).title(title);
+        int pinResource = pinTypeToResource(pin.getType());
+        MarkerOptions options = new MarkerOptions()
+                .position(point)
+                .icon(BitmapDescriptorFactory.fromResource(pinResource))
+                .anchor(PIN_ANCHOR_X, PIN_ANCHOR_Y)
+                .title(title);
         Marker marker = mMap.addMarker(options);
         marker.setTag(pin);
         allMarkers.add(marker);
@@ -503,6 +567,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             marker.setVisible(true);
         }
     }
+
     private void showTutorSequence(int millis) {
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(millis);
@@ -552,4 +617,10 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         sequence.start();
     }
 
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Pin pin = (Pin) marker.getTag();
+        showAllCommentsBox(pin);
+    }
 }

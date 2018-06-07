@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/info_window_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/info_pin_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:textAlignment="center"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/info_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:textAlignment="center"
+        android:textStyle="italic" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/info_more_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:minHeight="0dp"
+        android:background="@color/colorAccent"
+        android:drawableRight="@drawable/ic_chevron_right_black_24dp"
+        android:fontFamily="@font/amatic_sc"
+        android:text="@string/info_more_comments"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        tools:ignore="RtlHardcoded" />
+</LinearLayout>

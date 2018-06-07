@@ -100,7 +100,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mNotUniStudent.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent newIntent = new Intent(LoginActivity.this, GeneralySafetyMapActivity.class);
+                Intent newIntent = new Intent(LoginActivity.this, MapsActivity.class);
                 startActivity(newIntent);
                 finish();
             }
@@ -151,17 +151,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         preferences.edit()
                 .putString(PREFERENCE_USER_TOKEN, token)
                 .apply();
-    }
-
-    private boolean isFirstTime() {
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        boolean ranBefore = preferences.getBoolean("RanBefore", false);
-        if (!ranBefore) {
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("RanBefore",true);
-            editor.commit();
-        }
-        return !ranBefore;
     }
 
     private void populateAutoComplete() {
