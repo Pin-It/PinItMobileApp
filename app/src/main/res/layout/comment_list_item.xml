@@ -4,7 +4,7 @@
 
     <TextView
         android:id="@+id/comment_text"
-        android:background="@color/colorPrimaryDark"
+        android:background="@android:color/white"
         android:padding="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
