@@ -280,28 +280,27 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 api.uploadNewPin(pin, new NetworkListener<JSONObject>() {
                     @Override
                     public void onReceive(JSONObject response) {
-                        Pin addedPin = new Pin(response);
+                        final Pin addedPin = new Pin(response);
                         addNewMarker(addedPin);
+                        final String commentText = commentInputText.getText().toString();
+                        Comment comment = new Comment(addedPin, commentText);
+                        api.uploadNewComment(comment, new NetworkListener<JSONObject>() {
+                            @Override
+                            public void onReceive(JSONObject response) {
+                                pin.addComment(commentText);
+                                commentDialogue.dismiss();
+                            }
 
+                            @Override
+                            public void onError(APIError error) {
+                                String message = "Network error occured while posting comment, try again later";
+                                Toast.makeText(MapsActivity.this, message, Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
                     @Override
                     public void onError(APIError error) {
                         Toast.makeText(getApplication(), "You're not logged in :(", Toast.LENGTH_LONG).show();
-                    }
-                });
-                final String commentText = commentInputText.getText().toString();
-                Comment comment = new Comment(pin, commentText);
-                api.uploadNewComment(comment, new NetworkListener<JSONObject>() {
-                    @Override
-                    public void onReceive(JSONObject response) {
-                        pin.addComment(commentText);
-                        commentDialogue.dismiss();
-                    }
-
-                    @Override
-                    public void onError(APIError error) {
-                        String message = "Network error occured while posting comment, try again later";
-                        Toast.makeText(MapsActivity.this, message, Toast.LENGTH_LONG).show();
                     }
                 });
             }
