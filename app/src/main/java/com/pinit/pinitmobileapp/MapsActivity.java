@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
@@ -39,6 +40,15 @@ import org.json.JSONObject;
 
 import java.util.*;
 
+import co.mobiwise.materialintro.animation.MaterialIntroListener;
+import co.mobiwise.materialintro.shape.Focus;
+import co.mobiwise.materialintro.shape.FocusGravity;
+import co.mobiwise.materialintro.shape.ShapeType;
+import co.mobiwise.materialintro.view.MaterialIntroView;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -67,6 +77,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private Pin.Type pinType = Pin.Type.OTHERS;
     public PinMode currentMode = PinMode.ICON;
     private boolean pinChosen = false;
+    private static final String SHOWCASE_ID = "Simple Showcase";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +90,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             token = extras.getString(USER_TOKEN, null);
         }
         api = new PinItAPI(Volley.newRequestQueue(this), token);
-  
+
         pincolor = R.drawable.pinuno;
         pinshape = R.drawable.circlepin;
 
@@ -122,7 +133,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     hideAllPins();
                     pinsMenu.hide();
                     if (isPinsVisible()) {
-                        setAllPinsVisibility(false,null);
+                        setAllPinsVisibility(false, null);
                     }
                 } else {
                     // Pin mode
@@ -174,8 +185,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         pinsMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isPinsVisible()) {
-                    setAllPinsVisibility(false,  null);
+                if (isPinsVisible()) {
+                    setAllPinsVisibility(false, null);
 //                    setToCorrespondingImage();
                     if (currentMode == PinMode.ICON) {
                         pinsMenu.setImageResource(R.drawable.wallpin);
@@ -184,7 +195,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     }
                     pinChosen = false;
                 } else {
-                    setAllPinsVisibility(true,  null);
+                    setAllPinsVisibility(true, null);
                     pinsMenu.setImageResource(R.drawable.cancel);
                 }
             }
@@ -201,6 +212,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 }
             });
         }
+        showTutorSequence(500);
+
     }
 
     private void setToCorrespondingImage() {
@@ -490,4 +503,53 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             marker.setVisible(true);
         }
     }
+    private void showTutorSequence(int millis) {
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(millis);
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, SHOWCASE_ID);
+
+        sequence.setConfig(config);
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                        .setTarget(mSwitch)
+                        .setMaskColour(Color.argb(200, 252,98,98))
+                        .setTitleTextColor(Color.WHITE)
+                        .setContentTextColor(Color.WHITE)
+                        .setTitleText("Switch Map Modes")
+                        .setDismissText("GOT IT")
+                        .setContentText("Use this switch to change between different map modes - pin mode and the general safety mode")
+                        .withCircleShape()
+                        .build()
+        );
+
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                        .setTarget(pinsMenu)
+                        .setMaskColour(Color.argb(200, 252,98,98))
+                        .setTitleTextColor(Color.WHITE)
+                        .setContentTextColor(Color.WHITE)
+                        .setTitleText("Pin Menu")
+                        .setDismissText("GOT IT")
+                        .setContentText("Press on the menu to see different types of pins")
+                        .withCircleShape()
+                        .build()
+        );
+
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                        .setTarget(pSwitch)
+                        .setMaskColour(Color.argb(200, 252,98,98))
+                        .setTitleTextColor(Color.WHITE)
+                        .setContentTextColor(Color.WHITE)
+                        .setTitleText("Switch Pin Modes")
+                        .setDismissText("IM READY TO USE THIS APP")
+                        .setContentText("Use this switch to switch between colored pins and shaped pins")
+                        .withCircleShape()
+                        .build()
+        );
+
+        sequence.start();
+    }
+
 }
