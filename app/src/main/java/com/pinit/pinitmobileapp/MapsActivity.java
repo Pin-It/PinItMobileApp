@@ -153,6 +153,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     if (!isPinsVisible()) {
                         pinsMenuId = R.drawable.pinuno;
                     }
+                    pSwitch.setThumbDrawable(MapsActivity.this.getResources().getDrawable(R.drawable.switch_thumb_wallpins));
 
                 } else {
                     setMode(PinMode.ICON);
@@ -160,6 +161,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     if (!isPinsVisible()) {
                         pinsMenuId = R.drawable.wallpin;
                     }
+                    pSwitch.setThumbDrawable(MapsActivity.this.getResources().getDrawable(R.drawable.switch_thumb_pins));
                 }
 
                 for (Marker m : allMarkers) {
