@@ -19,10 +19,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.Toast;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -46,7 +43,8 @@ import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
-        GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.InfoWindowAdapter {
+        GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.InfoWindowAdapter,
+        GoogleMap.OnInfoWindowClickListener {
 
     public static final String USER_TOKEN = "userToken";
 
@@ -232,6 +230,24 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     }
 
 
+    private void showAllCommentsBox(Pin pin) {
+        View view = getLayoutInflater().inflate(R.layout.pin_comments, null);
+        TextView title = view.findViewById(R.id.comments_list_title);
+        TextView subtitle = view.findViewById(R.id.comments_list_subtitle);
+        ListView list = view.findViewById(R.id.comments_list);
+
+        title.setText(pin.getType().toString());
+        subtitle.setText(pin.getCommentCount() + " comments");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.comment_list_item, R.id.comment_text, pin.getComments());
+        list.setAdapter(adapter);
+
+        new AlertDialog.Builder(MapsActivity.this)
+                .setView(view)
+                .create()
+                .show();
+    }
+
+
     private void showCommentDialogueBox(final Pin pin) {
         AlertDialog.Builder commentDialogueBuilder = new AlertDialog.Builder(MapsActivity.this);
         LayoutInflater inflater = MapsActivity.this.getLayoutInflater();
@@ -318,6 +334,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         mMap.setOnMapClickListener(this);
         mMap.setOnMarkerClickListener(this);
         mMap.setInfoWindowAdapter(this);
+        mMap.setOnInfoWindowClickListener(this);
         //   enableMyLocation();
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -592,4 +609,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         sequence.start();
     }
 
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Pin pin = (Pin) marker.getTag();
+        showAllCommentsBox(pin);
+    }
 }

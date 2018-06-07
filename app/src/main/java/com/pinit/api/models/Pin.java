@@ -93,6 +93,10 @@ public class Pin implements Model {
         comments.add(commentText);
     }
 
+    public int getCommentCount() {
+        return comments.size();
+    }
+
     public enum Type {
         PICKPOCKET, DRUNK, ROBBERY, SCAM, HARASSMENT, OTHERS;
 
