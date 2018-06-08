@@ -3,23 +3,41 @@ package com.pinit.api.models;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.lessThan;
+import static org.junit.Assert.*;
 
 public class PinTest {
-    @Test
-    public void canConstructWithJSONObject() throws JSONException {
-        JSONObject json = new JSONObject();
-        json.put("id", 10);
-        json.put("pin_type", 1);
-        json.put("latitude", 123.456);
-        json.put("longitude", 0.65432);
-        json.put("comments", new JSONArray(new String[] {"comment 1", "comment 2"}));
+    private JSONObject validJSON;
+    private JSONObject invalidJSON;
+    private JSONObject negativeIdJSON;
+    private JSONObject nullJSON;
 
-        Pin pin = new Pin(json);
+    @Before
+    public void setUp() throws JSONException {
+        validJSON = new JSONObject();
+        validJSON.put("id", 10);
+        validJSON.put("pin_type", 1);
+        validJSON.put("latitude", 123.456);
+        validJSON.put("longitude", 0.65432);
+        validJSON.put("comments", new JSONArray(new String[]{"comment 1", "comment 2"}));
+
+        invalidJSON = new JSONObject();
+        invalidJSON.put("wrong key", "wrong value");
+
+        negativeIdJSON = new JSONObject(validJSON.toString());
+        negativeIdJSON.put("id", -10);
+
+        nullJSON = null;
+    }
+
+    @Test
+    public void canConstructWithJSONObject() {
+        Pin pin = new Pin(validJSON);
         assertThat(pin.getId(), is(10));
         assertThat(pin.getType(), is(Pin.Type.PICKPOCKET));
         assertThat(pin.getLatitude(), is(123.456));
@@ -27,12 +45,9 @@ public class PinTest {
     }
 
     @Test
-    public void throwsExceptionWhenConstructingPinWithInvalidJSONObject() throws JSONException {
-        JSONObject json = new JSONObject();
-        json.put("wrong key", "wrong value");
-
+    public void throwsExceptionWhenConstructingPinWithInvalidJSONObject() {
         try {
-            new Pin(json);
+            new Pin(invalidJSON);
             fail("Expected an IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             // As expected
@@ -42,10 +57,27 @@ public class PinTest {
     @Test
     public void throwsExceptionWhenConstructingPinWithNull() {
         try {
-            new Pin(null);
+            new Pin(nullJSON);
             fail("Expected an IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             // As expected
         }
+    }
+
+    @Test
+    public void idIsNotValidIfIdNeverSpecified() {
+        Pin pin = new Pin(Pin.Type.PICKPOCKET, 1.2345, 2.22222);
+        assertFalse(pin.idIsValid());
+    }
+
+    @Test
+    public void nonNegativeIdsAreValid() {
+        Pin validPin = new Pin(validJSON);
+        assertThat(validPin.getId(), greaterThanOrEqualTo(0));
+        assertTrue(validPin.idIsValid());
+
+        Pin invalidPin = new Pin(negativeIdJSON);
+        assertThat(invalidPin.getId(), lessThan(0));
+        assertFalse(invalidPin.idIsValid());
     }
 }
