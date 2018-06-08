@@ -17,11 +17,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.AppCompatButton;
-import android.util.Log;
-import android.view.LayoutInflater;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.*;
 
@@ -37,7 +35,6 @@ import com.pinit.api.NetworkListener;
 import com.pinit.api.PinItAPI;
 import com.pinit.api.models.Comment;
 import com.pinit.api.models.Pin;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.*;
@@ -238,16 +235,28 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         this.currentMode = colour;
     }
 
-    private void showAllCommentsBox(Pin pin) {
+    private void showAllCommentsBox(final Pin pin) {
         View view = getLayoutInflater().inflate(R.layout.pin_comments, null);
         TextView title = view.findViewById(R.id.comments_list_title);
         TextView subtitle = view.findViewById(R.id.comments_list_subtitle);
         ListView list = view.findViewById(R.id.comments_list);
+        Button addCommentButton = view.findViewById(R.id.comments_list_add);
 
         title.setText(pin.getType().toString());
         subtitle.setText(pin.getCommentCount() + " comments");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.comment_list_item, R.id.comment_text, pin.getComments());
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.comment_list_item, R.id.comment_text, pin.getComments());
         list.setAdapter(adapter);
+        addCommentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCommentDialogueBox(pin, new OnCommentPostedListener(MapsActivity.this) {
+                    @Override
+                    protected void onCommentPosted() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        });
 
         new AlertDialog.Builder(MapsActivity.this)
                 .setView(view)
@@ -255,17 +264,26 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 .show();
     }
 
-    private void showCommentDialogueBox(final LatLng point) {
-        AlertDialog.Builder commentDialogueBuilder = new AlertDialog.Builder(MapsActivity.this);
-        View commentView = getLayoutInflater().inflate(R.layout.activity_add_comment, null);
-        final EditText commentInputText = commentView.findViewById(R.id.comment_text_input);
-        AppCompatButton submitButton = commentView.findViewById(R.id.submit_comment);
-        AppCompatButton cancelButton = commentView.findViewById(R.id.cancel_button);
+    private void showCommentDialogueBox(final Pin pin) {
+        showCommentDialogueBox(pin, null);
+    }
 
-        commentDialogueBuilder.setView(commentView);
-        final AlertDialog commentDialogue = commentDialogueBuilder.create();
+    private void showCommentDialogueBox(final Pin pin, final OnCommentPostedListener listener) {
+        final View commentView = getLayoutInflater().inflate(R.layout.activity_add_comment, null);
+        final EditText commentInputText = commentView.findViewById(R.id.comment_text_input);
+        final AppCompatButton submitButton = commentView.findViewById(R.id.submit_comment);
+        final AppCompatButton cancelButton = commentView.findViewById(R.id.cancel_button);
+
+        final AlertDialog commentDialogue = new AlertDialog.Builder(MapsActivity.this)
+                .setView(commentView)
+                .create();
         commentDialogue.show();
         commentDialogue.getWindow().setLayout(1000,600);
+
+        String buttonText = pin.idIsValid() ? "comment" : "pin";
+        cancelButton.setText(String.format(getString(R.string.comment_dialogue_cancel), buttonText));
+        submitButton.setText(String.format(getString(R.string.comment_dialogue_submit), buttonText));
+        commentInputText.setHint(pin.idIsValid() ? "" : "(Optional)");
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -276,31 +294,43 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Pin pin = new Pin(pinType, point.latitude, point.longitude);
-                api.uploadNewPin(pin, new NetworkListener<JSONObject>() {
-                    @Override
-                    public void onReceive(JSONObject response) {
-                        final Pin addedPin = new Pin(response);
-                        addNewMarker(addedPin);
-                        final String commentText = commentInputText.getText().toString();
-                        Comment comment = new Comment(addedPin, commentText);
-                        api.uploadNewComment(comment, new NetworkListener<JSONObject>() {
-                            @Override
-                            public void onReceive(JSONObject response) {
-                                pin.addComment(commentText);
-                                commentDialogue.dismiss();
-                            }
-
-                            @Override
-                            public void onError(APIError error) {
-                                String message = "Network error occured while posting comment, try again later";
-                                Toast.makeText(MapsActivity.this, message, Toast.LENGTH_LONG).show();
-                            }
-                        });
+                if (pin.idIsValid()) {
+                    // Adding comment to existing pin
+                    if (getCommentText().isEmpty()) {
+                        commentInputText.setError("Please enter a comment");
+                    } else {
+                        uploadComment(pin);
                     }
+                } else {
+                    // Add comment AND pin
+                    api.uploadNewPin(pin, new OnPinUploadedListener(MapsActivity.this) {
+                        @Override
+                        protected void onPinUploaded(Pin uploadedPin) {
+                            addNewMarker(uploadedPin);
+                            uploadComment(uploadedPin);
+                        }
+                    });
+                }
+            }
+
+            private String getCommentText() {
+                return commentInputText.getText().toString();
+            }
+
+            private void uploadComment(final Pin pin) {
+                final String commentText = getCommentText();
+                if (commentText.isEmpty()) {
+                    commentDialogue.dismiss();
+                    return;
+                }
+                Comment comment = new Comment(pin, commentText);
+                api.uploadNewComment(comment, new OnCommentPostedListener(MapsActivity.this) {
                     @Override
-                    public void onError(APIError error) {
-                        Toast.makeText(getApplication(), "You're not logged in :(", Toast.LENGTH_LONG).show();
+                    protected void onCommentPosted() {
+                        pin.addComment(commentText);
+                        commentDialogue.dismiss();
+                        if (listener != null)
+                            listener.onCommentPosted();
                     }
                 });
             }
@@ -388,7 +418,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         if (pincolor == -1) return;
         if (!pinChosen) return;
         lstLatLng.add(point);
-        showCommentDialogueBox(point);
+        showCommentDialogueBox(new Pin(pinType, point.latitude, point.longitude));
     }
 
     @Override
