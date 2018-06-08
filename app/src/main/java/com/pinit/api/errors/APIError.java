@@ -15,15 +15,15 @@ public abstract class APIError extends Exception {
         if (error instanceof ClientError) {
             switch (response.statusCode) {
                 case BadRequestError.STATUS_CODE:
-                    return new BadRequestError(error.getMessage());
+                    return new BadRequestError(error.getMessage(), error.networkResponse);
                 case UnauthorizedError.STATUS_CODE:
-                    return new UnauthorizedError(error.getMessage());
+                    return new UnauthorizedError(error.getMessage(), error.networkResponse);
                 case ForbiddenError.STATUS_CODE:
-                    return new ForbiddenError(error.getMessage());
+                    return new ForbiddenError(error.getMessage(), error.networkResponse);
                 case NotFoundError.STATUS_CODE:
-                    return new NotFoundError(error.getMessage());
+                    return new NotFoundError(error.getMessage(), error.networkResponse);
                 default:
-                    return new HTTPClientError(error.getMessage());
+                    return new HTTPClientError(error.getMessage(), error.networkResponse);
             }
         } else if (error instanceof NoConnectionError) {
             return new NotConnectedError(error.getMessage());
