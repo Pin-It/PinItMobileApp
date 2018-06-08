@@ -50,11 +50,15 @@ public class Pin implements Model {
         this.longitude = longitude;
     }
 
+    public boolean idIsValid() {
+        return id > -1;
+    }
+
     @Override
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
         try {
-            if (id > -1) json.put(KEY_ID, this.id);
+            if (idIsValid()) json.put(KEY_ID, this.id);
             json.put(KEY_TYPE, this.type.toInt());
             json.put(KEY_LATITUDE, this.latitude);
             json.put(KEY_LONGITUDE, this.longitude);
