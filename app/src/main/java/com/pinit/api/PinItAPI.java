@@ -5,6 +5,7 @@ import com.android.volley.RequestQueue;
 import com.pinit.api.errors.APIError;
 import com.pinit.api.errors.BadRequestError;
 import com.pinit.api.models.Comment;
+import com.pinit.api.models.Like;
 import com.pinit.api.models.Pin;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,6 +24,7 @@ public class PinItAPI {
     private static final String API_URL = BASE_URL + "api/";
     private static final String PINS_URL = API_URL + Pin.API_ENDPOINT + "/";
     private static final String COMMENTS_URL = API_URL + Comment.API_ENDPOINT + "/";
+    private static final String LIKES_URL = API_URL + Like.API_ENDPOINT + "/";
     private static final String TOKEN_AUTH_URL = BASE_URL + "api-token-auth/";
 
     private static final String TOKEN_FIELD = "token";
@@ -187,6 +189,24 @@ public class PinItAPI {
 
     public void uploadNewComment(Comment comment) {
         uploadNewComment(comment, null);
+    }
+
+    /**
+     * Uploads a new pin to the server
+     * @param like the comment to be uploaded
+     * @param listener (optional) listener for the result of the POST request
+     */
+    public void uploadNewLike(Like like, NetworkListener<JSONObject> listener) {
+        getNewJSONObjectRequest()
+                .withMethod(Request.Method.POST)
+                .withURL(LIKES_URL)
+                .withJSONData(like.toJSONObject())
+                .withNetworkListener(listener)
+                .send();
+    }
+
+    public void uploadNewLike(Like like) {
+        uploadNewLike(like, null);
     }
 
     private JSONRequestBuilder<JSONObject> getNewJSONObjectRequest() {

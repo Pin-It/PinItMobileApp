@@ -15,12 +15,14 @@ public class Pin implements Model {
     private static final String KEY_LATITUDE = "latitude";
     private static final String KEY_LONGITUDE = "longitude";
     private static final String KEY_COMMENTS = "comments";
+    private static final String KEY_LIKES = "likes";
 
     private int id;
     private Type type;
     private double latitude;
     private double longitude;
     private List<String> comments = new ArrayList<>();
+    private int likes;
 
     public Pin(JSONObject json) {
         if (json == null) {
@@ -32,6 +34,7 @@ public class Pin implements Model {
             this.type = Type.fromInt(json.getInt(KEY_TYPE));
             this.latitude = json.getDouble(KEY_LATITUDE);
             this.longitude = json.getDouble(KEY_LONGITUDE);
+            this.likes = json.getInt(KEY_LIKES);
 
             JSONArray commentsJSONArray = json.getJSONArray(KEY_COMMENTS);
             for (int i = 0; i < commentsJSONArray.length(); i++) {
@@ -48,6 +51,7 @@ public class Pin implements Model {
         this.type = type;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.likes = 0;
     }
 
     public boolean idIsValid() {
@@ -91,6 +95,10 @@ public class Pin implements Model {
 
     public List<String> getComments() {
         return comments;
+    }
+
+    public int getLikes() {
+        return likes;
     }
 
     public void addComment(String commentText) {
