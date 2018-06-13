@@ -46,9 +46,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoginActivity" />
-        <activity android:name=".ExplanationActivity"></activity>
+        <activity android:name=".ExplanationActivity" />
         <activity android:name=".MapsActivity" />
-        <activity android:name=".AddCommentActivity" android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
+        <activity
+            android:name=".AddCommentActivity"
+            android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
+        <activity android:name=".UserPurposeActivity"></activity>
     </application>
 
 </manifest>
