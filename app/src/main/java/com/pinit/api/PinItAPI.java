@@ -174,7 +174,7 @@ public class PinItAPI {
     }
 
     /**
-     * Uploads a new pin to the server
+     * Uploads a new comment to the server
      * @param comment the comment to be uploaded
      * @param listener (optional) listener for the result of the POST request
      */
@@ -192,7 +192,7 @@ public class PinItAPI {
     }
 
     /**
-     * Uploads a new pin to the server
+     * Uploads a new like to the server
      * @param like the comment to be uploaded
      * @param listener (optional) listener for the result of the POST request
      */
