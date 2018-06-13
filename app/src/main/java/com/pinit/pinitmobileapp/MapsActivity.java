@@ -80,6 +80,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private Pin.Type pinType = Pin.Type.OTHERS;
     public PinMode currentMode = PinMode.ICON;
     private boolean pinChosen = false;
+    private EditText locSearch;
 
     private static final String SHOWCASE_ID = "SHOWCASE";
 
@@ -149,6 +150,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
         });
 
+        locSearch = (EditText) findViewById(R.id.editText);
         pinsMenu = (FloatingActionButton) findViewById(R.id.switchPinButton);
         pinsMenu.setImageResource(R.drawable.wallpin);
 
@@ -222,7 +224,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         Bundle resultIntent = getIntent().getExtras();
         if (resultIntent != null) {
             if (resultIntent.getInt("planning") == R.id.planning) {
-                showTutorSequence(500);
+                planningTripTutorSequence(500);
             }
         }
     }
@@ -599,6 +601,43 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         for (Marker marker : allMarkers) {
             marker.setVisible(true);
         }
+    }
+
+    private void planningTripTutorSequence(int millis) {
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(millis);
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, SHOWCASE_ID);
+        sequence.setConfig(config);
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                .setTarget(mSwitch)
+                .setMaskColour(Color.argb(220,252,98,98))
+                .setTitleTextColor(Color.WHITE)
+                .setContentTextColor(Color.argb(255, 255,255 ,255))
+                .setTitleText("Welcome to the General Safety Map Mode!")
+                .setContentText("Here, you will be able to see the general safety of the area through the heat map. " +
+                        "All colored areas represent danger, but depending on the density of danger, the map shows green, yellow, and red. " +
+                        "With the switch here, you can switch to the Pin Map mode where you can pin in specific" +
+                        "locations yourself that is dangerous." )
+                .setDismissText("I'm done reading. Let's Continue!")
+                .withCircleShape()
+                .build()
+        );
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                .setTarget(locSearch)
+                .setMaskColour(Color.argb(200, 252,98,98))
+                .setTitleTextColor(Color.WHITE)
+                .setContentTextColor(Color.WHITE)
+                .setTitleText("Look up the city you want to visit")
+                .setContentText("Search the city you want to visit and see how the general safety of the area is!")
+                .setDismissText("Let's keep going")
+                .withRectangleShape()
+                .build()
+        );
+
+        sequence.start();
     }
 
     private void showTutorSequence(int millis) {
