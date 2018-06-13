@@ -218,8 +218,13 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 }
             });
         }
-        showTutorSequence(500);
 
+        Bundle resultIntent = getIntent().getExtras();
+        if (resultIntent != null) {
+            if (resultIntent.getInt("planning") == R.id.planning) {
+                showTutorSequence(500);
+            }
+        }
     }
 
     private void setToCorrespondingImage() {

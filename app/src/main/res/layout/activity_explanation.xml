@@ -70,6 +70,7 @@
 
 
     <Button
+        android:id="@+id/pressMe"
         android:layout_width="117dp"
         android:layout_height="54dp"
         android:background="@color/colorAccent"
