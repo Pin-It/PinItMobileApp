@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 public class ExplanationActivity extends AppCompatActivity {
 
@@ -14,6 +15,7 @@ public class ExplanationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         final String token = getIntent().getExtras().getString(MapsActivity.USER_TOKEN, null);
 
+
         if (!isFirstTime()) {
             Intent nextIntent = new Intent(ExplanationActivity.this, MapsActivity.class);
             nextIntent.putExtra(MapsActivity.USER_TOKEN, token);
@@ -21,6 +23,15 @@ public class ExplanationActivity extends AppCompatActivity {
             finish();
         }
         setContentView(R.layout.activity_explanation);
+        Button press = (Button)findViewById(R.id.pressMe);
+        press.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent next = new Intent(ExplanationActivity.this, UserPurposeActivity.class);
+                startActivity(next);
+                finish();
+            }
+        });
     }
 
     private boolean isFirstTime() {

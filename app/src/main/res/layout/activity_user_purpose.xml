@@ -1,9 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
     tools:context=".UserPurposeActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/preferenceText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="7dp"
+        android:fontFamily="@font/amatic_sc"
+        android:gravity="center"
+        android:text="Tell us more about you"
+        android:textAlignment="center"
+        android:textColor="#fc6262"
+        android:textSize="40sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/amatic_sc"
+        android:text="What would you like to use Pin-It for?"
+        android:textSize="30sp" />
+
+    <RadioGroup
+        android:id="@+id/radioPurpose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="20dp">
+
+        <RadioButton
+            android:id="@+id/travelling"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/amatic_sc"
+            android:gravity="center_horizontal"
+            android:text="I'm travelling right now!"
+            android:textSize="25sp" />
+
+        <RadioButton
+            android:id="@+id/planning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/amatic_sc"
+            android:gravity="center_horizontal"
+            android:text="I'm planning a trip to a different city"
+            android:textSize="25sp" />
+
+        <RadioButton
+            android:id="@+id/moving"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/amatic_sc"
+            android:gravity="center_horizontal"
+            android:text="I'm moving to a new city for the first time"
+            android:textSize="25sp" />
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="329dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/amatic_sc"
+        android:text="To enhance your experience with the application, one quick question:"
+        android:textSize="18sp" />
+
+    <TextView
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/amatic_sc"
+        android:text="Are you colorblind?"
+        android:textSize="18sp" />
+
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/yesButton"
+            android:layout_width="318dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/amatic_sc"
+            android:text="Yes!"
+            android:textSize="15sp" />
+
+        <RadioButton
+            android:id="@+id/noButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/amatic_sc"
+            android:text="Nope"
+            android:textSize="15sp" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/gettingStarted"
+        android:layout_width="175dp"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:text="Let's get started"
+        android:fontFamily="@font/amatic_sc"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:shadowColor="#A9A9A9"/>
+
+
+</LinearLayout>
