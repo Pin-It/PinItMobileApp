@@ -9,9 +9,6 @@ import android.view.View;
 
 public class ExplanationActivity extends AppCompatActivity {
 
-    private FloatingActionButton fabuno;
-    private FloatingActionButton fabdos;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,29 +21,6 @@ public class ExplanationActivity extends AppCompatActivity {
             finish();
         }
         setContentView(R.layout.activity_explanation);
-
-        fabuno = findViewById(R.id.fab1);
-        fabdos = findViewById(R.id.fab2);
-
-        fabuno.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent nextIntent = new Intent(ExplanationActivity.this, MapsActivity.class);
-                nextIntent.putExtra(MapsActivity.USER_TOKEN, token);
-                startActivity(nextIntent);
-                finish();
-            }
-        });
-
-        fabdos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent secIntent = new Intent(ExplanationActivity.this, MapsActivity.class);
-                secIntent.putExtra(MapsActivity.USER_TOKEN, token);
-                startActivity(secIntent);
-                finish();
-            }
-        });
     }
 
     private boolean isFirstTime() {

@@ -19,7 +19,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.AppCompatButton;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.*;
 
