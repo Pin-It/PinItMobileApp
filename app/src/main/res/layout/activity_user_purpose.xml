@@ -19,15 +19,15 @@
         android:text="Tell us more about you"
         android:textAlignment="center"
         android:textColor="#fc6262"
-        android:textSize="40sp"
+        android:textSize="50sp"
         android:textStyle="bold" />
 
     <TextView
         android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/amatic_sc"
+        android:fontFamily="@font/montserrat"
         android:text="What would you like to use Pin-It for?"
-        android:textSize="30sp" />
+        android:textSize="20sp" />
 
     <RadioGroup
         android:id="@+id/radioPurpose"
@@ -40,42 +40,42 @@
             android:id="@+id/travelling"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/amatic_sc"
+            android:fontFamily="@font/montserrat"
             android:gravity="center_horizontal"
             android:text="I'm travelling right now!"
-            android:textSize="25sp" />
+            android:textSize="15sp" />
 
         <RadioButton
             android:id="@+id/planning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/amatic_sc"
+            android:fontFamily="@font/montserrat"
             android:gravity="center_horizontal"
             android:text="I'm planning a trip to a different city"
-            android:textSize="25sp" />
+            android:textSize="15sp" />
 
         <RadioButton
             android:id="@+id/moving"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/amatic_sc"
+            android:fontFamily="@font/montserrat"
             android:gravity="center_horizontal"
             android:text="I'm moving to a new city for the first time"
-            android:textSize="25sp" />
+            android:textSize="15sp" />
     </RadioGroup>
 
     <TextView
-        android:layout_width="329dp"
+        android:layout_width="346dp"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/amatic_sc"
+        android:fontFamily="@font/montserrat"
         android:text="To enhance your experience with the application, one quick question:"
         android:textSize="18sp" />
 
     <TextView
-        android:layout_width="330dp"
+        android:layout_width="345dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:fontFamily="@font/amatic_sc"
+        android:fontFamily="@font/montserrat"
         android:text="Are you colorblind?"
         android:textSize="18sp" />
 
@@ -85,20 +85,23 @@
         android:layout_height="wrap_content">
 
         <RadioButton
-            android:id="@+id/yesButton"
-            android:layout_width="318dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/amatic_sc"
-            android:text="Yes!"
-            android:textSize="15sp" />
-
-        <RadioButton
             android:id="@+id/noButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/amatic_sc"
+            android:fontFamily="@font/montserrat"
             android:text="Nope"
             android:textSize="15sp" />
+
+        <RadioButton
+            android:id="@+id/yesButton"
+            android:layout_width="318dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
+            android:text="Yes!"
+            android:textSize="15sp"
+            android:layout_marginBottom="20dp"/>
+
+
     </RadioGroup>
 
     <Button
@@ -106,12 +109,12 @@
         android:layout_width="175dp"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:text="Let's get started"
         android:fontFamily="@font/amatic_sc"
+        android:shadowColor="#A9A9A9"
+        android:text="Let's get started"
         android:textColor="@color/colorPrimaryDark"
-        android:textStyle="bold"
         android:textSize="20sp"
-        android:shadowColor="#A9A9A9"/>
+        android:textStyle="bold" />
 
 
 </LinearLayout>

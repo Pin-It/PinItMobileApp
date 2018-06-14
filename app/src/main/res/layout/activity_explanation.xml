@@ -27,33 +27,36 @@
         android:layout_width="347dp"
         android:layout_height="111dp"
         android:layout_below="@id/introTextView"
-        android:fontFamily="@font/amatic_sc"
+        android:fontFamily="@font/montserrat"
         android:gravity="center"
+        android:textColor="#726e68"
         android:text="Here, you will be able to keep yourself safe during your travels in a new city you have never been to."
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="25sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/explainTextView2"
         android:layout_width="362dp"
         android:layout_height="117dp"
         android:layout_below="@id/introTextView"
-        android:fontFamily="@font/amatic_sc"
+        android:fontFamily="@font/montserrat"
         android:gravity="center"
+        android:textColor="#726e68"
         android:text="Through the interaction with other university travellers, you will be able to get the most up-to-date safety information."
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="25sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/explainTextView3"
         android:layout_width="362dp"
         android:layout_height="98dp"
         android:layout_below="@id/introTextView"
-        android:fontFamily="@font/amatic_sc"
+        android:fontFamily="@font/montserrat"
         android:gravity="center"
+        android:textColor="#726e68"
         android:text="To help you make the most of this application, we will need to get to know more about you. "
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="25sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/explainTextView4"
@@ -61,8 +64,9 @@
         android:layout_height="73dp"
         android:layout_below="@id/introTextView"
         android:layout_marginBottom="20dp"
-        android:fontFamily="@font/amatic_sc"
+        android:fontFamily="@font/montserrat"
         android:gravity="center"
+        android:textColor="#726e68"
         android:text="Whenever you're ready, "
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textStyle="bold"
