@@ -5,9 +5,12 @@ import org.json.JSONObject;
 
 public class Like implements Model {
     public static final String API_ENDPOINT = "likes";
+
+    private int id;
     private int pinId;
     private String text;
 
+    private static final String KEY_ID = "id";
     private static final String KEY_PIN_ID = "pin";
 
     public Like(JSONObject json) {
@@ -16,6 +19,7 @@ public class Like implements Model {
         }
 
         try {
+            this.id = json.getInt(KEY_ID);
             this.pinId = json.getInt(KEY_PIN_ID);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -53,5 +57,9 @@ public class Like implements Model {
 
     public String getText() {
         return text;
+    }
+
+    public int getId() {
+        return id;
     }
 }

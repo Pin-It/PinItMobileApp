@@ -263,7 +263,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         api.isPinLikedByMe(pin, new PinLikedByMeListener() {
             @Override
-            public void isLikedByMe() {
+            public void isLikedByMe(Like like) {
                 likeButton.setChecked(true);
                 setListener();
             }
@@ -283,7 +283,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             likeCount.setText(String.valueOf(pin.getLikes()));
                             Toast.makeText(MapsActivity.this, "Liked!", Toast.LENGTH_SHORT).show();
                         } else {
-                            // TODO: api.deleteLike();
+                            api.deleteLikeFromPin(pin);
                             pin.decrementLikes();
                             likeCount.setText(String.valueOf(pin.getLikes()));
                             Toast.makeText(MapsActivity.this, "Unliked!", Toast.LENGTH_SHORT).show();

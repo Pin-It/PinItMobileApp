@@ -1,5 +1,6 @@
 package com.pinit.api;
 
+import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.pinit.api.errors.APIError;
@@ -212,7 +213,32 @@ public class PinItAPI {
         uploadNewLike(like, null);
     }
 
-     /**
+    /**
+     * Remove the current user's like from pin
+     * @param pin the pin to unlike
+     */
+    public void deleteLikeFromPin(Pin pin) {
+        isPinLikedByMe(pin, new PinLikedByMeListener() {
+            @Override
+            public void isLikedByMe(Like like) {
+                deleteLike(like);
+            }
+
+            @Override
+            public void isNotLikedByMe() {
+                Log.w("PinItAPI", "Pin is not liked by current user, cannot unlike.");
+            }
+        });
+    }
+
+    private void deleteLike(Like like) {
+        getNewJSONObjectRequest()
+                .withMethod(Request.Method.DELETE)
+                .withURL(LIKES_URL + like.getId() + "/")
+                .send();
+    }
+
+    /**
      * Asks the server if a specified pin is liked by the current user
      * @param pin the specified pin
      * @param listener PinLikedByMeListener for returning the result of the query
@@ -226,7 +252,11 @@ public class PinItAPI {
                     @Override
                     public void onReceive(JSONArray response) {
                         if (response.length() > 0) {
-                            listener.isLikedByMe();
+                            try {
+                                listener.isLikedByMe(new Like(response.getJSONObject(0)));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         } else {
                             listener.isNotLikedByMe();
                         }
@@ -235,6 +265,7 @@ public class PinItAPI {
                     @Override
                     public void onError(APIError error) {
                         error.printStackTrace();
+                        listener.isNotLikedByMe();
                     }
                 })
                 .send();
