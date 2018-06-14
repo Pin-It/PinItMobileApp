@@ -14,6 +14,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CheckableImageButton;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -241,6 +242,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         TextView subtitle = view.findViewById(R.id.comments_list_subtitle);
         ListView list = view.findViewById(R.id.comments_list);
         Button addCommentButton = view.findViewById(R.id.comments_list_add);
+        final CheckBox likeButton = view.findViewById(R.id.comments_list_like);
+        TextView likeCount = view.findViewById(R.id.comments_list_like_count);
 
         title.setText(pin.getType().toString());
         subtitle.setText(pin.getCommentCount() + " comments");
@@ -257,6 +260,17 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 });
             }
         });
+        likeButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Toast.makeText(MapsActivity.this, "Liked!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MapsActivity.this, "Unliked!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        likeCount.setText(String.valueOf(pin.getLikes()));
 
         new AlertDialog.Builder(MapsActivity.this)
                 .setView(view)
