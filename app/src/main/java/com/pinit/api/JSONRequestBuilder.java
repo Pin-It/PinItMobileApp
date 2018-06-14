@@ -1,5 +1,6 @@
 package com.pinit.api;
 
+import android.support.annotation.NonNull;
 import com.android.volley.*;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -105,16 +106,25 @@ public class JSONRequestBuilder<T> {
     @SuppressWarnings("unchecked")
     private void sendJSONObjectRequest() {
         if (blocking) {
-            createBlockingJSONObjectRequest();
+            sendBlockingJSONObjectRequest();
         } else {
             sendNonBlockingJSONObjectRequest();
         }
     }
 
+    private JsonObjectRequest createJSONObjectRequest(Response.Listener<JSONObject> jsonObjectListener, Response.ErrorListener errorListener) {
+        return new JsonObjectRequest(method, url, (JSONObject) jsonData, jsonObjectListener, errorListener) {
+            @Override
+            public Map<String, String> getHeaders() {
+                return headers;
+            }
+        };
+    }
+
     @SuppressWarnings("unchecked")
-    private void createBlockingJSONObjectRequest() {
+    private void sendBlockingJSONObjectRequest() {
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
-        JsonObjectRequest request = new JsonObjectRequest(method, url, (JSONObject) jsonData, future, future);
+        JsonObjectRequest request = createJSONObjectRequest(future, future);
         requestQueue.add(request);
         handleRequestFuture((RequestFuture<T>) future);
     }
@@ -122,12 +132,7 @@ public class JSONRequestBuilder<T> {
     @SuppressWarnings("unchecked")
     private void sendNonBlockingJSONObjectRequest() {
         Response.Listener<JSONObject> jsonObjectListener = (Response.Listener<JSONObject>) responseListener;
-        JsonObjectRequest request = new JsonObjectRequest(method, url, (JSONObject) jsonData, jsonObjectListener, errorListener) {
-            @Override
-            public Map<String, String> getHeaders() {
-                return headers;
-            }
-        };
+        JsonObjectRequest request = createJSONObjectRequest(jsonObjectListener, errorListener);
         requestQueue.add(request);
     }
 
@@ -139,10 +144,19 @@ public class JSONRequestBuilder<T> {
         }
     }
 
+    private JsonArrayRequest createJSONArrayRequest(Response.Listener<JSONArray> jsonArrayListener, Response.ErrorListener errorListener) {
+        return new JsonArrayRequest(method, url, (JSONArray) jsonData, jsonArrayListener, errorListener) {
+            @Override
+            public Map<String, String> getHeaders() {
+                return headers;
+            }
+        };
+    }
+
     @SuppressWarnings("unchecked")
     private void sendBlockingJSONArrayRequest() {
         RequestFuture<JSONArray> future = RequestFuture.newFuture();
-        JsonArrayRequest request = new JsonArrayRequest(method, url, (JSONArray) jsonData, future, future);
+        JsonArrayRequest request = createJSONArrayRequest(future, future);
         requestQueue.add(request);
         handleRequestFuture((RequestFuture<T>) future);
     }
@@ -150,12 +164,7 @@ public class JSONRequestBuilder<T> {
     @SuppressWarnings("unchecked")
     private void sendNonBlockingJSONArrayRequest() {
         Response.Listener<JSONArray> jsonArrayListener = (Response.Listener<JSONArray>) responseListener;
-        Request<JSONArray> request = new JsonArrayRequest(method, url, (JSONArray) jsonData, jsonArrayListener, errorListener) {
-            @Override
-            public Map<String, String> getHeaders() {
-                return headers;
-            }
-        };
+        Request<JSONArray> request = createJSONArrayRequest(jsonArrayListener, errorListener);
         requestQueue.add(request);
     }
 
