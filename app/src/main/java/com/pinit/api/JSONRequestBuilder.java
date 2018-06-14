@@ -130,7 +130,7 @@ public class JSONRequestBuilder<T> {
     }
 
     private JsonObjectRequest createJSONObjectRequest(Response.Listener<JSONObject> jsonObjectListener, Response.ErrorListener errorListener) {
-        return new JsonObjectRequest(method, url, (JSONObject) jsonData, jsonObjectListener, errorListener) {
+        return new JsonObjectRequest(method, createURL(), (JSONObject) jsonData, jsonObjectListener, errorListener) {
             @Override
             public Map<String, String> getHeaders() {
                 return headers;
@@ -167,7 +167,7 @@ public class JSONRequestBuilder<T> {
     }
 
     private JsonArrayRequest createJSONArrayRequest(Response.Listener<JSONArray> jsonArrayListener, Response.ErrorListener errorListener) {
-        return new JsonArrayRequest(method, url, (JSONArray) jsonData, jsonArrayListener, errorListener) {
+        return new JsonArrayRequest(method, createURL(), (JSONArray) jsonData, jsonArrayListener, errorListener) {
             @Override
             public Map<String, String> getHeaders() {
                 return headers;
@@ -208,5 +208,22 @@ public class JSONRequestBuilder<T> {
                 listener.onError(new UnknownError(e.getMessage()));
             }
         }
+    }
+
+    private String createURL() {
+        if (method != Request.Method.GET) {
+            return url;
+        }
+
+        StringBuilder sb = new StringBuilder(url);
+        if (!params.isEmpty()) {
+            sb.append('?');
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                sb.append(entry.getKey());
+                sb.append('=');
+                sb.append(entry.getValue());
+            }
+        }
+        return sb.toString();
     }
 }

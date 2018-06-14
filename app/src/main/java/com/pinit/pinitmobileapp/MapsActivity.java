@@ -32,7 +32,9 @@ import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.pinit.api.errors.APIError;
 import com.pinit.api.listeners.NetworkListener;
 import com.pinit.api.PinItAPI;
+import com.pinit.api.listeners.PinLikedByMeListener;
 import com.pinit.api.models.Comment;
+import com.pinit.api.models.Like;
 import com.pinit.api.models.Pin;
 
 import java.io.IOException;
@@ -241,7 +243,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         ListView list = view.findViewById(R.id.comments_list);
         Button addCommentButton = view.findViewById(R.id.comments_list_add);
         final CheckBox likeButton = view.findViewById(R.id.comments_list_like);
-        TextView likeCount = view.findViewById(R.id.comments_list_like_count);
+        final TextView likeCount = view.findViewById(R.id.comments_list_like_count);
 
         title.setText(pin.getType().toString());
         subtitle.setText(pin.getCommentCount() + " comments");
@@ -258,16 +260,39 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 });
             }
         });
-        likeButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+        api.isPinLikedByMe(pin, new PinLikedByMeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    Toast.makeText(MapsActivity.this, "Liked!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(MapsActivity.this, "Unliked!", Toast.LENGTH_SHORT).show();
-                }
+            public void isLikedByMe() {
+                likeButton.setChecked(true);
+                setListener();
+            }
+
+            @Override
+            public void isNotLikedByMe() {
+                setListener();
+            }
+
+            private void setListener() {
+                likeButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked) {
+                            api.uploadNewLike(new Like(pin));
+                            pin.incrementLikes();
+                            likeCount.setText(String.valueOf(pin.getLikes()));
+                            Toast.makeText(MapsActivity.this, "Liked!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // TODO: api.deleteLike();
+                            pin.decrementLikes();
+                            likeCount.setText(String.valueOf(pin.getLikes()));
+                            Toast.makeText(MapsActivity.this, "Unliked!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
+
         likeCount.setText(String.valueOf(pin.getLikes()));
 
         new AlertDialog.Builder(MapsActivity.this)

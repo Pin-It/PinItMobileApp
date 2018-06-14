@@ -109,6 +109,14 @@ public class Pin implements Model {
         return comments.size();
     }
 
+    public void incrementLikes() {
+        likes++;
+    }
+
+    public void decrementLikes() {
+        likes--;
+    }
+
     public enum Type {
         PICKPOCKET, DRUNK, ROBBERY, SCAM, HARASSMENT, OTHERS;
 
