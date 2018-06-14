@@ -468,18 +468,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public View getInfoWindow(Marker marker) {
         View view = getLayoutInflater().inflate(R.layout.pin_info_window, null);
         TextView infoPinType = view.findViewById(R.id.info_pin_type);
-        TextView infoComment = view.findViewById(R.id.info_comment);
+        TextView infoLikes = view.findViewById(R.id.info_likes);
 
         Pin pin = (Pin) marker.getTag();
+        int likes = pin.getLikes();
         infoPinType.setText(pin.getType().toString());
-
-        List<String> comments = pin.getComments();
-        if (comments.isEmpty()) {
-            infoComment.setVisibility(View.GONE);
-        } else {
-            infoComment.setVisibility(View.VISIBLE);
-            infoComment.setText(comments.get(0));
-        }
+        infoLikes.setText(likes + " like" + (likes == 1 ? "" : "s"));
         return view;
     }
 
