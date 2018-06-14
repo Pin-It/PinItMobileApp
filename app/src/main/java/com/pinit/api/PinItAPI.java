@@ -209,6 +209,34 @@ public class PinItAPI {
         uploadNewLike(like, null);
     }
 
+     /**
+     * Asks the server if a specified pin is liked by the current user
+     * @param pin the specified pin
+     * @param listener PinLikedByMeListener for returning the result of the query
+     */
+    public void isPinLikedByMe(Pin pin, final PinLikedByMeListener listener) {
+        getNewJSONArrayRequest()
+                .withMethod(Request.Method.GET)
+                .withURL(LIKES_URL)
+                .withParam("pin", String.valueOf(pin.getId()))
+                .withNetworkListener(new NetworkListener<JSONArray>() {
+                    @Override
+                    public void onReceive(JSONArray response) {
+                        if (response.length() > 0) {
+                            listener.isLikedByMe();
+                        } else {
+                            listener.isNotLikedByMe();
+                        }
+                    }
+
+                    @Override
+                    public void onError(APIError error) {
+                        error.printStackTrace();
+                    }
+                })
+                .send();
+    }
+
     private JSONRequestBuilder<JSONObject> getNewJSONObjectRequest() {
         return newJSONObjectRequest(requestQueue).withHeaders(getHeaders());
     }
