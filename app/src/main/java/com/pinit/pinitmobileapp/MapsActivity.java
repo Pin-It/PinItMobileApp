@@ -30,9 +30,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.pinit.api.errors.APIError;
-import com.pinit.api.NetworkListener;
+import com.pinit.api.listeners.NetworkListener;
 import com.pinit.api.PinItAPI;
+import com.pinit.api.listeners.PinLikedByMeListener;
 import com.pinit.api.models.Comment;
+import com.pinit.api.models.Like;
 import com.pinit.api.models.Pin;
 
 import java.io.IOException;
@@ -245,6 +247,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         TextView subtitle = view.findViewById(R.id.comments_list_subtitle);
         ListView list = view.findViewById(R.id.comments_list);
         Button addCommentButton = view.findViewById(R.id.comments_list_add);
+        final CheckBox likeButton = view.findViewById(R.id.comments_list_like);
+        final TextView likeCount = view.findViewById(R.id.comments_list_like_count);
 
         title.setText(pin.getType().toString());
         subtitle.setText(pin.getCommentCount() + " comments");
@@ -261,6 +265,40 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 });
             }
         });
+
+        api.isPinLikedByMe(pin, new PinLikedByMeListener() {
+            @Override
+            public void isLikedByMe(Like like) {
+                likeButton.setChecked(true);
+                setListener();
+            }
+
+            @Override
+            public void isNotLikedByMe() {
+                setListener();
+            }
+
+            private void setListener() {
+                likeButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked) {
+                            api.uploadNewLike(new Like(pin));
+                            pin.incrementLikes();
+                            likeCount.setText(String.valueOf(pin.getLikes()));
+                            Toast.makeText(MapsActivity.this, "Liked!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            api.deleteLikeFromPin(pin);
+                            pin.decrementLikes();
+                            likeCount.setText(String.valueOf(pin.getLikes()));
+                            Toast.makeText(MapsActivity.this, "Unliked!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+
+        likeCount.setText(String.valueOf(pin.getLikes()));
 
         new AlertDialog.Builder(MapsActivity.this)
                 .setView(view)
@@ -435,18 +473,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public View getInfoWindow(Marker marker) {
         View view = getLayoutInflater().inflate(R.layout.pin_info_window, null);
         TextView infoPinType = view.findViewById(R.id.info_pin_type);
-        TextView infoComment = view.findViewById(R.id.info_comment);
+        TextView infoLikes = view.findViewById(R.id.info_likes);
 
         Pin pin = (Pin) marker.getTag();
+        int likes = pin.getLikes();
         infoPinType.setText(pin.getType().toString());
-
-        List<String> comments = pin.getComments();
-        if (comments.isEmpty()) {
-            infoComment.setVisibility(View.GONE);
-        } else {
-            infoComment.setVisibility(View.VISIBLE);
-            infoComment.setText(comments.get(0));
-        }
+        infoLikes.setText(likes + " like" + (likes == 1 ? "" : "s"));
         return view;
     }
 

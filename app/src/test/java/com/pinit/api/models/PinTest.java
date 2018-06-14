@@ -6,6 +6,9 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.lessThan;
@@ -25,6 +28,7 @@ public class PinTest {
         validJSON.put("latitude", 123.456);
         validJSON.put("longitude", 0.65432);
         validJSON.put("comments", new JSONArray(new String[]{"comment 1", "comment 2"}));
+        validJSON.put("likes", 5);
 
         invalidJSON = new JSONObject();
         invalidJSON.put("wrong key", "wrong value");
@@ -42,6 +46,9 @@ public class PinTest {
         assertThat(pin.getType(), is(Pin.Type.PICKPOCKET));
         assertThat(pin.getLatitude(), is(123.456));
         assertThat(pin.getLongitude(), is(0.65432));
+        assertThat(pin.getCommentCount(), is(2));
+        assertThat(pin.getComments(), is(Arrays.asList("comment 1", "comment 2")));
+        assertThat(pin.getLikes(), is(5));
     }
 
     @Test
