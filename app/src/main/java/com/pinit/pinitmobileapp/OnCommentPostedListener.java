@@ -2,7 +2,7 @@ package com.pinit.pinitmobileapp;
 
 import android.content.Context;
 import android.widget.Toast;
-import com.pinit.api.NetworkListener;
+import com.pinit.api.listeners.NetworkListener;
 import com.pinit.api.errors.APIError;
 import org.json.JSONObject;
 

@@ -28,7 +28,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import com.android.volley.toolbox.Volley;
 import com.pinit.api.errors.APIError;
-import com.pinit.api.LoginListener;
+import com.pinit.api.listeners.LoginListener;
 import com.pinit.api.PinItAPI;
 
 

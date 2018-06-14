@@ -1,12 +1,12 @@
 package com.pinit.api;
 
-import android.support.annotation.NonNull;
 import com.android.volley.*;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.pinit.api.errors.APIError;
 import com.pinit.api.errors.UnknownError;
+import com.pinit.api.listeners.NetworkListener;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
