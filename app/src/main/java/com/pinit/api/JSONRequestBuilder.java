@@ -10,13 +10,15 @@ import com.pinit.api.errors.UnknownError;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class JSONRequestBuilder<T> {
     private RequestQueue requestQueue;
     private String url;
-    private Map<String, String> headers;
+    private Map<String, String> headers = new HashMap<>();
+    private Map<String, String> params = new HashMap<>();
     private T jsonData;
     private NetworkListener<T> listener;
     private int method = Request.Method.GET;  // user GET method by default
@@ -70,6 +72,21 @@ public class JSONRequestBuilder<T> {
         return this;
     }
 
+    public JSONRequestBuilder<T> withHeader(String key, String value) {
+        this.headers.put(key, value);
+        return this;
+    }
+
+    public JSONRequestBuilder<T> withParams(Map<String, String> params) {
+        this.params = params;
+        return this;
+    }
+
+    public JSONRequestBuilder<T> withParam(String key, String value) {
+        this.params.put(key, value);
+        return this;
+    }
+
     public JSONRequestBuilder<T> withJSONData(T jsonData) {
         this.jsonData = jsonData;
         return this;
@@ -118,6 +135,11 @@ public class JSONRequestBuilder<T> {
             public Map<String, String> getHeaders() {
                 return headers;
             }
+
+            @Override
+            protected Map<String, String> getParams() {
+                return params;
+            }
         };
     }
 
@@ -149,6 +171,11 @@ public class JSONRequestBuilder<T> {
             @Override
             public Map<String, String> getHeaders() {
                 return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                return params;
             }
         };
     }
