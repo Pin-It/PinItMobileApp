@@ -51,7 +51,8 @@
         <activity
             android:name=".AddCommentActivity"
             android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
-        <activity android:name=".UserPurposeActivity"></activity>
+        <activity android:name=".UserPurposeActivity" />
+        <activity android:name=".SettingsActivity" />
     </application>
 
 </manifest>
