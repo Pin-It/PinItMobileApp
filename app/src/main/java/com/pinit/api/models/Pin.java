@@ -1,11 +1,13 @@
 package com.pinit.api.models;
 
+import com.google.gson.internal.bind.util.ISO8601Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.util.*;
 
 public class Pin implements Model {
     public static final String API_ENDPOINT = "pins";
@@ -16,6 +18,7 @@ public class Pin implements Model {
     private static final String KEY_LONGITUDE = "longitude";
     private static final String KEY_COMMENTS = "comments";
     private static final String KEY_LIKES = "likes";
+    private static final String KEY_CREATED_AT = "created_at";
 
     private int id;
     private Type type;
@@ -23,6 +26,7 @@ public class Pin implements Model {
     private double longitude;
     private List<String> comments = new ArrayList<>();
     private int likes;
+    private Calendar createdAt;
 
     public Pin(JSONObject json) {
         if (json == null) {
@@ -35,15 +39,23 @@ public class Pin implements Model {
             this.latitude = json.getDouble(KEY_LATITUDE);
             this.longitude = json.getDouble(KEY_LONGITUDE);
             this.likes = json.getInt(KEY_LIKES);
+            this.createdAt = parseTime(json.getString(KEY_CREATED_AT));
 
             JSONArray commentsJSONArray = json.getJSONArray(KEY_COMMENTS);
             for (int i = 0; i < commentsJSONArray.length(); i++) {
                 this.comments.add(commentsJSONArray.getString(i));
             }
-        } catch (JSONException e) {
+        } catch (JSONException | ParseException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("Malformed JSON, incompatible with Pin model");
         }
+    }
+
+    private Calendar parseTime(String string) throws ParseException {
+        Date date = ISO8601Utils.parse(string, new ParsePosition(0));
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        return cal;
     }
 
     public Pin(Type type, double latitude, double longitude) {
@@ -52,6 +64,7 @@ public class Pin implements Model {
         this.latitude = latitude;
         this.longitude = longitude;
         this.likes = 0;
+        this.createdAt = (Calendar) Calendar.getInstance().clone();
     }
 
     public boolean idIsValid() {
@@ -99,6 +112,10 @@ public class Pin implements Model {
 
     public int getLikes() {
         return likes;
+    }
+
+    public Calendar getCreatedAt() {
+        return createdAt;
     }
 
     public void addComment(String commentText) {

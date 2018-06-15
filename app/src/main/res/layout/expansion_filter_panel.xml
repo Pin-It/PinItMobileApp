@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/search_bar"
+    android:layout_margin="12dp"
+    android:orientation="vertical"
+    tools:showIn="@layout/activity_main_frame_work">
+
+    <com.github.florent37.expansionpanel.ExpansionHeader
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:expansion_headerIndicator="@id/headerIndicator"
+        app:expansion_layout="@id/expansionLayout"
+        app:expansion_toggleOnClick="true">
+
+        <LinearLayout
+            android:layout_gravity="center_vertical|start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:padding="4dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:tint="@android:color/darker_gray"
+                android:src="@drawable/ic_filter_list_24dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/filter" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/headerIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                app:srcCompat="@drawable/ic_expansion_header_indicator_grey_24dp" />
+        </LinearLayout>
+    </com.github.florent37.expansionpanel.ExpansionHeader>
+
+    <com.github.florent37.expansionpanel.ExpansionLayout
+        android:id="@+id/expansionLayout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <com.pinit.pinitmobileapp.FilterPanelLayout
+            android:id="@+id/filter_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </com.pinit.pinitmobileapp.FilterPanelLayout>
+    </com.github.florent37.expansionpanel.ExpansionLayout>
+</LinearLayout>

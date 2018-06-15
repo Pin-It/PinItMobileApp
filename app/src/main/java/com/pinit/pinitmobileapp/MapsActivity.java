@@ -51,7 +51,7 @@ import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
         GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.InfoWindowAdapter,
-        GoogleMap.OnInfoWindowClickListener {
+        GoogleMap.OnInfoWindowClickListener, OnFilterChangedListener {
 
     public static final String USER_TOKEN = "userToken";
 
@@ -90,6 +90,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private EditText locSearch;
 
     private static final String SHOWCASE_ID = "SHOWCASE";
+
+    private Calendar filterStart;
+    private Calendar filterEnd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -486,6 +489,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
             }
         });
+
+        ((FilterPanelLayout) findViewById(R.id.filter_panel)).setOnFilterChangedListener(this);
     }
 
     @Override
@@ -609,14 +614,18 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     }
 
     private void showHeatMap() {
-        if (mOverlay == null) {
-            List<LatLng> list = getPinsLatLngs(allPins);
+        List<LatLng> latLngs = getPinsLatLngs();
+        if (mProvider == null) {
             mProvider = new HeatmapTileProvider.Builder()
-                    .data(list)
+                    .data(latLngs)
                     .opacity(0.6)
                     .build();
             mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+        } else if (latLngs.isEmpty()) {
+            mOverlay.setVisible(false);
         } else {
+            mProvider.setData(latLngs);
+            mOverlay.clearTileCache();
             mOverlay.setVisible(true);
         }
     }
@@ -627,10 +636,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         }
     }
 
-    private List<LatLng> getPinsLatLngs(List<Pin> pins) {
+    private List<LatLng> getPinsLatLngs() {
         List<LatLng> latLngs = new ArrayList<>();
-        for (Pin pin : pins) {
-            latLngs.add(new LatLng(pin.getLatitude(), pin.getLongitude()));
+        for (Pin pin : allPins) {
+            if (pinSatisfiesFilter(pin)) {
+                latLngs.add(new LatLng(pin.getLatitude(), pin.getLongitude()));
+            }
         }
         return latLngs;
     }
@@ -662,7 +673,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     private void showAllPins() {
         for (Marker marker : allMarkers) {
-            marker.setVisible(true);
+            marker.setVisible(pinSatisfiesFilter((Pin) marker.getTag()));
         }
     }
 
@@ -861,5 +872,21 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public void onInfoWindowClick(Marker marker) {
         Pin pin = (Pin) marker.getTag();
         showAllCommentsBox(pin);
+    }
+
+    @Override
+    public void onFilterChanged(Calendar start, Calendar end) {
+        filterStart = start;
+        filterEnd = end;
+        if (!mSwitch.isChecked()) {
+            showAllPins();
+        } else {
+            showHeatMap();
+        }
+    }
+
+    private boolean pinSatisfiesFilter(Pin pin) {
+        Calendar createdAt = pin.getCreatedAt();
+        return createdAt.after(filterStart) && createdAt.before(filterEnd);
     }
 }

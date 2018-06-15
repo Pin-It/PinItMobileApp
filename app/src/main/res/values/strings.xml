@@ -44,5 +44,6 @@
     <string name="info_more_comments">View more</string>
     <string name="comment_dialogue_cancel">Cancel %s</string>
     <string name="comment_dialogue_submit">Add %s</string>
+    <string name="filter">Filter</string>
 
 </resources>
