@@ -85,6 +85,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     private static final String SHOWCASE_ID = "SHOWCASE";
 
+    private Calendar filterStart;
+    private Calendar filterEnd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -578,17 +581,15 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     }
 
     private void showHeatMap() {
-        List<LatLng> list = getPinsLatLngs(allPins);
-        showHeatMapWithData(list);
-    }
-
-    private void showHeatMapWithData(List<LatLng> latLngs) {
+        List<LatLng> latLngs = getPinsLatLngs();
         if (mProvider == null) {
             mProvider = new HeatmapTileProvider.Builder()
                     .data(latLngs)
                     .opacity(0.6)
                     .build();
             mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+        } else if (latLngs.isEmpty()) {
+            mOverlay.setVisible(false);
         } else {
             mProvider.setData(latLngs);
             mOverlay.clearTileCache();
@@ -602,10 +603,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         }
     }
 
-    private List<LatLng> getPinsLatLngs(List<Pin> pins) {
+    private List<LatLng> getPinsLatLngs() {
         List<LatLng> latLngs = new ArrayList<>();
-        for (Pin pin : pins) {
-            latLngs.add(new LatLng(pin.getLatitude(), pin.getLongitude()));
+        for (Pin pin : allPins) {
+            if (pinSatisfiesFilter(pin)) {
+                latLngs.add(new LatLng(pin.getLatitude(), pin.getLongitude()));
+            }
         }
         return latLngs;
     }
@@ -637,7 +640,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     private void showAllPins() {
         for (Marker marker : allMarkers) {
-            marker.setVisible(true);
+            marker.setVisible(pinSatisfiesFilter((Pin) marker.getTag()));
         }
     }
 
@@ -699,30 +702,17 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     @Override
     public void onFilterChanged(Calendar start, Calendar end) {
+        filterStart = start;
+        filterEnd = end;
         if (!mSwitch.isChecked()) {
-            // Normal map mode
-            for (Marker marker : allMarkers) {
-                Calendar createdAt = ((Pin) marker.getTag()).getCreatedAt();
-                if (createdAt.after(start) && createdAt.before(end)) {
-                    marker.setVisible(true);
-                } else {
-                    marker.setVisible(false);
-                }
-            }
+            showAllPins();
         } else {
-            // Heat map mode
-            List<LatLng> heatmapLatLngs = new ArrayList<>();
-            for (Pin pin : allPins) {
-                Calendar createdAt = pin.getCreatedAt();
-                if (createdAt.after(start) && createdAt.before(end)) {
-                    heatmapLatLngs.add(new LatLng(pin.getLatitude(), pin.getLongitude()));
-                }
-            }
-            if (!heatmapLatLngs.isEmpty()) {
-                showHeatMapWithData(heatmapLatLngs);
-            } else {
-                hideHeatMap();
-            }
+            showHeatMap();
         }
+    }
+
+    private boolean pinSatisfiesFilter(Pin pin) {
+        Calendar createdAt = pin.getCreatedAt();
+        return createdAt.after(filterStart) && createdAt.before(filterEnd);
     }
 }
