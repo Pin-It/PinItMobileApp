@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -51,8 +52,14 @@ public class PinTest {
         assertThat(pin.getCommentCount(), is(2));
         assertThat(pin.getComments(), is(Arrays.asList("comment 1", "comment 2")));
         assertThat(pin.getLikes(), is(5));
-        assertThat(pin.getCreatedAt().getYear(), is(2018));
-        assertThat(pin.getCreatedAt().getMonth(), is(Calendar.JUNE));
+
+        Calendar createdAt = pin.getCreatedAt();
+        createdAt.setTimeZone(TimeZone.getTimeZone("GMT"));
+        assertThat(createdAt.get(Calendar.YEAR), is(2018));
+        assertThat(createdAt.get(Calendar.MONTH), is(Calendar.JUNE));
+        assertThat(createdAt.get(Calendar.DAY_OF_MONTH), is(Calendar.JUNE));
+        assertThat(createdAt.get(Calendar.HOUR_OF_DAY), is(16));
+        assertThat(createdAt.get(Calendar.MINUTE), is(26));
     }
 
     @Test

@@ -7,10 +7,7 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.ParsePosition;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class Pin implements Model {
     public static final String API_ENDPOINT = "pins";
@@ -29,7 +26,7 @@ public class Pin implements Model {
     private double longitude;
     private List<String> comments = new ArrayList<>();
     private int likes;
-    private Date createdAt;
+    private Calendar createdAt;
 
     public Pin(JSONObject json) {
         if (json == null) {
@@ -42,7 +39,7 @@ public class Pin implements Model {
             this.latitude = json.getDouble(KEY_LATITUDE);
             this.longitude = json.getDouble(KEY_LONGITUDE);
             this.likes = json.getInt(KEY_LIKES);
-            this.createdAt = ISO8601Utils.parse(json.getString(KEY_CREATED_AT), new ParsePosition(0));
+            this.createdAt = parseTime(json.getString(KEY_CREATED_AT));
 
             JSONArray commentsJSONArray = json.getJSONArray(KEY_COMMENTS);
             for (int i = 0; i < commentsJSONArray.length(); i++) {
@@ -54,13 +51,20 @@ public class Pin implements Model {
         }
     }
 
+    private Calendar parseTime(String string) throws ParseException {
+        Date date = ISO8601Utils.parse(string, new ParsePosition(0));
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        return cal;
+    }
+
     public Pin(Type type, double latitude, double longitude) {
         this.id = -1;
         this.type = type;
         this.latitude = latitude;
         this.longitude = longitude;
         this.likes = 0;
-        this.createdAt = Calendar.getInstance().getTime();
+        this.createdAt = (Calendar) Calendar.getInstance().clone();
     }
 
     public boolean idIsValid() {
@@ -110,7 +114,7 @@ public class Pin implements Model {
         return likes;
     }
 
-    public Date getCreatedAt() {
+    public Calendar getCreatedAt() {
         return createdAt;
     }
 
