@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -29,6 +30,7 @@ public class PinTest {
         validJSON.put("longitude", 0.65432);
         validJSON.put("comments", new JSONArray(new String[]{"comment 1", "comment 2"}));
         validJSON.put("likes", 5);
+        validJSON.put("created_at", "2018-06-06T16:26:57.141474Z");
 
         invalidJSON = new JSONObject();
         invalidJSON.put("wrong key", "wrong value");
@@ -49,6 +51,8 @@ public class PinTest {
         assertThat(pin.getCommentCount(), is(2));
         assertThat(pin.getComments(), is(Arrays.asList("comment 1", "comment 2")));
         assertThat(pin.getLikes(), is(5));
+        assertThat(pin.getCreatedAt().getYear(), is(2018));
+        assertThat(pin.getCreatedAt().getMonth(), is(Calendar.JUNE));
     }
 
     @Test

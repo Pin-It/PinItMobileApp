@@ -1,10 +1,15 @@
 package com.pinit.api.models;
 
+import com.google.gson.internal.bind.util.ISO8601Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.ParsePosition;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class Pin implements Model {
@@ -16,6 +21,7 @@ public class Pin implements Model {
     private static final String KEY_LONGITUDE = "longitude";
     private static final String KEY_COMMENTS = "comments";
     private static final String KEY_LIKES = "likes";
+    private static final String KEY_CREATED_AT = "created_at";
 
     private int id;
     private Type type;
@@ -23,6 +29,7 @@ public class Pin implements Model {
     private double longitude;
     private List<String> comments = new ArrayList<>();
     private int likes;
+    private Date createdAt;
 
     public Pin(JSONObject json) {
         if (json == null) {
@@ -35,12 +42,13 @@ public class Pin implements Model {
             this.latitude = json.getDouble(KEY_LATITUDE);
             this.longitude = json.getDouble(KEY_LONGITUDE);
             this.likes = json.getInt(KEY_LIKES);
+            this.createdAt = ISO8601Utils.parse(json.getString(KEY_CREATED_AT), new ParsePosition(0));
 
             JSONArray commentsJSONArray = json.getJSONArray(KEY_COMMENTS);
             for (int i = 0; i < commentsJSONArray.length(); i++) {
                 this.comments.add(commentsJSONArray.getString(i));
             }
-        } catch (JSONException e) {
+        } catch (JSONException | ParseException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("Malformed JSON, incompatible with Pin model");
         }
@@ -52,6 +60,7 @@ public class Pin implements Model {
         this.latitude = latitude;
         this.longitude = longitude;
         this.likes = 0;
+        this.createdAt = Calendar.getInstance().getTime();
     }
 
     public boolean idIsValid() {
@@ -99,6 +108,10 @@ public class Pin implements Model {
 
     public int getLikes() {
         return likes;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
     public void addComment(String commentText) {
