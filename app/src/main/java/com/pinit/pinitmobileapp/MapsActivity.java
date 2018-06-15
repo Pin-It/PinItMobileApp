@@ -694,9 +694,13 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     @Override
     public void onFilterChanged(Calendar start, Calendar end) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH");
-        if (start != null) {
-            System.out.println(format.format(start.getTime()) + " to " + format.format(end.getTime()));
+        for (Marker marker : allMarkers) {
+            Calendar createdAt = ((Pin) marker.getTag()).getCreatedAt();
+            if (createdAt.after(start) && createdAt.before(end)) {
+                marker.setVisible(true);
+            } else {
+                marker.setVisible(false);
+            }
         }
     }
 }
