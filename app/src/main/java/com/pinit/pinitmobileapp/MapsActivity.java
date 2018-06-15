@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.prefs.PreferenceChangeEvent;
 
+import uk.co.deanwild.materialshowcaseview.IShowcaseListener;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
@@ -150,12 +151,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     if (isPinsVisible()) {
                         setAllPinsVisibility(false, null);
                     }
+                    pSwitch.setVisibility(View.GONE);
                 } else {
                     // Pin mode
                     hideHeatMap();
                     showAllPins();
                     setToCorrespondingImage();
                     pinsMenu.show();
+                    pSwitch.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -472,24 +475,10 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 Bundle resultIntent = getIntent().getExtras();
                 if (resultIntent != null) {
                     if (resultIntent.getInt("planning") == R.id.planning && resultIntent.getInt("yes") == R.id.yesButton) {
-                        pSwitch.setChecked(false);
-                        showHeatMap();
-                        hideAllPins();
-                        pinsMenu.hide();
-                        if (isPinsVisible()) {
-                            setAllPinsVisibility(false, null);
-                        }
                         mSwitch.setChecked(true);
                         planningTripTutorSequence(500);
                     }
                     if (resultIntent.getInt("planning") == R.id.planning && resultIntent.getInt("no") == R.id.noButton) {
-                        pSwitch.setChecked(true);
-                        showHeatMap();
-                        hideAllPins();
-                        pinsMenu.hide();
-                        if (isPinsVisible()) {
-                            setAllPinsVisibility(false, null);
-                        }
                         mSwitch.setChecked(true);
                         planningTripTutorSequence(500);
                     }
@@ -856,10 +845,18 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 "locations yourself that is dangerous and also view what type of danger each pin represents.")
                 .setDismissText("Got it! Tell me more")
                 .withCircleShape()
+                .setListener(new IShowcaseListener() {
+                    @Override
+                    public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+                        mSwitch.setChecked(false);
+                    }
+
+                    @Override
+                    public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+                    }
+                })
                 .build()
         );
-
-        mSwitch.setChecked(false);
 
         sequence.addSequenceItem(
                 new MaterialShowcaseView.Builder(this)
