@@ -38,7 +38,6 @@ import com.pinit.api.models.Like;
 import com.pinit.api.models.Pin;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
@@ -579,14 +578,20 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     }
 
     private void showHeatMap() {
-        if (mOverlay == null) {
-            List<LatLng> list = getPinsLatLngs(allPins);
+        List<LatLng> list = getPinsLatLngs(allPins);
+        showHeatMapWithData(list);
+    }
+
+    private void showHeatMapWithData(List<LatLng> latLngs) {
+        if (mProvider == null) {
             mProvider = new HeatmapTileProvider.Builder()
-                    .data(list)
+                    .data(latLngs)
                     .opacity(0.6)
                     .build();
             mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
         } else {
+            mProvider.setData(latLngs);
+            mOverlay.clearTileCache();
             mOverlay.setVisible(true);
         }
     }
@@ -694,12 +699,29 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     @Override
     public void onFilterChanged(Calendar start, Calendar end) {
-        for (Marker marker : allMarkers) {
-            Calendar createdAt = ((Pin) marker.getTag()).getCreatedAt();
-            if (createdAt.after(start) && createdAt.before(end)) {
-                marker.setVisible(true);
+        if (!mSwitch.isChecked()) {
+            // Normal map mode
+            for (Marker marker : allMarkers) {
+                Calendar createdAt = ((Pin) marker.getTag()).getCreatedAt();
+                if (createdAt.after(start) && createdAt.before(end)) {
+                    marker.setVisible(true);
+                } else {
+                    marker.setVisible(false);
+                }
+            }
+        } else {
+            // Heat map mode
+            List<LatLng> heatmapLatLngs = new ArrayList<>();
+            for (Pin pin : allPins) {
+                Calendar createdAt = pin.getCreatedAt();
+                if (createdAt.after(start) && createdAt.before(end)) {
+                    heatmapLatLngs.add(new LatLng(pin.getLatitude(), pin.getLongitude()));
+                }
+            }
+            if (!heatmapLatLngs.isEmpty()) {
+                showHeatMapWithData(heatmapLatLngs);
             } else {
-                marker.setVisible(false);
+                hideHeatMap();
             }
         }
     }
