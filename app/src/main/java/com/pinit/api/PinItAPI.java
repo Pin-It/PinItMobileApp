@@ -129,6 +129,31 @@ public class PinItAPI {
     }
 
     /**
+     * Gets the pin with the specific id from the server.
+     * @param id the pin id to lookup
+     * @param listener this listener is needed to return the result of the request (a list of pins)
+     */
+    public void getPin(int id, final NetworkListener<Pin> listener) {
+        getNewJSONObjectRequest()
+                .withMethod(Request.Method.GET)
+                .withURL(PINS_URL + id + "/")
+                .withNetworkListener(
+                    new NetworkListener<JSONObject>() {
+                        @Override
+                        public void onReceive(JSONObject response) {
+                            listener.onReceive(new Pin(response));
+                        }
+
+                        @Override
+                        public void onError(APIError error) {
+                            error.printStackTrace();
+                            listener.onError(error);
+                        }
+                    })
+            .send();
+    }
+
+    /**
      * Uploads a new pin to the server
      * @param pin the pin to be uploaded
      * @param listener (optional) listener for the result of the POST request
