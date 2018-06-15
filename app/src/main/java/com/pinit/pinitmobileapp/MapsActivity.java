@@ -64,6 +64,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public static final float PIN_ANCHOR_X = 0.5f;
     public static final float PIN_ANCHOR_Y = 0.72f;
 
+    public boolean isFirstStart;
     private boolean mPermissionDenied = false;
     private GoogleMap mMap;
     private HeatmapTileProvider mProvider;
@@ -227,8 +228,19 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             });
         }
 
-//        Bundle resultIntent = getIntent().getExtras();
+        Bundle resultIntent = getIntent().getExtras();
+        if (resultIntent != null) {
+            if (resultIntent.getInt("moving") != R.id.moving && resultIntent.getInt("yes") == R.id.yesButton) {
+                pSwitch.setChecked(true);
+                travellingMovingTutorSequeunce(500);
+            }
+            if (resultIntent.getInt("moving") != R.id.moving && resultIntent.getInt("no") == R.id.noButton) {
+                pSwitch.setChecked(false);
+                travellingMovingTutorSequeunce(500);
+            }
+        }
 //        if (resultIntent != null) {
+
 //            if (resultIntent.getInt("planning") == R.id.planning && resultIntent.getInt("yes") == R.id.yesButton) {
 //                planningTripTutorSequence(500);
 //            }
@@ -463,11 +475,11 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                         if (isPinsVisible()) {
                             setAllPinsVisibility(false, null);
                         }
+                        mSwitch.setChecked(true);
                         planningTripTutorSequence(500);
                     }
                 }
             }
-
 
             @Override
             public void onError(APIError error) {
@@ -654,6 +666,70 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         }
     }
 
+
+
+    private void travellingMovingTutorSequeunce(int millis) {
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(millis);
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, SHOWCASE_ID);
+        sequence.setConfig(config);
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                .setTarget(mSwitch)
+                .setMaskColour(Color.argb(220,252,98,98))
+                .setTitleTextColor(Color.WHITE)
+                .setContentTextColor(Color.argb(255, 255,255 ,255))
+                .setTitleText("Welcome to the  Pin Map Mode!")
+                .setContentText("Here, you will be able to pin unsafe locations and also view other travellers' pins. ")
+                .setDismissText("Let's Continue!")
+                .build()
+        );
+
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                        .setTarget(mSwitch)
+                        .setMaskColour(Color.argb(220,252,98,98))
+                        .setTitleTextColor(Color.WHITE)
+                        .setContentTextColor(Color.argb(255,255,255,255))
+                        .setTitleText("Switch between Map modes!")
+                        .setContentText("Want to see the general area safety? With the switch here, you can switch to the General Map mode where you can view the " +
+                                "general safety of your area or any other city you would like to see the general safety of.")
+                        .setDismissText("Got it! Tell me more")
+                        .withCircleShape()
+                        .build()
+        );
+
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                        .setTarget(pinsMenu)
+                        .setMaskColour(Color.argb(200, 252,98,98))
+                        .setTitleTextColor(Color.WHITE)
+                        .setContentTextColor(Color.WHITE)
+                        .setTitleText("Time to Pin")
+                        .setContentText("Once you are on the Pin Map, pressing on this button will show you list of pins with different categories of danger. ")
+                        .setDismissText("Let's keep going")
+                        .withCircleShape()
+                        .build()
+        );
+
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                        .setTarget(pSwitch)
+                        .setMaskColour(Color.argb(200, 252,98,98))
+                        .setTitleTextColor(Color.WHITE)
+                        .setContentTextColor(Color.WHITE)
+                        .setTitleText("Customise your pins")
+                        .setContentText("With this switch, " +
+                                "switch between the shape pins and colored pins. We started with the shape pins for you, but feel free to change!")
+                        .setDismissText(" I'm ready to use Pin-It")
+                        .withCircleShape()
+                        .build()
+        );
+
+        sequence.start();
+    }
+
     private void planningTripTutorSequence(int millis) {
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(millis);
@@ -721,7 +797,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                         .setTitleTextColor(Color.WHITE)
                         .setContentTextColor(Color.WHITE)
                         .setTitleText("Customise your pins")
-                        .setContentText("With this switch," +
+                        .setContentText("With this switch, " +
                                 "switch between the shape pins and colored pins. We started with the shape pins for you, but feel free to change!")
                         .setDismissText(" I'm ready to use Pin-It")
                         .withCircleShape()
