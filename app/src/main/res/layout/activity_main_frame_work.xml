@@ -147,5 +147,5 @@
             android:textColor="#faefe6" />
     </RelativeLayout>
 
-    <include layout="@layout/filter_panel" />
+    <include layout="@layout/expansion_filter_panel" />
 </RelativeLayout>

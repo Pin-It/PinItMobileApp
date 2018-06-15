@@ -53,16 +53,10 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
 
-        <LinearLayout
+        <com.pinit.pinitmobileapp.FilterPanelLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:background="@color/colorPrimaryDark">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="hello" />
-        </LinearLayout>
+        </com.pinit.pinitmobileapp.FilterPanelLayout>
     </com.github.florent37.expansionpanel.ExpansionLayout>
 </LinearLayout>
