@@ -57,7 +57,7 @@ public class PinTest {
         createdAt.setTimeZone(TimeZone.getTimeZone("GMT"));
         assertThat(createdAt.get(Calendar.YEAR), is(2018));
         assertThat(createdAt.get(Calendar.MONTH), is(Calendar.JUNE));
-        assertThat(createdAt.get(Calendar.DAY_OF_MONTH), is(Calendar.JUNE));
+        assertThat(createdAt.get(Calendar.DAY_OF_MONTH), is(6));
         assertThat(createdAt.get(Calendar.HOUR_OF_DAY), is(16));
         assertThat(createdAt.get(Calendar.MINUTE), is(26));
     }
