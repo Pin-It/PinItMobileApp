@@ -54,6 +54,7 @@
         android:layout_width="match_parent">
 
         <com.pinit.pinitmobileapp.FilterPanelLayout
+            android:id="@+id/filter_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 

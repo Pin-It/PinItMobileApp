@@ -38,6 +38,7 @@ import com.pinit.api.models.Like;
 import com.pinit.api.models.Pin;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
@@ -47,7 +48,7 @@ import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
         GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.InfoWindowAdapter,
-        GoogleMap.OnInfoWindowClickListener {
+        GoogleMap.OnInfoWindowClickListener, OnFilterChangedListener {
 
     public static final String USER_TOKEN = "userToken";
 
@@ -453,6 +454,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
             }
         });
+
+        ((FilterPanelLayout) findViewById(R.id.filter_panel)).setOnFilterChangedListener(this);
     }
 
     @Override
@@ -687,5 +690,13 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public void onInfoWindowClick(Marker marker) {
         Pin pin = (Pin) marker.getTag();
         showAllCommentsBox(pin);
+    }
+
+    @Override
+    public void onFilterChanged(Calendar start, Calendar end) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH");
+        if (start != null) {
+            System.out.println(format.format(start.getTime()) + " to " + format.format(end.getTime()));
+        }
     }
 }

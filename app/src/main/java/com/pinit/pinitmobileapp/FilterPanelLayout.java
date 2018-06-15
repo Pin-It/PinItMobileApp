@@ -9,7 +9,7 @@ import com.appyvet.materialrangebar.RangeBar;
 
 import java.util.*;
 
-public class FilterPanelLayout extends LinearLayout implements RadioGroup.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
+public class FilterPanelLayout extends LinearLayout implements RadioGroup.OnCheckedChangeListener, AdapterView.OnItemSelectedListener, RangeBar.OnRangeBarChangeListener {
 
     private static final int NUM_YEARS_TO_SHOW = 3;
 
@@ -25,6 +25,10 @@ public class FilterPanelLayout extends LinearLayout implements RadioGroup.OnChec
     private ArrayAdapter<Integer> yearAdapter;
     private ArrayAdapter<Integer> monthAdapter;
     private ArrayAdapter<Integer> dayAdapter;
+
+    private OnFilterChangedListener listener;
+
+    private FilterMode currentMode = FilterMode.ALL;
 
     public FilterPanelLayout(Context context) {
         super(context);
@@ -77,6 +81,8 @@ public class FilterPanelLayout extends LinearLayout implements RadioGroup.OnChec
         yearSpinner.setOnItemSelectedListener(this);
         monthSpinner.setOnItemSelectedListener(this);
         daySpinner.setOnItemSelectedListener(this);
+
+        rangeBar.setOnRangeBarChangeListener(this);
     }
 
     private void updateYearSpinner() {
@@ -133,21 +139,25 @@ public class FilterPanelLayout extends LinearLayout implements RadioGroup.OnChec
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
             case R.id.filter_all:
+                currentMode = FilterMode.ALL;
                 daySpinner.setEnabled(false);
                 monthSpinner.setEnabled(false);
                 yearSpinner.setEnabled(false);
                 break;
             case R.id.filter_year:
+                currentMode = FilterMode.YEAR;
                 daySpinner.setEnabled(false);
                 monthSpinner.setEnabled(false);
                 yearSpinner.setEnabled(true);
                 break;
             case R.id.filter_month:
+                currentMode = FilterMode.MONTH;
                 daySpinner.setEnabled(false);
                 monthSpinner.setEnabled(true);
                 yearSpinner.setEnabled(true);
                 break;
             case R.id.filter_day:
+                currentMode = FilterMode.DAY;
                 daySpinner.setEnabled(true);
                 monthSpinner.setEnabled(true);
                 yearSpinner.setEnabled(true);
@@ -173,33 +183,121 @@ public class FilterPanelLayout extends LinearLayout implements RadioGroup.OnChec
     }
 
     private void updateRangeBar() {
-        if (!yearSpinner.isEnabled()) {
-            // All
-            rangeBar.setTickEnd(2018);
-            rangeBar.setRangePinsByValue(2016, 2018);
-            rangeBar.setTickStart(2016);
-        } else if (!monthSpinner.isEnabled()) {
-            // Year
-            rangeBar.setTickStart(0);
-            rangeBar.setTickEnd(12);
-            rangeBar.setRangePinsByValue(0, 12);
-        } else if (!daySpinner.isEnabled()) {
-            // Month
-            int maxDays = getMaxDaysInSelectedMonthAndYear();
-            rangeBar.setTickStart(0);
-            rangeBar.setTickEnd(maxDays);
-            rangeBar.setRangePinsByValue(0, maxDays);
-        } else {
-            // Day
-            rangeBar.setTickStart(0);
-            rangeBar.setTickEnd(24);
-            rangeBar.setRangePinsByValue(0, 24);
+        switch (currentMode) {
+            case ALL:
+                rangeBar.setTickEnd(2018);
+                rangeBar.setRangePinsByValue(2016, 2018);
+                rangeBar.setTickStart(2016);
+                break;
+            case YEAR:
+                rangeBar.setTickStart(1);
+                rangeBar.setTickEnd(12);
+                rangeBar.setRangePinsByValue(1, 12);
+                break;
+            case MONTH:
+                int maxDays = getMaxDaysInSelectedMonthAndYear();
+                rangeBar.setTickStart(1);
+                rangeBar.setTickEnd(maxDays);
+                rangeBar.setRangePinsByValue(1, maxDays);
+                break;
+            case DAY:
+                rangeBar.setTickStart(0);
+                rangeBar.setTickEnd(23);
+                rangeBar.setRangePinsByValue(0, 23);
+                break;
         }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         // Do nothing!
+    }
+
+    @Override
+    public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
+        if (listener != null) {
+            listener.onFilterChanged(getStartTime(), getEndTime(true));
+        }
+    }
+
+    private Calendar getTimeFromSpinners() {
+        int year = 1970;
+        int month = 1;
+        int day = 1;
+        switch (currentMode) {
+            case DAY:
+                day = getSelectedDay();
+            case MONTH:
+                month = getSelectedMonth();
+            case YEAR:
+                year = getSelectedYear();
+                break;
+        }
+        return new GregorianCalendar(year, month - 1, day);
+    }
+
+    private Calendar getStartTime() {
+        Calendar cal = getTimeFromSpinners();
+
+        switch (currentMode) {
+            case DAY:
+                // hour missing
+                int hour = rangeBar.getLeftIndex();
+                cal.set(Calendar.HOUR_OF_DAY, hour);
+                break;
+            case MONTH:
+                // day missing
+                int day = Integer.valueOf(rangeBar.getLeftPinValue());
+                cal.set(Calendar.DAY_OF_MONTH, day);
+                break;
+            case YEAR:
+                // month missing
+                int month = rangeBar.getLeftIndex();
+                cal.set(Calendar.MONTH, month);
+                break;
+            case ALL:
+                // year missing
+                int year = Integer.valueOf(rangeBar.getLeftPinValue());
+                cal.set(Calendar.YEAR, year);
+                break;
+        }
+
+        return cal;
+    }
+
+    private Calendar getEndTime(boolean exclusive) {
+        Calendar cal = getTimeFromSpinners();
+
+        int extra = exclusive ? 1 : 0;
+
+        switch (currentMode) {
+            case DAY:
+                // hour missing
+                int hour = rangeBar.getRightIndex() + extra;
+                cal.set(Calendar.HOUR_OF_DAY, hour);
+                break;
+            case MONTH:
+                // day missing
+                int day = Integer.valueOf(rangeBar.getRightPinValue()) + extra;
+                cal.set(Calendar.DAY_OF_MONTH, day);
+                break;
+            case YEAR:
+                // month missing
+                int month = rangeBar.getRightIndex() + extra;
+                cal.set(Calendar.MONTH, month);
+                break;
+            case ALL:
+                // year missing
+                int year = Integer.valueOf(rangeBar.getRightPinValue()) + extra;
+                cal.set(Calendar.YEAR, year);
+                break;
+        }
+
+        return cal;
+    }
+
+    public void setOnFilterChangedListener(OnFilterChangedListener listener) {
+        this.listener = listener;
     }
 
     /**
@@ -268,5 +366,9 @@ public class FilterPanelLayout extends LinearLayout implements RadioGroup.OnChec
             return -1;
         }
         return (int) value;
+    }
+
+    private enum FilterMode {
+        ALL, YEAR, MONTH, DAY
     }
 }
