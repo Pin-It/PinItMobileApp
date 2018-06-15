@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.*;
 import com.appyvet.materialrangebar.RangeBar;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class FilterPanelLayout extends LinearLayout implements RadioGroup.OnCheckedChangeListener, AdapterView.OnItemSelectedListener, RangeBar.OnRangeBarChangeListener {
@@ -25,6 +26,8 @@ public class FilterPanelLayout extends LinearLayout implements RadioGroup.OnChec
     private ArrayAdapter<Integer> yearAdapter;
     private ArrayAdapter<Integer> monthAdapter;
     private ArrayAdapter<Integer> dayAdapter;
+
+    private TextView description;
 
     private OnFilterChangedListener listener;
 
@@ -58,6 +61,7 @@ public class FilterPanelLayout extends LinearLayout implements RadioGroup.OnChec
         monthSpinner = panel.findViewById(R.id.filter_month_picker);
         daySpinner = panel.findViewById(R.id.filter_day_picker);
         rangeBar = panel.findViewById(R.id.filter_range);
+        description = panel.findViewById(R.id.filter_description);
 
         radioGroup.setOnCheckedChangeListener(this);
         radioGroup.check(R.id.filter_all);
@@ -206,6 +210,7 @@ public class FilterPanelLayout extends LinearLayout implements RadioGroup.OnChec
                 rangeBar.setRangePinsByValue(0, 23);
                 break;
         }
+        onRangeChangeListener(rangeBar, rangeBar.getLeftIndex(), rangeBar.getRightIndex(), rangeBar.getLeftPinValue(), rangeBar.getRightPinValue());
     }
 
     @Override
@@ -215,9 +220,50 @@ public class FilterPanelLayout extends LinearLayout implements RadioGroup.OnChec
 
     @Override
     public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
+        updateDescription();
         if (listener != null) {
             listener.onFilterChanged(getStartTime(), getEndTime(true));
         }
+    }
+
+    private void updateDescription() {
+        Calendar start = getStartTime();
+        Calendar end = getEndTime(false);
+
+        SimpleDateFormat selectedSDF = new SimpleDateFormat("");
+        SimpleDateFormat sdf = new SimpleDateFormat("");
+        String format = "Showing %sdangers pinned %s%s\nFrom %s to %s.";
+        String all = "";
+        String proposition = "in ";
+        String selected = "";
+        String fromStart = "";
+        String toEnd = "";
+        switch (currentMode) {
+            case ALL:
+                all = "all ";
+                proposition = "";
+                selectedSDF = new SimpleDateFormat("");
+                sdf = new SimpleDateFormat("yyyy");
+                break;
+            case YEAR:
+                selectedSDF = new SimpleDateFormat("yyyy");
+                sdf = new SimpleDateFormat("MMMM");
+                break;
+            case MONTH:
+                selectedSDF = new SimpleDateFormat("MMMM yyyy");
+                sdf = new SimpleDateFormat("d/M");
+                break;
+            case DAY:
+                proposition = "on ";
+                selectedSDF = new SimpleDateFormat("d MMMM yyyy");
+                sdf = new SimpleDateFormat("h a");
+                break;
+        }
+        selected = selectedSDF.format(start.getTime());
+        fromStart = sdf.format(start.getTime());
+        toEnd = sdf.format(end.getTime());
+        String text = String.format(format, all, proposition, selected, fromStart, toEnd);
+        description.setText(text);
     }
 
     private Calendar getTimeFromSpinners() {
