@@ -140,6 +140,15 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         mSwitch = (SwitchCompat) findViewById(R.id.switch_maps);
 
+        AppCompatButton settingsBttn = (AppCompatButton) findViewById(R.id.settingsBttn);
+        settingsBttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MapsActivity.this, SettingsActivity.class);
+                startActivity(i);
+            }
+        });
+
         mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
