@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--<EditTextPreference android:title="Your Name"-->
+        <!--android:key="username"-->
+        <!--android:summary="Please provide your username"></EditTextPreference>-->
+    <!--<CheckBoxPreference android:title="Application Updates"-->
+        <!--android:defaultValue="false"-->
+        <!--android:summary="This option if selected will allow the application to check for latest versions."-->
+        <!--android:key="applicationUpdates" />-->
+
+    <!--<Preference-->
+        <!--android:title="Customise Your Pins"-->
+        <!--android:key="customizeBttn"-->
+        <!--android:summary="Change the colour ot the shape of your pins" />-->
+
+    <SwitchPreference
+        android:title="Pin Mode"
+        android:key="switchForIcons"
+        android:checked="true"
+        android:backgroundTint="@color/colorAccent"
+        android:background="@color/colorAccent"
+        android:defaultValue="true" />
+
+    <PreferenceCategory
+        android:title="Customise Your Pins" >
+        <Preference
+            android:title="Pick Pocket"
+            android:key="pick_pocket"
+            android:icon="@drawable/pick_pocket" />
+
+        <Preference
+            android:title="Drunk"
+            android:key="drunk"
+            android:icon="@drawable/drunk"/>
+
+        <Preference
+            android:title="Robbery"
+            android:key="robbery"
+            android:icon="@drawable/robbery"/>
+
+        <Preference
+            android:title="Scam"
+            android:key="scam"
+            android:icon="@drawable/scam"/>
+
+        <Preference
+            android:title="Harrassment"
+            android:key="harrassment"
+            android:icon="@drawable/harrassment"/>
+
+        <Preference
+            android:title="Others"
+            android:key="others"
+            android:icon="@drawable/others"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="">
+        <Preference android:title="Exit"
+            android:key="exitBttn"/>
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -4,6 +4,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -13,10 +15,13 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.view.View;
@@ -66,10 +71,13 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private SwitchCompat mSwitch;
     private SwitchCompat pSwitch;
 
+    public static SharedPreferences sharedPreferences;
+
     FloatingActionButton pinsMenu, circlepin, extraflagpin, flagpin, starpin, wallpin, checkpin;
     private List<AppCompatButton> pinsList = new ArrayList<>();
     private List<Integer> colours = new ArrayList<>();
     private List<Integer> icons = new ArrayList<>();
+    private Map<AppCompatButton, Integer> pinsDefaultColors = new HashMap<>();
 
     private List<Pin> allPins = new ArrayList<>();
     private List<Marker> allMarkers = new ArrayList<>();
@@ -78,10 +86,13 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     int pincolor = -1;
     int pinshape = -1;
     private Pin.Type pinType = Pin.Type.OTHERS;
-    public PinMode currentMode = PinMode.ICON;
+    public PinMode currentMode = PinMode.COLOUR;
     private boolean pinChosen = false;
 
+    private AppCompatButton setting;
+
     private static final String SHOWCASE_ID = "SHOWCASE";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +114,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+
         pinsList.add((AppCompatButton) findViewById(R.id.circlePinBttn));
         pinsList.add((AppCompatButton) findViewById(R.id.checkPinBttn));
         pinsList.add((AppCompatButton) findViewById(R.id.extraFlagPinBttn));
@@ -110,12 +123,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         pinsList.add((AppCompatButton) findViewById(R.id.starPinBttn));
         pinsList.add((AppCompatButton) findViewById(R.id.wallPinBttn));
 
-        colours.add(R.drawable.pinuno);
-        colours.add(R.drawable.pincinco);
-        colours.add(R.drawable.pincuatro);
-        colours.add(R.drawable.pindos);
-        colours.add(R.drawable.pinseis);
-        colours.add(R.drawable.pintres);
+        colours.add(R.drawable.pick_pocket);
+        colours.add(R.drawable.drunk);
+        colours.add(R.drawable.robbery);
+        colours.add(R.drawable.scam);
+        colours.add(R.drawable.harrassment);
+        colours.add(R.drawable.others);
 
         icons.add(R.drawable.circlepin);
         icons.add(R.drawable.checkpin);
@@ -124,7 +137,25 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         icons.add(R.drawable.starpin);
         icons.add(R.drawable.wallpin);
 
+//        pinsDefaultColors.put(pinsList.get(0), 0xE55554);
+//        pinsDefaultColors.put(pinsList.get(1), 0xA344E5);
+//        pinsDefaultColors.put(pinsList.get(2), 0xE5710B);
+//        pinsDefaultColors.put(pinsList.get(3), 0x318BE5);
+//        pinsDefaultColors.put(pinsList.get(4), 0x14E576);
+//        pinsDefaultColors.put(pinsList.get(5), 0xE0E51E);
+
+//        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
         setAllPinsVisibility(false, null);
+
+        setting = (AppCompatButton) findViewById(R.id.settingsBttn);
+        setting.setOnClickListener(new AppCompatButton.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MapsActivity.this, SettingsActivity.class);
+                startActivity(i);
+            }
+        });
 
         mSwitch = (SwitchCompat) findViewById(R.id.switch_maps);
 
@@ -150,42 +181,43 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         });
 
         pinsMenu = (FloatingActionButton) findViewById(R.id.switchPinButton);
-        pinsMenu.setImageResource(R.drawable.wallpin);
+        setAllPinsMode(currentMode);
+        pinsMenu.setImageResource(R.drawable.pick_pocket);
 
-        pSwitch = (SwitchCompat) findViewById(R.id.switch_pins);
-        pSwitch.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                int pinsMenuId = 0;
-
-                if (isPinsVisible()) {
-                    pinsMenuId = R.drawable.cancel;
-                }
-
-                if (compoundButton.isChecked()) {
-                    setMode(PinMode.COLOUR);
-                    setAllPinsMode(PinMode.COLOUR);
-                    if (!isPinsVisible()) {
-                        pinsMenuId = R.drawable.pinuno;
-                    }
-                    pSwitch.setThumbDrawable(MapsActivity.this.getResources().getDrawable(R.drawable.switch_thumb_wallpins));
-
-                } else {
-                    setMode(PinMode.ICON);
-                    setAllPinsMode(PinMode.ICON);
-                    if (!isPinsVisible()) {
-                        pinsMenuId = R.drawable.wallpin;
-                    }
-                    pSwitch.setThumbDrawable(MapsActivity.this.getResources().getDrawable(R.drawable.switch_thumb_pins));
-                }
-
-                for (Marker m : allMarkers) {
-                    Pin pin = (Pin) m.getTag();
-                    m.setIcon(BitmapDescriptorFactory.fromResource(pinTypeToResource(pin.getType())));
-                }
-                pinsMenu.setImageResource(pinsMenuId);
-            }
-        });
+//        pSwitch = (SwitchCompat) findViewById(R.id.switch_pins);
+//        pSwitch.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                int pinsMenuId = 0;
+//
+//                if (isPinsVisible()) {
+//                    pinsMenuId = R.drawable.cancel;
+//                }
+//
+//                if (compoundButton.isChecked()) {
+//                    setMode(PinMode.COLOUR);
+//                    setAllPinsMode(PinMode.COLOUR);
+//                    if (!isPinsVisible()) {
+//                        pinsMenuId = R.drawable.pinuno;
+//                    }
+//                    pSwitch.setThumbDrawable(MapsActivity.this.getResources().getDrawable(R.drawable.switch_thumb_wallpins));
+//
+//                } else {
+//                    setMode(PinMode.ICON);
+//                    setAllPinsMode(PinMode.ICON);
+//                    if (!isPinsVisible()) {
+//                        pinsMenuId = R.drawable.wallpin;
+//                    }
+//                    pSwitch.setThumbDrawable(MapsActivity.this.getResources().getDrawable(R.drawable.switch_thumb_pins));
+//                }
+//
+//                for (Marker m : allMarkers) {
+//                    Pin pin = (Pin) m.getTag();
+//                    m.setIcon(BitmapDescriptorFactory.fromResource(pinTypeToResource(pin.getType())));
+//                }
+//                pinsMenu.setImageResource(pinsMenuId);
+//            }
+//        });
 
 
         pinsMenu.setOnClickListener(new View.OnClickListener() {
@@ -365,6 +397,13 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         return visible;
     }
 
+//    @Override
+//    protected void onResume() {
+//        if (mMap != null ) {
+//            readSharedPreference();
+//        }
+//        super.onResume();
+//    }
 
     /**
      * Manipulates the map once available.
@@ -399,6 +438,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                         LOCATION_PERMISSION_REQUEST_CODE);
             }
         }
+
       
         api.getAllPins(new NetworkListener<List<Pin>>() {
             @Override
@@ -415,6 +455,37 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
             }
         });
+
+//        try {
+//            View mapFragment = (View) findViewById(R.id.map);
+//            assert mapFragment != null;
+//            final ViewGroup parent = (ViewGroup) mapFragment.findViewWithTag("GoogleMapMyLocationButton").getParent();
+//            parent.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        for (int i = 0, n = parent.getChildCount(); i < n; i++) {
+//                            View view = parent.getChildAt(i);
+//                            RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) view.getLayoutParams();
+//                            // position on right bottom
+//                            rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+//                            rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,0);
+//                            rlp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//                            rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+//                            rlp.rightMargin = rlp.leftMargin;
+//                            rlp.bottomMargin = 25;
+//                            view.requestLayout();
+//                        }
+//                    } catch (Exception ex) {
+//                        ex.printStackTrace();
+//                    }
+//                }
+//            });
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+
+        readSharedPreference();
     }
 
     @Override
@@ -655,5 +726,36 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public void onInfoWindowClick(Marker marker) {
         Pin pin = (Pin) marker.getTag();
         showAllCommentsBox(pin);
+    }
+
+    public void readSharedPreference() {
+        int pinMode = sharedPreferences.getInt("ChangeIcons", 1);
+        if (pinMode == SettingsActivity.COLOURS_MODE) {
+            pinsMenu.setImageResource(R.drawable.pick_pocket);
+            setAllPinsMode(PinMode.COLOUR);
+            setMode(PinMode.COLOUR);
+        } else {
+            pinsMenu.setImageResource(R.drawable.wallpin);
+            setAllPinsMode(PinMode.ICON);
+            setMode(PinMode.ICON);
+        }
+
+//        int pickPocketColor = sharedPreferences.getInt("pick_pocket", 15029588);
+//        DrawableCompat.setTint(MapsActivity.this.getResources().getDrawable(colours.get(0)), pickPocketColor);
+//
+//        int drunkColor = sharedPreferences.getInt("drunk", 15029588);
+//        DrawableCompat.setTint(MapsActivity.this.getResources().getDrawable(colours.get(1)), drunkColor);
+//
+//        int robberyColor = sharedPreferences.getInt("robbery", 15029588);
+//        DrawableCompat.setTint(MapsActivity.this.getResources().getDrawable(colours.get(2)), robberyColor);
+//
+//        int scamColor = sharedPreferences.getInt("scam", 15029588);
+//        DrawableCompat.setTint(MapsActivity.this.getResources().getDrawable(colours.get(3)), scamColor);
+//
+//        int harrassmentColor = sharedPreferences.getInt("harrassment", 15029588);
+//        DrawableCompat.setTint(MapsActivity.this.getResources().getDrawable(colours.get(4)), harrassmentColor);
+//
+//        int othersColor = sharedPreferences.getInt("others", 15029588);
+//        DrawableCompat.setTint(MapsActivity.this.getResources().getDrawable(colours.get(5)), othersColor);
     }
 }
