@@ -61,13 +61,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
     private Intent intent;
     private Button mEmailSignInButton;
-
+    private PinItAPI api;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        api = PinItAPI.getInstance(Volley.newRequestQueue(getApplicationContext()));
 
         checkLoginStatus();
 
@@ -150,6 +152,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         preferences.edit()
                 .putString(PREFERENCE_USER_TOKEN, token)
                 .apply();
+        api.setToken(token);
     }
 
     private void populateAutoComplete() {
@@ -352,7 +355,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Void doInBackground(Void... params) {
-            PinItAPI api = PinItAPI.getInstance(Volley.newRequestQueue(getApplicationContext()));
             api.login(mEmail, mPassword, true, new LoginListener() {
                 @Override
                 public void onSuccess(String token) {
