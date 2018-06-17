@@ -1,19 +1,25 @@
 package com.pinit.pinitmobileapp;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
+import cn.qqtheme.framework.picker.ColorPicker;
 
 
-
-public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
 
     public static final int COLOURS_MODE = 0;
@@ -25,12 +31,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        preferenceMap.put(getPreferenceManager().findPreference("pick_pocket"), "pick_pocket");
-        preferenceMap.put(getPreferenceManager().findPreference("drunk"), "drunk");
-        preferenceMap.put(getPreferenceManager().findPreference("robbery"), "robbery");
-        preferenceMap.put(getPreferenceManager().findPreference("scam"), "scam");
-        preferenceMap.put(getPreferenceManager().findPreference("harrassment"), "harrassment");
-        preferenceMap.put(getPreferenceManager().findPreference("others"), "others");
 
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
     }
@@ -38,8 +38,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals("pick_pocket")) {
-            Preference preference = findPreference(key);
-            preference.getIcon().setTint(sharedPreferences.getInt(key, 000000));
+
 
         }
 
@@ -50,6 +49,13 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
+
+            preferenceMap.put((getPreferenceManager().findPreference("pick_pocket")), "pick_pocket");
+            preferenceMap.put((getPreferenceManager().findPreference("drunk")), "drunk");
+            preferenceMap.put(getPreferenceManager().findPreference("robbery"), "robbery");
+            preferenceMap.put(getPreferenceManager().findPreference("scam"), "scam");
+            preferenceMap.put(getPreferenceManager().findPreference("harrassment"), "harrassment");
+            preferenceMap.put(getPreferenceManager().findPreference("others"), "others");
 
             Preference button = (Preference) getPreferenceManager().findPreference("exitBttn");
             if (button != null) {
@@ -65,14 +71,13 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 //            final ListPreference pickPocket = (ListPreference) getPreferenceManager().findPreference("pick_pocket");
 
 
-
             for (final Map.Entry<Preference, String> entry : preferenceMap.entrySet()) {
                 final Preference preference = getPreferenceManager().findPreference(entry.getValue());
                 if (preference != null) {
                     preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(Preference preference) {
-
+                            showColourPickerDialogue(preference, MapsActivity.sharedPrefs, getActivity());
                             return true;
                         }
                     });
@@ -95,9 +100,28 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             }
         }
 
-
-
-
         }
+
+    public static void showColourPickerDialogue(final Preference bttn, SharedPreferences sharedPrefs, Activity activity) {
+//        SharedPreferences sharedPrefs = getApplicationContext().getSharedPreferences("settingsInfo", MODE_PRIVATE);
+
+        final SharedPreferences.Editor editor = MapsActivity.sharedPrefs.edit();
+
+        ColorPicker picker = new ColorPicker(activity);
+        picker.setOnColorPickListener(new ColorPicker.OnColorPickListener() {
+            @Override
+            public void onColorPicked(int pickedColor) {
+                bttn.getIcon().setTint(pickedColor);
+                editor.putInt("pick_pocket", pickedColor);
+                Log.w("SettingsActivity", Integer.toHexString(pickedColor));
+                editor.commit();
+            }
+        });
+        picker.show();
+
+
+    }
+
 }
+
 

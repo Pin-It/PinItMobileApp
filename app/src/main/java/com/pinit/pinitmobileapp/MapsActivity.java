@@ -20,8 +20,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.AppCompatButton;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
@@ -76,8 +79,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     FloatingActionButton pinsMenu, circlepin, extraflagpin, flagpin, starpin, wallpin, checkpin;
     private List<AppCompatButton> pinsList = new ArrayList<>();
-    private List<Integer> colours = new ArrayList<>();
+    public static List<Integer> colours = new ArrayList<>();
     private List<Integer> icons = new ArrayList<>();
+    private Map<AppCompatButton, Integer> pinsDefaultColors = new HashMap<>();
 
     private List<Pin> allPins = new ArrayList<>();
     private List<Marker> allMarkers = new ArrayList<>();
@@ -94,6 +98,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     private Calendar filterStart;
     private Calendar filterEnd;
+
+    public static SharedPreferences sharedPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,12 +128,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         pinsList.add((AppCompatButton) findViewById(R.id.starPinBttn));
         pinsList.add((AppCompatButton) findViewById(R.id.wallPinBttn));
 
-        colours.add(R.drawable.pinuno);
-        colours.add(R.drawable.pincinco);
-        colours.add(R.drawable.pincuatro);
-        colours.add(R.drawable.pindos);
-        colours.add(R.drawable.pinseis);
-        colours.add(R.drawable.pintres);
+        colours.add(R.drawable.pick_pocket);
+        colours.add(R.drawable.drunk);
+        colours.add(R.drawable.robbery);
+        colours.add(R.drawable.scam);
+        colours.add(R.drawable.harrassment);
+        colours.add(R.drawable.others);
 
         icons.add(R.drawable.circlepin);
         icons.add(R.drawable.checkpin);
@@ -135,6 +141,31 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         icons.add(R.drawable.flagpin);
         icons.add(R.drawable.starpin);
         icons.add(R.drawable.wallpin);
+
+//        pinsDefaultColors.put(pinsList.get(0), 0xE55554);
+//        pinsDefaultColors.put(pinsList.get(1), 0xA344E5);
+//        pinsDefaultColors.put(pinsList.get(2), 0xE5710B);
+//        pinsDefaultColors.put(pinsList.get(3), 0x318BE5);
+//        pinsDefaultColors.put(pinsList.get(4), 0x14E576);
+//        pinsDefaultColors.put(pinsList.get(5), 0xE0E51E);
+
+        pinsDefaultColors.put(pinsList.get(0), R.drawable.pick_pocket);
+        pinsDefaultColors.put(pinsList.get(1), R.drawable.drunk);
+        pinsDefaultColors.put(pinsList.get(2), R.drawable.robbery);
+        pinsDefaultColors.put(pinsList.get(3), R.drawable.scam);
+        pinsDefaultColors.put(pinsList.get(4), R.drawable.harrassment);
+        pinsDefaultColors.put(pinsList.get(5), R.drawable.others);
+
+        sharedPrefs = getPreferences(Context.MODE_PRIVATE);
+
+        sharedPrefs.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+                if (s.equals("pick_pocket")) {
+                    DrawableCompat.setTint(MapsActivity.this.getDrawable(colours.get(0)),sharedPreferences.getInt(s, 0x009988));
+                }
+            }
+        });
 
         setAllPinsVisibility(false, null);
 
@@ -215,6 +246,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         pinsMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                readFromSharedPrefs();
                 if (isPinsVisible()) {
                     setAllPinsVisibility(false, null);
 //                    setToCorrespondingImage();
@@ -260,7 +292,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 //                planningTripTutorSequence(500);
 //            }
 //        }
-
 
     }
 
@@ -501,6 +532,53 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         });
 
         ((FilterPanelLayout) findViewById(R.id.filter_panel)).setOnFilterChangedListener(this);
+    }
+
+    public void readFromSharedPrefs() {
+        int pickPocketColor = sharedPrefs.getInt("pick_pocket", 0x995555);
+//        DrawableCompat.setTint(MapsActivity.this.getDrawable(colours.get(0)), pickPocketColor);
+        Log.w("MapsActivity", Integer.toHexString(pickPocketColor));
+        Drawable bg = DrawableCompat.wrap(MapsActivity.this.getDrawable(colours.get(0)));
+        DrawableCompat.setTint(bg, pickPocketColor);
+
+
+
+//
+//        int drunkColor = sharedPrefs.getInt("pick_pocket", pinsDefaultColors.get(1));
+//        DrawableCompat.setTint(MapsActivity.this.getDrawable(colours.get(1)), drunkColor);
+//
+//        int robberyColor = sharedPrefs.getInt("pick_pocket", pinsDefaultColors.get(2));
+//        DrawableCompat.setTint(MapsActivity.this.getDrawable(colours.get(2)), robberyColor);
+//
+//        int scamColor = sharedPrefs.getInt("pick_pocket", pinsDefaultColors.get(3));
+//        DrawableCompat.setTint(MapsActivity.this.getDrawable(colours.get(3)), scamColor);
+//
+//        int harrassmentColor = sharedPrefs.getInt("pick_pocket", pinsDefaultColors.get(4));
+//        DrawableCompat.setTint(MapsActivity.this.getDrawable(colours.get(4)), harrassmentColor);
+//
+//        int othersColor = sharedPrefs.getInt("pick_pocket", pinsDefaultColors.get(5));
+//        DrawableCompat.setTint(MapsActivity.this.getDrawable(colours.get(5)), othersColor);
+
+        super.onResume();
+    }
+
+    @Override
+    public void onResume(){
+        readFromSharedPrefs();
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onPostResume() {
+        readFromSharedPrefs();
+        super.onPostResume();
+    }
+
+    @Override
+    protected void onStart() {
+        readFromSharedPrefs();
+        super.onStart();
     }
 
     @Override
