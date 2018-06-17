@@ -27,6 +27,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.pinit.api.errors.APIError;
 import com.pinit.api.listeners.LoginListener;
 import com.pinit.api.PinItAPI;
@@ -138,6 +139,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void completeLogin(String token) {
         saveToken(token);
+        String tok = FirebaseInstanceId.getInstance().getToken();
+        api.registerDevice(tok);
         intent = new Intent(LoginActivity.this, ExplanationActivity.class);
         startActivity(intent);
         finish();

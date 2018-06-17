@@ -1,7 +1,9 @@
 package com.pinit.pinitmobileapp;
 
+import com.android.volley.toolbox.Volley;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.pinit.api.PinItAPI;
 
 public class PinitFirebaseInstanceIDService extends FirebaseInstanceIdService {
     @Override
@@ -12,6 +14,6 @@ public class PinitFirebaseInstanceIDService extends FirebaseInstanceIdService {
     }
 
     private void sendRegistrationToServer(String token) {
-        // TODO
+        PinItAPI.getInstance(Volley.newRequestQueue(getApplicationContext())).registerDevice(token);
     }
 }

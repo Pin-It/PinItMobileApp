@@ -29,6 +29,7 @@ public class PinItAPI {
     private static final String PINS_URL = API_URL + Pin.API_ENDPOINT + "/";
     private static final String COMMENTS_URL = API_URL + Comment.API_ENDPOINT + "/";
     private static final String LIKES_URL = API_URL + Like.API_ENDPOINT + "/";
+    private static final String DEVICES_URL = API_URL + "devices/";
     private static final String TOKEN_AUTH_URL = BASE_URL + "api-token-auth/";
 
     private static final String TOKEN_FIELD = "token";
@@ -306,6 +307,26 @@ public class PinItAPI {
                         listener.isNotLikedByMe();
                     }
                 })
+                .send();
+    }
+
+    /**
+     * Register this device to enable Firebase cloud messaging on it
+     * @param token provided by Firebase
+     */
+    public void registerDevice(String token) {
+        JSONObject data = new JSONObject();
+        try {
+            data.put("registration_id", token);
+            data.put("type", "android");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        getNewJSONObjectRequest()
+                .withMethod(Request.Method.POST)
+                .withURL(DEVICES_URL)
+                .withJSONData(data)
                 .send();
     }
 
