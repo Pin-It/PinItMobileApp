@@ -53,6 +53,19 @@
             android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
         <activity android:name=".UserPurposeActivity" />
         <activity android:name=".SettingsActivity" />
+
+        <service
+            android:name=".PinitMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name=".PinitFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
