@@ -35,16 +35,29 @@ public class PinItAPI {
     private static final String USERNAME_FIELD = "username";
     private static final String PASSWORD_FIELD = "password";
 
+    private static PinItAPI instance;
+
     private RequestQueue requestQueue;
     private String token;
 
-    public PinItAPI(RequestQueue requestQueue) {
-        this(requestQueue, null);
+    private PinItAPI() {
     }
 
-    public PinItAPI(RequestQueue requestQueue, String token) {
-        this.requestQueue = requestQueue;
-        this.token = token;
+    public static PinItAPI getInstance() {
+        if (instance == null) {
+            throw new IllegalArgumentException("Must pass in request queue the first time calling getInstance");
+        }
+        return instance;
+    }
+
+    public static PinItAPI getInstance(RequestQueue requestQueue) {
+        if (instance == null) {
+            instance = new PinItAPI();
+        }
+        if (instance.requestQueue == null) {
+            instance.requestQueue = requestQueue;
+        }
+        return instance;
     }
 
     public void login(String email, String password, final LoginListener listener) {

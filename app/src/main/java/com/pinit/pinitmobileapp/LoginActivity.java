@@ -137,7 +137,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void completeLogin(String token) {
         saveToken(token);
         intent = new Intent(LoginActivity.this, ExplanationActivity.class);
-        intent.putExtra(MapsActivity.USER_TOKEN, token);
         startActivity(intent);
         finish();
     }
@@ -353,7 +352,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Void doInBackground(Void... params) {
-            PinItAPI api = new PinItAPI(Volley.newRequestQueue(getApplicationContext()));
+            PinItAPI api = PinItAPI.getInstance(Volley.newRequestQueue(getApplicationContext()));
             api.login(mEmail, mPassword, true, new LoginListener() {
                 @Override
                 public void onSuccess(String token) {

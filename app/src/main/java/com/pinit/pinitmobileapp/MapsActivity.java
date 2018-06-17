@@ -25,6 +25,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 import android.widget.*;
 
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -53,8 +54,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
         GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.InfoWindowAdapter,
         GoogleMap.OnInfoWindowClickListener, OnFilterChangedListener {
-
-    public static final String USER_TOKEN = "userToken";
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
@@ -100,12 +99,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_frame_work);
 
-        Bundle extras = getIntent().getExtras();
-        String token = null;
-        if (extras != null) {
-            token = extras.getString(USER_TOKEN, null);
-        }
-        api = new PinItAPI(Volley.newRequestQueue(this), token);
+        api = PinItAPI.getInstance(Volley.newRequestQueue(this));
 
         pincolor = R.drawable.pinuno;
         pinshape = R.drawable.circlepin;
