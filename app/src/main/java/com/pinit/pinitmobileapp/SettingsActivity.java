@@ -8,13 +8,11 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.os.Bundle;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+
 
 import cn.qqtheme.framework.picker.ColorPicker;
 

@@ -559,27 +559,27 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 //        int othersColor = sharedPrefs.getInt("pick_pocket", pinsDefaultColors.get(5));
 //        DrawableCompat.setTint(MapsActivity.this.getDrawable(colours.get(5)), othersColor);
 
-        super.onResume();
+//        super.onResume();
     }
 
     @Override
     public void onResume(){
-        readFromSharedPrefs();
+//        readFromSharedPrefs();
         super.onResume();
 
     }
-
-    @Override
-    protected void onPostResume() {
-        readFromSharedPrefs();
-        super.onPostResume();
-    }
-
-    @Override
-    protected void onStart() {
-        readFromSharedPrefs();
-        super.onStart();
-    }
+//
+//    @Override
+//    protected void onPostResume() {
+//        readFromSharedPrefs();
+//        super.onPostResume();
+//    }
+//
+//    @Override
+//    protected void onStart() {
+//        readFromSharedPrefs();
+//        super.onStart();
+//    }
 
     @Override
     public void onMapClick(final LatLng point) {
@@ -681,6 +681,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     @Override
     protected void onResumeFragments() {
+//        readFromSharedPrefs();
         super.onResumeFragments();
         if (mPermissionDenied) {
             showMissingPermissionError();
