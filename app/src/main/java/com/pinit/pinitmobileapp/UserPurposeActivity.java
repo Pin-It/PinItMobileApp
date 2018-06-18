@@ -59,7 +59,6 @@ public class UserPurposeActivity extends AppCompatActivity {
                         intent.putExtra("moving", R.id.moving);
                     }
                 }
-                intent.putExtra(MapsActivity.USER_TOKEN, getIntent().getExtras().getString(MapsActivity.USER_TOKEN));
                 startActivity(intent);
                 finish();
             }

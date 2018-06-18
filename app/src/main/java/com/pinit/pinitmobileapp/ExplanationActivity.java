@@ -37,7 +37,6 @@ public class ExplanationActivity extends AppIntro {
 //        Toast.makeText(getApplicationContext(),
 //                getString(R.string.app_intro_skip), Toast.LENGTH_SHORT).show();
         Intent i = new Intent(getApplicationContext(), UserPurposeActivity.class);
-        i.putExtra(MapsActivity.USER_TOKEN, getIntent().getExtras().getString(MapsActivity.USER_TOKEN));
         startActivity(i);
     }
 
@@ -50,7 +49,6 @@ public class ExplanationActivity extends AppIntro {
     public void onDonePressed() {
         // Do something here when users click or tap tap on Done button.
         Intent i = new Intent(getApplicationContext(), UserPurposeActivity.class);
-        i.putExtra(MapsActivity.USER_TOKEN, getIntent().getExtras().getString(MapsActivity.USER_TOKEN));
         startActivity(i);
         finish();
     }

@@ -28,6 +28,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 import android.widget.*;
 
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -56,8 +57,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
         GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.InfoWindowAdapter,
         GoogleMap.OnInfoWindowClickListener, OnFilterChangedListener {
-
-    public static final String USER_TOKEN = "userToken";
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
@@ -103,12 +102,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_frame_work);
 
-        Bundle extras = getIntent().getExtras();
-        String token = null;
-        if (extras != null) {
-            token = extras.getString(USER_TOKEN, null);
-        }
-        api = new PinItAPI(Volley.newRequestQueue(this), token);
+        api = PinItAPI.getInstance(Volley.newRequestQueue(this));
 
         pincolor = R.drawable.pinuno;
         pinshape = R.drawable.circlepin;
@@ -289,6 +283,11 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getPackageName()));
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
         return resizedBitmap;
+    }
+
+    private void startDeviceLocationService() {
+        stopService(new Intent(this, DeviceLocationService.class));
+        startService(new Intent(this, DeviceLocationService.class));
     }
 
     private void setToCorrespondingImage() {
@@ -507,6 +506,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
            enableMyLocation();
+            startDeviceLocationService();
         } else {
             if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
                 ActivityCompat.requestPermissions(MapsActivity.this,
@@ -639,6 +639,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     enableMyLocation();
+                    startDeviceLocationService();
                 } else {
                    mPermissionDenied = true;
                 }

@@ -27,6 +27,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.pinit.api.errors.APIError;
 import com.pinit.api.listeners.LoginListener;
 import com.pinit.api.PinItAPI;
@@ -61,13 +62,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
     private Intent intent;
     private Button mEmailSignInButton;
-
+    private PinItAPI api;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        api = PinItAPI.getInstance(Volley.newRequestQueue(getApplicationContext()));
 
         checkLoginStatus();
 
@@ -136,17 +139,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void completeLogin(String token) {
         saveToken(token);
+        String tok = FirebaseInstanceId.getInstance().getToken();
+        api.registerDevice(tok);
         if (isFirstTime()) {
             intent = new Intent(LoginActivity.this, ExplanationActivity.class);
-            intent.putExtra(MapsActivity.USER_TOKEN, token);
-            startActivity(intent);
-            finish();
         } else {
             intent = new Intent(LoginActivity.this, MapsActivity.class);
-            intent.putExtra(MapsActivity.USER_TOKEN, token);
-            startActivity(intent);
-            finish();
         }
+        startActivity(intent);
+        finish();
     }
 
 
@@ -169,6 +170,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         preferences.edit()
                 .putString(PREFERENCE_USER_TOKEN, token)
                 .apply();
+        api.setToken(token);
     }
 
     private void populateAutoComplete() {
@@ -371,7 +373,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Void doInBackground(Void... params) {
-            PinItAPI api = new PinItAPI(Volley.newRequestQueue(getApplicationContext()));
             api.login(mEmail, mPassword, true, new LoginListener() {
                 @Override
                 public void onSuccess(String token) {

@@ -5,6 +5,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.pinit.api.errors.APIError;
 import com.pinit.api.errors.BadRequestError;
+import com.pinit.api.errors.HTTPClientError;
 import com.pinit.api.listeners.LoginListener;
 import com.pinit.api.listeners.NetworkListener;
 import com.pinit.api.listeners.PinLikedByMeListener;
@@ -29,22 +30,37 @@ public class PinItAPI {
     private static final String PINS_URL = API_URL + Pin.API_ENDPOINT + "/";
     private static final String COMMENTS_URL = API_URL + Comment.API_ENDPOINT + "/";
     private static final String LIKES_URL = API_URL + Like.API_ENDPOINT + "/";
+    private static final String DEVICES_URL = API_URL + "devices/";
+    private static final String DEVICE_LOCATION_URL = API_URL + "device-location/";
     private static final String TOKEN_AUTH_URL = BASE_URL + "api-token-auth/";
 
     private static final String TOKEN_FIELD = "token";
     private static final String USERNAME_FIELD = "username";
     private static final String PASSWORD_FIELD = "password";
 
+    private static PinItAPI instance;
+
     private RequestQueue requestQueue;
     private String token;
 
-    public PinItAPI(RequestQueue requestQueue) {
-        this(requestQueue, null);
+    private PinItAPI() {
     }
 
-    public PinItAPI(RequestQueue requestQueue, String token) {
-        this.requestQueue = requestQueue;
-        this.token = token;
+    public static PinItAPI getInstance() {
+        if (instance == null) {
+            throw new IllegalArgumentException("Must pass in request queue the first time calling getInstance");
+        }
+        return instance;
+    }
+
+    public static PinItAPI getInstance(RequestQueue requestQueue) {
+        if (instance == null) {
+            instance = new PinItAPI();
+        }
+        if (instance.requestQueue == null) {
+            instance.requestQueue = requestQueue;
+        }
+        return instance;
     }
 
     public void login(String email, String password, final LoginListener listener) {
@@ -293,6 +309,56 @@ public class PinItAPI {
                         listener.isNotLikedByMe();
                     }
                 })
+                .send();
+    }
+
+    /**
+     * Register this device to enable Firebase cloud messaging on it
+     * @param token provided by Firebase
+     */
+    public void registerDevice(String token) {
+        JSONObject data = new JSONObject();
+        try {
+            data.put("registration_id", token);
+            data.put("type", "android");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        getNewJSONObjectRequest()
+                .withMethod(Request.Method.POST)
+                .withURL(DEVICES_URL)
+                .withJSONData(data)
+                .withNetworkListener(new NetworkListener<JSONObject>() {
+                    @Override
+                    public void onReceive(JSONObject response) {
+
+                    }
+
+                    @Override
+                    public void onError(APIError error) {
+                        if (error instanceof HTTPClientError) {
+                            byte[] response = ((HTTPClientError) error).getNetworkResponse().data;
+                            Log.d("PinItAPI", "Register device failed: " + new String(response));
+                        }
+                    }
+                })
+                .send();
+    }
+
+    public void uploadDeviceLocation(String deviceToken, double latitude, double longitude) {
+        JSONObject data = new JSONObject();
+        try {
+            data.put("latitude", latitude);
+            data.put("longitude", longitude);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        getNewJSONObjectRequest()
+                .withMethod(Request.Method.PATCH)
+                .withURL(DEVICE_LOCATION_URL + deviceToken + "/")
+                .withJSONData(data)
                 .send();
     }
 
