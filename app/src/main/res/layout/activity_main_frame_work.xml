@@ -107,14 +107,14 @@
         android:layout_marginStart="7dp"
         tools:checked="false" />
 
-    <android.support.v7.widget.SwitchCompat
-        style="@style/SwitchCompatStyleTwo"
-        android:id="@+id/switch_pins"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="76dp"
-        android:layout_marginStart="7dp" />
+    <!--<android.support.v7.widget.SwitchCompat-->
+        <!--style="@style/SwitchCompatStyleTwo"-->
+        <!--android:id="@+id/switch_pins"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_marginBottom="76dp"-->
+        <!--android:layout_marginStart="7dp" />-->
 
     <RelativeLayout
         android:layout_width="295dp"
@@ -127,6 +127,7 @@
             android:layout_height="46dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
+            android:foreground="?attr/selectableItemBackground"
             android:layout_marginTop="8dp"
             android:layout_marginStart="0dp"
             android:background="@drawable/settings_icon" />
@@ -151,6 +152,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="5dp"
             android:layout_marginTop="13dp"
+            android:foreground="?attr/selectableItemBackground"
             android:fontFamily="@font/amatic_sc"
             android:background="@drawable/ic_search_black_24dp"
             android:textColor="#faefe6" />
@@ -161,6 +163,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
+        android:layout_marginStart="7dp"
+        android:layout_marginEnd="7dp"
         layout="@layout/expansion_filter_panel" />
 
 </RelativeLayout>

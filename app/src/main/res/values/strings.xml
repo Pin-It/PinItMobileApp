@@ -46,4 +46,6 @@
     <string name="comment_dialogue_submit">Add %s</string>
     <string name="filter">Filter</string>
 
+    <string name="colour_picker_title">Select a colour</string>
+
 </resources>
