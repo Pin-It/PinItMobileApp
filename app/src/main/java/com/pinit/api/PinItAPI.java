@@ -5,6 +5,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.pinit.api.errors.APIError;
 import com.pinit.api.errors.BadRequestError;
+import com.pinit.api.errors.HTTPClientError;
 import com.pinit.api.listeners.LoginListener;
 import com.pinit.api.listeners.NetworkListener;
 import com.pinit.api.listeners.PinLikedByMeListener;
@@ -327,6 +328,20 @@ public class PinItAPI {
                 .withMethod(Request.Method.POST)
                 .withURL(DEVICES_URL)
                 .withJSONData(data)
+                .withNetworkListener(new NetworkListener<JSONObject>() {
+                    @Override
+                    public void onReceive(JSONObject response) {
+
+                    }
+
+                    @Override
+                    public void onError(APIError error) {
+                        if (error instanceof HTTPClientError) {
+                            byte[] response = ((HTTPClientError) error).getNetworkResponse().data;
+                            Log.d("PinItAPI", "Regster device failed: " + new String(response));
+                        }
+                    }
+                })
                 .send();
     }
 
