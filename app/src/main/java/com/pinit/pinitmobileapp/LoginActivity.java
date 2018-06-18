@@ -136,12 +136,30 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void completeLogin(String token) {
         saveToken(token);
-        intent = new Intent(LoginActivity.this, ExplanationActivity.class);
-        intent.putExtra(MapsActivity.USER_TOKEN, token);
-        startActivity(intent);
-        finish();
+        if (isFirstTime()) {
+            intent = new Intent(LoginActivity.this, ExplanationActivity.class);
+            intent.putExtra(MapsActivity.USER_TOKEN, token);
+            startActivity(intent);
+            finish();
+        } else {
+            intent = new Intent(LoginActivity.this, MapsActivity.class);
+            intent.putExtra(MapsActivity.USER_TOKEN, token);
+            startActivity(intent);
+            finish();
+        }
     }
 
+
+    private boolean isFirstTime() {
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        boolean ranBefore = preferences.getBoolean("RanBefore", false);
+        if (!ranBefore) {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("RanBefore",true);
+            editor.commit();
+        }
+        return !ranBefore;
+    }
     /**
      * Save the specified token to shared preferences
      * @param token the token to be saved

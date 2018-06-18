@@ -9,8 +9,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.location.Address;
@@ -233,6 +235,30 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
 
     }
+    public Drawable scaleImage (Drawable image, float scaleFactor) {
+
+        if ((image == null) || !(image instanceof BitmapDrawable)) {
+            return image;
+        }
+
+        Bitmap b = ((BitmapDrawable)image).getBitmap();
+
+        int sizeX = Math.round(image.getIntrinsicWidth() * scaleFactor);
+        int sizeY = Math.round(image.getIntrinsicHeight() * scaleFactor);
+
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, sizeX, sizeY, false);
+
+        image = new BitmapDrawable(getResources(), bitmapResized);
+
+        return image;
+
+    }
+
+    public Bitmap resizeMapIcons(String iconName, int width, int height){
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getPackageName()));
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+        return resizedBitmap;
+    }
 
     private void setToCorrespondingImage() {
         if (currentMode == PinMode.ICON) {
@@ -292,6 +318,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             pin.incrementLikes();
                             likeCount.setText(String.valueOf(pin.getLikes()));
                             Toast.makeText(MapsActivity.this, "Liked!", Toast.LENGTH_SHORT).show();
+
                         } else {
                             api.deleteLikeFromPin(pin);
                             pin.decrementLikes();
@@ -303,7 +330,25 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
         });
 
-        likeCount.setText(String.valueOf(pin.getLikes()));
+       likeCount.setText(String.valueOf(pin.getLikes()));
+
+       for (Marker marker : allMarkers) {
+           if (marker.getTag().equals(pin) && pin.getLikes() == 1) {
+               int pinResource = pinTypeToResource(pin.getType());
+               Drawable drawable = getDrawable(pinResource);
+               Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+               Bitmap scaled;
+               if (pin.getLikes() == 1) {
+                   scaled = bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth() * 1.5), (int) (bitmap.getHeight() * 1.5), false);
+                   marker.setIcon(BitmapDescriptorFactory.fromBitmap(scaled));
+               }
+               if (pin.getLikes() == 2) {
+                   scaled = bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth() * 2.0), (int) (bitmap.getHeight() * 2.0), false);
+                   marker.setIcon(BitmapDescriptorFactory.fromBitmap(scaled));
+
+               }
+           }
+       }
 
         new AlertDialog.Builder(MapsActivity.this)
                 .setView(view)
