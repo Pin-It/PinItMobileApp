@@ -143,15 +143,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         api.registerDevice(tok);
         if (isFirstTime()) {
             intent = new Intent(LoginActivity.this, ExplanationActivity.class);
-            intent.putExtra(MapsActivity.USER_TOKEN, token);
-            startActivity(intent);
-            finish();
         } else {
             intent = new Intent(LoginActivity.this, MapsActivity.class);
-            intent.putExtra(MapsActivity.USER_TOKEN, token);
-            startActivity(intent);
-            finish();
         }
+        startActivity(intent);
+        finish();
     }
 
 
