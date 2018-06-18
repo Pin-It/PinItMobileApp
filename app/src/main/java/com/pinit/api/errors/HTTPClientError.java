@@ -5,8 +5,8 @@ import com.android.volley.NetworkResponse;
 public class HTTPClientError extends APIError {
     private final NetworkResponse networkResponse;
 
-    public HTTPClientError(String message, NetworkResponse networkResponse) {
-        super(message);
+    public HTTPClientError(Throwable cause, NetworkResponse networkResponse) {
+        super(cause);
         this.networkResponse = networkResponse;
     }
 

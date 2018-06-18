@@ -205,7 +205,7 @@ public class JSONRequestBuilder<T> {
                 VolleyError volleyError = (VolleyError) e.getCause();
                 listener.onError(APIError.fromVolleyError(volleyError));
             } else {
-                listener.onError(new UnknownError(e.getMessage()));
+                listener.onError(new UnknownError(e));
             }
         }
     }

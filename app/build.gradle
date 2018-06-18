@@ -72,5 +72,8 @@ dependencies {
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-locationlayer:0.5.2'
     implementation 'com.github.deano2390:MaterialShowcaseView:1.2.0'
     implementation 'com.github.paolorotolo:appintro:4.1.0'
-
+    implementation 'com.google.firebase:firebase-core:16.0.1'
+    implementation 'com.google.firebase:firebase-messaging:17.0.0'
 }
+
+apply plugin: 'com.google.gms.google-services'
