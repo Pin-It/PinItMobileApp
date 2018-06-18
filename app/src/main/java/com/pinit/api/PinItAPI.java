@@ -31,6 +31,7 @@ public class PinItAPI {
     private static final String COMMENTS_URL = API_URL + Comment.API_ENDPOINT + "/";
     private static final String LIKES_URL = API_URL + Like.API_ENDPOINT + "/";
     private static final String DEVICES_URL = API_URL + "devices/";
+    private static final String DEVICE_LOCATION_URL = API_URL + "device-location/";
     private static final String TOKEN_AUTH_URL = BASE_URL + "api-token-auth/";
 
     private static final String TOKEN_FIELD = "token";
@@ -338,10 +339,26 @@ public class PinItAPI {
                     public void onError(APIError error) {
                         if (error instanceof HTTPClientError) {
                             byte[] response = ((HTTPClientError) error).getNetworkResponse().data;
-                            Log.d("PinItAPI", "Regster device failed: " + new String(response));
+                            Log.d("PinItAPI", "Register device failed: " + new String(response));
                         }
                     }
                 })
+                .send();
+    }
+
+    public void uploadDeviceLocation(String deviceToken, double latitude, double longitude) {
+        JSONObject data = new JSONObject();
+        try {
+            data.put("latitude", latitude);
+            data.put("longitude", longitude);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        getNewJSONObjectRequest()
+                .withMethod(Request.Method.PATCH)
+                .withURL(DEVICE_LOCATION_URL + deviceToken + "/")
+                .withJSONData(data)
                 .send();
     }
 

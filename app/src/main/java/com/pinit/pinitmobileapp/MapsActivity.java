@@ -258,6 +258,11 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     }
 
+    private void startDeviceLocationService() {
+        stopService(new Intent(this, DeviceLocationService.class));
+        startService(new Intent(this, DeviceLocationService.class));
+    }
+
     private void setToCorrespondingImage() {
         if (currentMode == PinMode.ICON) {
             pinsMenu.setImageResource(R.drawable.wallpin);
@@ -455,6 +460,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
            enableMyLocation();
+            startDeviceLocationService();
         } else {
             if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
                 ActivityCompat.requestPermissions(MapsActivity.this,
@@ -587,6 +593,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     enableMyLocation();
+                    startDeviceLocationService();
                 } else {
                    mPermissionDenied = true;
                 }
