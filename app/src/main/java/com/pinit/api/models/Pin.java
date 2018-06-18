@@ -1,5 +1,6 @@
 package com.pinit.api.models;
 
+import com.google.android.gms.maps.model.Marker;
 import com.google.gson.internal.bind.util.ISO8601Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
