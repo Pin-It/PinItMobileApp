@@ -8,23 +8,30 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.PorterDuff;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.AppCompatButton;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
@@ -67,19 +74,18 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public static final float PIN_ANCHOR_X = 0.5f;
     public static final float PIN_ANCHOR_Y = 0.72f;
 
-    public boolean isFirstStart;
     private boolean mPermissionDenied = false;
     private GoogleMap mMap;
     private HeatmapTileProvider mProvider;
     private TileOverlay mOverlay;
     private List<LatLng> lstLatLng = new ArrayList<LatLng>();
     private SwitchCompat mSwitch;
-    private SwitchCompat pSwitch;
+    private AppCompatButton settings;
 
     FloatingActionButton pinsMenu, circlepin, extraflagpin, flagpin, starpin, wallpin, checkpin;
-    private List<AppCompatButton> pinsList = new ArrayList<>();
-    private List<Integer> colours = new ArrayList<>();
-    private List<Integer> icons = new ArrayList<>();
+    public static List<AppCompatButton> pinsList = new ArrayList<>();
+    public static List<Integer> colours = new ArrayList<>();
+    public static List<Integer> icons = new ArrayList<>();
 
     private List<Pin> allPins = new ArrayList<>();
     private List<Marker> allMarkers = new ArrayList<>();
@@ -88,7 +94,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     int pincolor = -1;
     int pinshape = -1;
     private Pin.Type pinType = Pin.Type.OTHERS;
-    public PinMode currentMode = PinMode.ICON;
+    public static PinMode currentMode = PinMode.ICON;
     private boolean pinChosen = false;
     private EditText locSearch;
 
@@ -119,12 +125,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         pinsList.add((AppCompatButton) findViewById(R.id.starPinBttn));
         pinsList.add((AppCompatButton) findViewById(R.id.wallPinBttn));
 
-        colours.add(R.drawable.pinuno);
-        colours.add(R.drawable.pincinco);
-        colours.add(R.drawable.pincuatro);
-        colours.add(R.drawable.pindos);
-        colours.add(R.drawable.pinseis);
-        colours.add(R.drawable.pintres);
+        colours.add(R.drawable.pick_pocket);
+        colours.add(R.drawable.drunk);
+        colours.add(R.drawable.robbery);
+        colours.add(R.drawable.scam);
+        colours.add(R.drawable.harrassment);
+        colours.add(R.drawable.others);
 
         icons.add(R.drawable.circlepin);
         icons.add(R.drawable.checkpin);
@@ -137,8 +143,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         mSwitch = (SwitchCompat) findViewById(R.id.switch_maps);
 
-        AppCompatButton settingsBttn = (AppCompatButton) findViewById(R.id.settingsBttn);
-        settingsBttn.setOnClickListener(new View.OnClickListener() {
+        settings = (AppCompatButton) findViewById(R.id.settingsBttn);
+        settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(MapsActivity.this, SettingsActivity.class);
@@ -157,14 +163,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     if (isPinsVisible()) {
                         setAllPinsVisibility(false, null);
                     }
-                    pSwitch.setVisibility(View.GONE);
+//                    pSwitch.setVisibility(View.GONE);
                 } else {
                     // Pin mode
                     hideHeatMap();
                     showAllPins();
                     setToCorrespondingImage();
                     pinsMenu.show();
-                    pSwitch.setVisibility(View.VISIBLE);
+//                    pSwitch.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -173,48 +179,11 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         pinsMenu = (FloatingActionButton) findViewById(R.id.switchPinButton);
         pinsMenu.setImageResource(R.drawable.wallpin);
 
-        pSwitch = (SwitchCompat) findViewById(R.id.switch_pins);
-        pSwitch.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                int pinsMenuId = 0;
-
-                if (isPinsVisible()) {
-                    pinsMenuId = R.drawable.cancel;
-                }
-
-                if (compoundButton.isChecked()) {
-                    setMode(PinMode.COLOUR);
-                    setAllPinsMode(PinMode.COLOUR);
-                    if (!isPinsVisible()) {
-                        pinsMenuId = R.drawable.pinuno;
-                    }
-                    pSwitch.setThumbDrawable(MapsActivity.this.getResources().getDrawable(R.drawable.switch_thumb_wallpins));
-
-                } else {
-                    setMode(PinMode.ICON);
-                    setAllPinsMode(PinMode.ICON);
-                    if (!isPinsVisible()) {
-                        pinsMenuId = R.drawable.wallpin;
-                    }
-                    pSwitch.setThumbDrawable(MapsActivity.this.getResources().getDrawable(R.drawable.switch_thumb_pins));
-                }
-
-                for (Marker m : allMarkers) {
-                    Pin pin = (Pin) m.getTag();
-                    m.setIcon(BitmapDescriptorFactory.fromResource(pinTypeToResource(pin.getType())));
-                }
-                pinsMenu.setImageResource(pinsMenuId);
-            }
-        });
-
-
         pinsMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isPinsVisible()) {
                     setAllPinsVisibility(false, null);
-//                    setToCorrespondingImage();
                     if (currentMode == PinMode.ICON) {
                         pinsMenu.setImageResource(R.drawable.wallpin);
                     } else {
@@ -243,11 +212,11 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         Bundle resultIntent = getIntent().getExtras();
         if (resultIntent != null) {
             if (resultIntent.getInt("planning") != R.id.planning && resultIntent.getInt("yes") == R.id.yesButton) {
-                pSwitch.setChecked(true);
+//                pSwitch.setChecked(true);
                 travellingMovingYesTutorSequeunce(500);
             }
             if (resultIntent.getInt("planning") != R.id.planning && resultIntent.getInt("no") == R.id.noButton) {
-                pSwitch.setChecked(true);
+//                pSwitch.setChecked(true);
                 travellingMovingNoTutorSequeunce(500);
             }
         }
@@ -709,7 +678,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         int pinResource = pinTypeToResource(pin.getType());
         MarkerOptions options = new MarkerOptions()
                 .position(point)
-                .icon(BitmapDescriptorFactory.fromResource(pinResource))
+//                .icon(BitmapDescriptorFactory.fromResource(pinResource))
+                .icon(getBitmapDescriptor(pinResource))
                 .anchor(PIN_ANCHOR_X, PIN_ANCHOR_Y)
                 .title(title);
         Marker marker = mMap.addMarker(options);
@@ -783,7 +753,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         sequence.addSequenceItem(
                 new MaterialShowcaseView.Builder(this)
-                        .setTarget(pSwitch)
+                        .setTarget(settings)
                         .setMaskColour(Color.argb(200, 252,98,98))
                         .setTitleTextColor(Color.WHITE)
                         .setContentTextColor(Color.WHITE)
@@ -845,7 +815,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         sequence.addSequenceItem(
                 new MaterialShowcaseView.Builder(this)
-                        .setTarget(pSwitch)
+                        .setTarget(settings)
                         .setMaskColour(Color.argb(200, 252,98,98))
                         .setTitleTextColor(Color.WHITE)
                         .setContentTextColor(Color.WHITE)
@@ -929,7 +899,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         sequence.addSequenceItem(
                 new MaterialShowcaseView.Builder(this)
-                        .setTarget(pSwitch)
+                        .setTarget(settings)
                         .setMaskColour(Color.argb(200, 252,98,98))
                         .setTitleTextColor(Color.WHITE)
                         .setContentTextColor(Color.WHITE)
@@ -979,7 +949,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         sequence.addSequenceItem(
                 new MaterialShowcaseView.Builder(this)
-                        .setTarget(pSwitch)
+                        .setTarget(settings)
                         .setMaskColour(Color.argb(200, 252,98,98))
                         .setTitleTextColor(Color.WHITE)
                         .setContentTextColor(Color.WHITE)
@@ -1014,5 +984,38 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private boolean pinSatisfiesFilter(Pin pin) {
         Calendar createdAt = pin.getCreatedAt();
         return createdAt.after(filterStart) && createdAt.before(filterEnd);
+    }
+
+    @Override
+    public void onResume() {
+        SharedPreferences prefs = getSharedPreferences("settingsSwitch", Context.MODE_PRIVATE);
+        int mode = prefs.getInt("Switch", SettingsActivity.SWITCH_MODE_COLOUR);
+        Log.w("MODE", Integer.toString(mode));
+        PinMode pinMode;
+        pinMode = mode == SettingsActivity.SWITCH_MODE_COLOUR ? PinMode.COLOUR : PinMode.ICON;
+        setMode(pinMode);
+        setAllPinsMode(pinMode);
+        setToCorrespondingImage();
+        super.onResume();
+    }
+
+    private BitmapDescriptor getBitmapDescriptor(int id) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            VectorDrawable vectorDrawable = (VectorDrawable) getDrawable(id);
+
+            int h = vectorDrawable.getIntrinsicHeight();
+            int w = vectorDrawable.getIntrinsicWidth();
+
+            vectorDrawable.setBounds(0, 0, w, h);
+
+            Bitmap bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bm);
+            vectorDrawable.draw(canvas);
+
+            return BitmapDescriptorFactory.fromBitmap(bm);
+
+        } else {
+            return BitmapDescriptorFactory.fromResource(id);
+        }
     }
 }

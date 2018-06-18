@@ -6,4 +6,7 @@
     <color name="background_material_light">#faefe6</color>
     <color name="pin_shape_switch">#6fcdf0</color>
     <color name="loc_search_bar">#CCffffff</color>
+    <color name="redDarkest">#c0392b</color>
+    <color name="redMiddle">#e74c3c</color>
+    <color name="redLight">#ec7063</color>
 </resources>
