@@ -7,14 +7,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -75,7 +79,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private TileOverlay mOverlay;
     private List<LatLng> lstLatLng = new ArrayList<LatLng>();
     private SwitchCompat mSwitch;
-    private SwitchCompat pSwitch;
     private AppCompatButton settings;
 
     FloatingActionButton pinsMenu, circlepin, extraflagpin, flagpin, starpin, wallpin, checkpin;
@@ -629,7 +632,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         int pinResource = pinTypeToResource(pin.getType());
         MarkerOptions options = new MarkerOptions()
                 .position(point)
-                .icon(BitmapDescriptorFactory.fromResource(pinResource))
+//                .icon(BitmapDescriptorFactory.fromResource(pinResource))
+                .icon(getBitmapDescriptor(pinResource))
                 .anchor(PIN_ANCHOR_X, PIN_ANCHOR_Y)
                 .title(title);
         Marker marker = mMap.addMarker(options);
@@ -947,5 +951,25 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         setAllPinsMode(pinMode);
         setToCorrespondingImage();
         super.onResume();
+    }
+
+    private BitmapDescriptor getBitmapDescriptor(int id) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            VectorDrawable vectorDrawable = (VectorDrawable) getDrawable(id);
+
+            int h = vectorDrawable.getIntrinsicHeight();
+            int w = vectorDrawable.getIntrinsicWidth();
+
+            vectorDrawable.setBounds(0, 0, w, h);
+
+            Bitmap bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bm);
+            vectorDrawable.draw(canvas);
+
+            return BitmapDescriptorFactory.fromBitmap(bm);
+
+        } else {
+            return BitmapDescriptorFactory.fromResource(id);
+        }
     }
 }
