@@ -10,10 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.PorterDuff;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.location.Address;
@@ -21,7 +18,6 @@ import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -290,42 +286,30 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
         });
 
-       likeCount.setText(String.valueOf(pin.getLikes()));
-
-       for (Marker marker : allMarkers) {
-           if (marker.getTag().equals(pin)) {
-               int pinResource = pinTypeToResource(pin.getType());
-               Drawable drawable = getDrawable(pinResource);
-               Bitmap bitmap = vectorDrawableToBitmap((VectorDrawable) drawable);
-               Bitmap scaled;
-               if (pin.getLikes() == 0) {
-                   marker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
-               }
-               if (pin.getLikes() == 1) {
-                   scaled = bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth() * 1.5), (int) (bitmap.getHeight() * 1.5), false);
-                   marker.setIcon(BitmapDescriptorFactory.fromBitmap(scaled));
-               }
-               if (pin.getLikes() == 2) {
-                   scaled = bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth() * 2.0), (int) (bitmap.getHeight() * 2.0), false);
-                   marker.setIcon(BitmapDescriptorFactory.fromBitmap(scaled));
-
-               }
-           }
-       }
+        likeCount.setText(String.valueOf(pin.getLikes()));
 
         new AlertDialog.Builder(MapsActivity.this)
                 .setView(view)
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        refreshPinSize(pin);
+                    }
+                })
                 .create()
                 .show();
     }
 
-    private Bitmap vectorDrawableToBitmap(VectorDrawable drawable) {
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
+    private void refreshPinSize(Pin pin) {
+        for (Marker marker : allMarkers) {
+            if (marker.getTag() == pin) {
+                marker.setIcon(getBitmapDescriptorOfPin(pin));
+            }
+        }
+    }
+
+    private double getPinScaleFactor(Pin pin) {
+        return 1 + 0.5 * pin.getLikes();
     }
 
     private void showCommentDialogueBox(final Pin pin) {
@@ -648,10 +632,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private void addNewMarker(Pin pin) {
         LatLng point = new LatLng(pin.getLatitude(), pin.getLongitude());
         String title = pin.getType().toString();
-        int pinResource = pinTypeToResource(pin.getType());
         MarkerOptions options = new MarkerOptions()
                 .position(point)
-                .icon(getBitmapDescriptor(pinResource))
+                .icon(getBitmapDescriptorOfPin(pin))
                 .anchor(PIN_ANCHOR_X, PIN_ANCHOR_Y)
                 .title(title);
         Marker marker = mMap.addMarker(options);
@@ -860,17 +843,17 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         for (Marker m : allMarkers) {
             Pin pin = (Pin) m.getTag();
-            m.setIcon(getBitmapDescriptor(pinTypeToResource(pin.getType())));
+            m.setIcon(getBitmapDescriptorOfPin(pin));
         }
         super.onResume();
     }
 
-    private BitmapDescriptor getBitmapDescriptor(int id) {
-        if (currentMode == PinMode.ICON) {
-            return BitmapDescriptorFactory.fromResource(id);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            VectorDrawable vectorDrawable = (VectorDrawable) getDrawable(id);
+    private BitmapDescriptor getBitmapDescriptorOfPin(Pin pin) {
+        int pinResource = pinTypeToResource(pin.getType());
+        double scaleFactor = getPinScaleFactor(pin);
+        Drawable drawable = getDrawable(pinResource);
+        if (drawable instanceof VectorDrawable) {
+            VectorDrawable vectorDrawable = (VectorDrawable) getDrawable(pinResource);
 
             int h = vectorDrawable.getIntrinsicHeight();
             int w = vectorDrawable.getIntrinsicWidth();
@@ -881,10 +864,17 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             Canvas canvas = new Canvas(bm);
             vectorDrawable.draw(canvas);
 
-            return BitmapDescriptorFactory.fromBitmap(bm);
-
+            Bitmap scaled = scaleBitmap(bm, scaleFactor);
+            return BitmapDescriptorFactory.fromBitmap(scaled);
         } else {
-            return BitmapDescriptorFactory.fromResource(id);
+            return BitmapDescriptorFactory.fromResource(pinResource);
         }
     }
+
+    private static Bitmap scaleBitmap(Bitmap bitmap, double scaleFactor) {
+        int newWidth = (int) (bitmap.getWidth() * scaleFactor);
+        int newHeight = (int) (bitmap.getHeight() * scaleFactor);
+        return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, false);
+    }
+
 }
