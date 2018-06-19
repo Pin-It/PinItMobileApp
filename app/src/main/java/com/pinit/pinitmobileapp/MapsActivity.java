@@ -22,20 +22,17 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
-import com.android.volley.VolleyError;
+
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -53,7 +50,7 @@ import com.pinit.api.models.Pin;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.prefs.PreferenceChangeEvent;
+
 
 import uk.co.deanwild.materialshowcaseview.IShowcaseListener;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
@@ -94,7 +91,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     int pincolor = -1;
     int pinshape = -1;
     private Pin.Type pinType = Pin.Type.OTHERS;
-    public static PinMode currentMode = PinMode.ICON;
+    public static PinMode currentMode = PinMode.COLOUR;
     private boolean pinChosen = false;
     private EditText locSearch;
 
@@ -163,21 +160,19 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     if (isPinsVisible()) {
                         setAllPinsVisibility(false, null);
                     }
-//                    pSwitch.setVisibility(View.GONE);
                 } else {
                     // Pin mode
                     hideHeatMap();
                     showAllPins();
                     setToCorrespondingImage();
                     pinsMenu.show();
-//                    pSwitch.setVisibility(View.VISIBLE);
                 }
             }
         });
 
         locSearch = (EditText) findViewById(R.id.editText);
         pinsMenu = (FloatingActionButton) findViewById(R.id.switchPinButton);
-        pinsMenu.setImageResource(R.drawable.wallpin);
+        pinsMenu.setImageResource(R.drawable.pinuno);
 
         pinsMenu.setOnClickListener(new View.OnClickListener() {
             @Override
