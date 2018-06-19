@@ -211,47 +211,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         Bundle resultIntent = getIntent().getExtras();
         if (resultIntent != null) {
-            if (resultIntent.getInt("planning") != R.id.planning && resultIntent.getInt("yes") == R.id.yesButton) {
-//                pSwitch.setChecked(true);
-                travellingMovingYesTutorSequeunce(500);
-            }
-            if (resultIntent.getInt("planning") != R.id.planning && resultIntent.getInt("no") == R.id.noButton) {
-//                pSwitch.setChecked(true);
-                travellingMovingNoTutorSequeunce(500);
+            if (resultIntent.getInt("planning") != R.id.planning) {
+                travellingMovingTutorSequeunce(500);
             }
         }
-//        if (resultIntent != null) {
-
-//            if (resultIntent.getInt("planning") == R.id.planning && resultIntent.getInt("yes") == R.id.yesButton) {
-//                planningTripTutorSequence(500);
-//            }
-//        }
 
 
-    }
-    public Drawable scaleImage (Drawable image, float scaleFactor) {
-
-        if ((image == null) || !(image instanceof BitmapDrawable)) {
-            return image;
-        }
-
-        Bitmap b = ((BitmapDrawable)image).getBitmap();
-
-        int sizeX = Math.round(image.getIntrinsicWidth() * scaleFactor);
-        int sizeY = Math.round(image.getIntrinsicHeight() * scaleFactor);
-
-        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, sizeX, sizeY, false);
-
-        image = new BitmapDrawable(getResources(), bitmapResized);
-
-        return image;
-
-    }
-
-    public Bitmap resizeMapIcons(String iconName, int width, int height){
-        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getPackageName()));
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
-        return resizedBitmap;
     }
 
     private void startDeviceLocationService() {
@@ -498,14 +463,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
                 Bundle resultIntent = getIntent().getExtras();
                 if (resultIntent != null) {
-                    if (resultIntent.getInt("planning") == R.id.planning && resultIntent.getInt("yes") == R.id.yesButton) {
+                    if (resultIntent.getInt("planning") == R.id.planning) {
                         mSwitch.setChecked(true);
                         planningTripTutorSequence(500);
                     }
-                    if (resultIntent.getInt("planning") == R.id.planning && resultIntent.getInt("no") == R.id.noButton) {
-                        mSwitch.setChecked(true);
-                        planningTripTutorSequence(500);
-                    }
+//                    if (resultIntent.getInt("planning") == R.id.planning) {
+//                        mSwitch.setChecked(true);
+//                        planningTripTutorSequence(500);
+//                    }
                 }
             }
 
@@ -706,7 +671,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
 
 
-    private void travellingMovingYesTutorSequeunce(int millis) {
+    private void travellingMovingTutorSequeunce(int millis) {
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(millis);
 
@@ -768,67 +733,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         sequence.start();
     }
 
-    private void travellingMovingNoTutorSequeunce(int millis) {
-        ShowcaseConfig config = new ShowcaseConfig();
-        config.setDelay(millis);
-
-        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, SHOWCASE_ID);
-        sequence.setConfig(config);
-        sequence.addSequenceItem(
-                new MaterialShowcaseView.Builder(this)
-                        .setTarget(mSwitch)
-                        .setMaskColour(Color.argb(220,252,98,98))
-                        .setTitleTextColor(Color.WHITE)
-                        .setContentTextColor(Color.argb(255, 255,255 ,255))
-                        .setTitleText("Welcome to the  Pin Map Mode!")
-                        .setContentText("Here, you will be able to pin unsafe locations and also view other travellers' pins. ")
-                        .setDismissText("Let's Continue!")
-                        .build()
-        );
-
-        sequence.addSequenceItem(
-                new MaterialShowcaseView.Builder(this)
-                        .setTarget(mSwitch)
-                        .setMaskColour(Color.argb(220,252,98,98))
-                        .setTitleTextColor(Color.WHITE)
-                        .setContentTextColor(Color.argb(255,255,255,255))
-                        .setTitleText("Switch between Map modes!")
-                        .setContentText("Want to see the general area safety? With the switch here, you can switch to the General Map mode where you can view the " +
-                                "general safety of your area or any other city you would like to see the general safety of.")
-                        .setDismissText("Got it! Tell me more")
-                        .withCircleShape()
-                        .build()
-        );
-
-        sequence.addSequenceItem(
-                new MaterialShowcaseView.Builder(this)
-                        .setTarget(pinsMenu)
-                        .setMaskColour(Color.argb(200, 252,98,98))
-                        .setTitleTextColor(Color.WHITE)
-                        .setContentTextColor(Color.WHITE)
-                        .setTitleText("Time to Pin")
-                        .setContentText("Once you are on the Pin Map, pressing on this button will show you list of pins with different categories of danger. ")
-                        .setDismissText("Let's keep going")
-                        .withCircleShape()
-                        .build()
-        );
-
-        sequence.addSequenceItem(
-                new MaterialShowcaseView.Builder(this)
-                        .setTarget(settings)
-                        .setMaskColour(Color.argb(200, 252,98,98))
-                        .setTitleTextColor(Color.WHITE)
-                        .setContentTextColor(Color.WHITE)
-                        .setTitleText("Customise your pins")
-                        .setContentText("With this switch, " +
-                                "switch between the shape pins and colored pins. We started with the colored pins for you, but feel free to change!")
-                        .setDismissText(" I'm ready to use Pin-It")
-                        .withCircleShape()
-                        .build()
-        );
-
-        sequence.start();
-    }
     private void planningTripTutorSequence(int millis) {
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(millis);
@@ -913,56 +817,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         sequence.start();
     }
-
-    private void showTutorSequence(int millis) {
-        ShowcaseConfig config = new ShowcaseConfig();
-        config.setDelay(millis);
-
-        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, SHOWCASE_ID);
-
-        sequence.setConfig(config);
-        sequence.addSequenceItem(
-                new MaterialShowcaseView.Builder(this)
-                        .setTarget(mSwitch)
-                        .setMaskColour(Color.argb(200, 252,98,98))
-                        .setTitleTextColor(Color.WHITE)
-                        .setContentTextColor(Color.WHITE)
-                        .setTitleText("Switch Map Modes")
-                        .setDismissText("GOT IT")
-                        .setContentText("Use this switch to change between different map modes - pin mode and the general safety mode")
-                        .withCircleShape()
-                        .build()
-        );
-
-        sequence.addSequenceItem(
-                new MaterialShowcaseView.Builder(this)
-                        .setTarget(pinsMenu)
-                        .setMaskColour(Color.argb(200, 252,98,98))
-                        .setTitleTextColor(Color.WHITE)
-                        .setContentTextColor(Color.WHITE)
-                        .setTitleText("Pin Menu")
-                        .setDismissText("GOT IT")
-                        .setContentText("Press on the menu to see different types of pins")
-                        .withCircleShape()
-                        .build()
-        );
-
-        sequence.addSequenceItem(
-                new MaterialShowcaseView.Builder(this)
-                        .setTarget(settings)
-                        .setMaskColour(Color.argb(200, 252,98,98))
-                        .setTitleTextColor(Color.WHITE)
-                        .setContentTextColor(Color.WHITE)
-                        .setTitleText("Switch Pin Modes")
-                        .setDismissText("IM READY TO USE THIS APP")
-                        .setContentText("Use this switch to switch between colored pins and shaped pins")
-                        .withCircleShape()
-                        .build()
-        );
-
-        sequence.start();
-    }
-
 
     @Override
     public void onInfoWindowClick(Marker marker) {

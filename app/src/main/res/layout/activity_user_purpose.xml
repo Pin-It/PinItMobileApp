@@ -64,45 +64,6 @@
             android:textSize="15sp" />
     </RadioGroup>
 
-    <TextView
-        android:layout_width="346dp"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/montserrat"
-        android:text="To enhance your experience with the application, one quick question:"
-        android:textSize="18sp" />
-
-    <TextView
-        android:layout_width="345dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:fontFamily="@font/montserrat"
-        android:text="Are you colorblind?"
-        android:textSize="18sp" />
-
-
-    <RadioGroup
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <RadioButton
-            android:id="@+id/noButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat"
-            android:text="Nope"
-            android:textSize="15sp" />
-
-        <RadioButton
-            android:id="@+id/yesButton"
-            android:layout_width="318dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat"
-            android:text="Yes!"
-            android:textSize="15sp"
-            android:layout_marginBottom="20dp"/>
-
-
-    </RadioGroup>
 
     <Button
         android:id="@+id/gettingStarted"

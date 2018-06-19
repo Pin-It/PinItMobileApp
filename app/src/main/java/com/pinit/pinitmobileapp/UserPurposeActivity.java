@@ -28,36 +28,19 @@ public class UserPurposeActivity extends AppCompatActivity {
         planning = (RadioButton) findViewById(R.id.planning);
         travelling = (RadioButton)findViewById(R.id.travelling);
         moving = (RadioButton) findViewById(R.id.moving);
-        yes = (RadioButton)findViewById(R.id.yesButton);
-        no = (RadioButton)findViewById(R.id.noButton);
 
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(UserPurposeActivity.this, MapsActivity.class);
-                if (yes.isChecked()) {
-                    intent.putExtra("yes", R.id.yesButton);
-                    if (planning.isChecked()) {
-                        intent.putExtra("planning",R.id.planning);
-                    }
-                    if (travelling.isChecked()) {
-                        intent.putExtra("travelling", R.id.travelling);
-                    }
-                    if (moving.isChecked()) {
-                        intent.putExtra("moving", R.id.moving);
-                    }
+                if (planning.isChecked()) {
+                    intent.putExtra("planning",R.id.planning);
                 }
-                if (no.isChecked()) {
-                    intent.putExtra("no", R.id.noButton);
-                    if (planning.isChecked()) {
-                        intent.putExtra("planning",R.id.planning);
-                    }
-                    if (travelling.isChecked()) {
-                        intent.putExtra("travelling", R.id.travelling);
-                    }
-                    if (moving.isChecked()) {
-                        intent.putExtra("moving", R.id.moving);
-                    }
+                if (travelling.isChecked()) {
+                    intent.putExtra("travelling", R.id.travelling);
+                }
+                if (moving.isChecked()) {
+                    intent.putExtra("moving", R.id.moving);
                 }
                 startActivity(intent);
                 finish();
