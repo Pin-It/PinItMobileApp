@@ -643,7 +643,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         int pinResource = pinTypeToResource(pin.getType());
         MarkerOptions options = new MarkerOptions()
                 .position(point)
-//                .icon(BitmapDescriptorFactory.fromResource(pinResource))
                 .icon(getBitmapDescriptor(pinResource))
                 .anchor(PIN_ANCHOR_X, PIN_ANCHOR_Y)
                 .title(title);
@@ -850,10 +849,18 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         setMode(pinMode);
         setAllPinsMode(pinMode);
         setToCorrespondingImage();
+
+        for (Marker m : allMarkers) {
+            Pin pin = (Pin) m.getTag();
+            m.setIcon(getBitmapDescriptor(pinTypeToResource(pin.getType())));
+        }
         super.onResume();
     }
 
     private BitmapDescriptor getBitmapDescriptor(int id) {
+        if (currentMode == PinMode.ICON) {
+            return BitmapDescriptorFactory.fromResource(id);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             VectorDrawable vectorDrawable = (VectorDrawable) getDrawable(id);
 

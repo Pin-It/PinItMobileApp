@@ -9,4 +9,6 @@
     <color name="redDarkest">#c0392b</color>
     <color name="redMiddle">#e74c3c</color>
     <color name="redLight">#ec7063</color>
+    <!--<color name="settingsFont">#3E3C3C</color>-->
+    <color name="settingsFont">#615959</color>
 </resources>
