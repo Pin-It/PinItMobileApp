@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -292,11 +293,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
        likeCount.setText(String.valueOf(pin.getLikes()));
 
        for (Marker marker : allMarkers) {
-           if (marker.getTag().equals(pin) && pin.getLikes() == 1) {
+           if (marker.getTag().equals(pin)) {
                int pinResource = pinTypeToResource(pin.getType());
                Drawable drawable = getDrawable(pinResource);
-               Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+               Bitmap bitmap = vectorDrawableToBitmap((VectorDrawable) drawable);
                Bitmap scaled;
+               if (pin.getLikes() == 0) {
+                   marker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
+               }
                if (pin.getLikes() == 1) {
                    scaled = bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth() * 1.5), (int) (bitmap.getHeight() * 1.5), false);
                    marker.setIcon(BitmapDescriptorFactory.fromBitmap(scaled));
@@ -313,6 +317,15 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 .setView(view)
                 .create()
                 .show();
+    }
+
+    private Bitmap vectorDrawableToBitmap(VectorDrawable drawable) {
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
     }
 
     private void showCommentDialogueBox(final Pin pin) {
