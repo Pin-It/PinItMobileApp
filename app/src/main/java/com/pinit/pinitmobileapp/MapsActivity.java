@@ -9,8 +9,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.location.Address;
@@ -33,6 +35,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -61,8 +64,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
         GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.InfoWindowAdapter,
         GoogleMap.OnInfoWindowClickListener, OnFilterChangedListener {
-
-    public static final String USER_TOKEN = "userToken";
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
@@ -107,12 +108,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_frame_work);
 
-        Bundle extras = getIntent().getExtras();
-        String token = null;
-        if (extras != null) {
-            token = extras.getString(USER_TOKEN, null);
-        }
-        api = new PinItAPI(Volley.newRequestQueue(this), token);
+        api = PinItAPI.getInstance(Volley.newRequestQueue(this));
 
         pincolor = R.drawable.pinuno;
         pinshape = R.drawable.circlepin;
@@ -233,6 +229,35 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
 
     }
+    public Drawable scaleImage (Drawable image, float scaleFactor) {
+
+        if ((image == null) || !(image instanceof BitmapDrawable)) {
+            return image;
+        }
+
+        Bitmap b = ((BitmapDrawable)image).getBitmap();
+
+        int sizeX = Math.round(image.getIntrinsicWidth() * scaleFactor);
+        int sizeY = Math.round(image.getIntrinsicHeight() * scaleFactor);
+
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, sizeX, sizeY, false);
+
+        image = new BitmapDrawable(getResources(), bitmapResized);
+
+        return image;
+
+    }
+
+    public Bitmap resizeMapIcons(String iconName, int width, int height){
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getPackageName()));
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+        return resizedBitmap;
+    }
+
+    private void startDeviceLocationService() {
+        stopService(new Intent(this, DeviceLocationService.class));
+        startService(new Intent(this, DeviceLocationService.class));
+    }
 
     private void setToCorrespondingImage() {
         if (currentMode == PinMode.ICON) {
@@ -292,6 +317,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             pin.incrementLikes();
                             likeCount.setText(String.valueOf(pin.getLikes()));
                             Toast.makeText(MapsActivity.this, "Liked!", Toast.LENGTH_SHORT).show();
+
                         } else {
                             api.deleteLikeFromPin(pin);
                             pin.decrementLikes();
@@ -303,7 +329,25 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             }
         });
 
-        likeCount.setText(String.valueOf(pin.getLikes()));
+       likeCount.setText(String.valueOf(pin.getLikes()));
+
+       for (Marker marker : allMarkers) {
+           if (marker.getTag().equals(pin) && pin.getLikes() == 1) {
+               int pinResource = pinTypeToResource(pin.getType());
+               Drawable drawable = getDrawable(pinResource);
+               Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+               Bitmap scaled;
+               if (pin.getLikes() == 1) {
+                   scaled = bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth() * 1.5), (int) (bitmap.getHeight() * 1.5), false);
+                   marker.setIcon(BitmapDescriptorFactory.fromBitmap(scaled));
+               }
+               if (pin.getLikes() == 2) {
+                   scaled = bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth() * 2.0), (int) (bitmap.getHeight() * 2.0), false);
+                   marker.setIcon(BitmapDescriptorFactory.fromBitmap(scaled));
+
+               }
+           }
+       }
 
         new AlertDialog.Builder(MapsActivity.this)
                 .setView(view)
@@ -431,6 +475,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
            enableMyLocation();
+            startDeviceLocationService();
         } else {
             if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
                 ActivityCompat.requestPermissions(MapsActivity.this,
@@ -563,6 +608,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     enableMyLocation();
+                    startDeviceLocationService();
                 } else {
                    mPermissionDenied = true;
                 }

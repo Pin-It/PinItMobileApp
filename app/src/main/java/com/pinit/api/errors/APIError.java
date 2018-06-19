@@ -1,33 +1,34 @@
 package com.pinit.api.errors;
 
-import com.android.volley.ClientError;
-import com.android.volley.NetworkResponse;
-import com.android.volley.NoConnectionError;
-import com.android.volley.VolleyError;
+import com.android.volley.*;
 
 public abstract class APIError extends Exception {
+    public APIError(Throwable cause) {
+        super(cause);
+    }
+
     public APIError(String message) {
         super(message);
     }
 
     public static APIError fromVolleyError(VolleyError error) {
-        NetworkResponse response = error.networkResponse;
-        if (error instanceof ClientError) {
+        if (error instanceof ClientError || error instanceof AuthFailureError) {
+            NetworkResponse response = error.networkResponse;
             switch (response.statusCode) {
                 case BadRequestError.STATUS_CODE:
-                    return new BadRequestError(error.getMessage(), error.networkResponse);
+                    return new BadRequestError(error, error.networkResponse);
                 case UnauthorizedError.STATUS_CODE:
-                    return new UnauthorizedError(error.getMessage(), error.networkResponse);
+                    return new UnauthorizedError(error, error.networkResponse);
                 case ForbiddenError.STATUS_CODE:
-                    return new ForbiddenError(error.getMessage(), error.networkResponse);
+                    return new ForbiddenError(error, error.networkResponse);
                 case NotFoundError.STATUS_CODE:
-                    return new NotFoundError(error.getMessage(), error.networkResponse);
+                    return new NotFoundError(error, error.networkResponse);
                 default:
-                    return new HTTPClientError(error.getMessage(), error.networkResponse);
+                    return new HTTPClientError(error, error.networkResponse);
             }
         } else if (error instanceof NoConnectionError) {
-            return new NotConnectedError(error.getMessage());
+            return new NotConnectedError(error);
         }
-        return new UnknownError(error.getMessage());
+        return new UnknownError(error);
     }
 }
